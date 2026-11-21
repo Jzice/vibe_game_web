@@ -1,0 +1,36 @@
+{
+  "url": "https://gokart-mania.vercel.app/",
+  "final_url": "https://gokart-mania.vercel.app/",
+  "slug": "gokart-mania",
+  "title": "GoKart Mania — made with Mixar",
+  "description": "A browser kart racer: six karts, three laps, drifts, boosts and items. 3D assets made with Mixar.",
+  "captured_at": "2026-11-16T16:49:26.398682+00:00",
+  "assets": {
+    "https://gokart-mania.vercel.app/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 6690,
+      "status": 200
+    },
+    "https://gokart-mania.vercel.app/mixar-mark-only.png": {
+      "path": "mixar-mark-only.png",
+      "content_type": "image/png",
+      "size": 29055,
+      "status": 200
+    },
+    "https://gokart-mania.vercel.app/mixar-word-only.png": {
+      "path": "mixar-word-only.png",
+      "content_type": "image/png",
+      "size": 6925,
+      "status": 200
+    },
+    "https://gokart-mania.vercel.app/index.js": {
+      "path": "index.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 279815,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

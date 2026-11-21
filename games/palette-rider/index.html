@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+  <head><script>
+(function(){try{
+  var fake={register:function(){return Promise.resolve({addEventListener:function(){},update:function(){return Promise.resolve()}})},
+    getRegistration:function(){return Promise.resolve()},getRegistrations:function(){return Promise.resolve([])},
+    addEventListener:function(){},controller:null};
+  Object.defineProperty(navigator,'serviceWorker',{configurable:true,value:fake});
+}catch(e){}})();
+</script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>PaletteRider</title>
+    <link rel="preconnect" href="./_offline-stub.js" />
+    <link rel="preconnect" href="./_offline-stub.js" crossorigin />
+    <link rel="stylesheet" href="./_remote/fonts.googleapis.com/css2__q_family_JetBrains_Mono_wght_500_600_700_family_Space_Grotesk_wght_500_600_700_display_swap" />
+    <style>
+      :root {
+        --ink: #eaf6f4;
+        --dim: #9fc2c4;
+        --glow: #7dffc8;
+        --gold: #ffd27a;
+        --panel: rgba(6, 16, 28, 0.62);
+      }
+      * { box-sizing: border-box; }
+      /* --app-h is the part of the screen actually visible (set by main.js); on phones it excludes the browser's own bars */
+      html, body { margin: 0; height: var(--app-h, 100%); overflow: hidden; background: #02060c; }
+      body { font-family: Georgia, 'Times New Roman', serif; color: var(--ink); }
+      canvas { display: block; }
+
+      #hud { position: fixed; inset: 0; pointer-events: none; display: none; }
+      #hud.on { display: block; }
+      .chip {
+        position: absolute; top: 16px; padding: 8px 14px; border-radius: 12px;
+        background: var(--panel); backdrop-filter: blur(6px);
+        border: 1px solid rgba(125, 255, 200, 0.18);
+      }
+      .chip small { display: block; font-size: 10px; letter-spacing: 0.18em; color: var(--dim); text-transform: uppercase; }
+      .chip b { font-size: 24px; font-weight: normal; font-variant-numeric: tabular-nums; }
+      #c-score { left: 16px; }
+      #c-carry { left: 50%; transform: translateX(-50%); text-align: center; }
+      #c-carry b { color: var(--gold); }
+      #c-time { right: 16px; text-align: right; }
+
+      #map {
+        position: absolute; left: 16px; bottom: 18px; width: 170px; height: 170px; border-radius: 50%;
+        background: var(--panel); pointer-events: auto; cursor: pointer;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18), 0 6px 20px rgba(0, 0, 0, 0.45);
+      }
+      #map.big {
+        left: 50%; top: 50%; bottom: auto; transform: translate(-50%, -50%);
+        width: min(84vw, 84vh); height: min(84vw, 84vh); background: rgba(10, 6, 8, 0.88);
+      }
+
+      #compass {
+        position: absolute; top: 84px; left: 50%; transform: translateX(-50%);
+        display: flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 999px;
+        background: var(--panel); border: 1px solid rgba(255, 210, 122, 0.25);
+        font-size: 13px; letter-spacing: 0.08em;
+      }
+      #arrow, #arrowS { display: inline-block; font-size: 20px; color: var(--gold); transition: transform 0.08s linear; }
+      #goalS { color: var(--gold); font-size: 16px; }
+      .sep { width: 1px; height: 18px; background: rgba(255, 255, 255, 0.25); }
+      #dist, #distS { color: var(--dim); font-variant-numeric: tabular-nums; }
+
+      /* key caps, used by the controls bar and the opening brief */
+      kbd {
+        display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 7px;
+        font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: var(--ink);
+        border-radius: 7px; border: 1px solid rgba(255, 255, 255, 0.35); border-bottom-width: 3px;
+        background: rgba(255, 255, 255, 0.07); transition: background 0.08s, transform 0.08s, color 0.08s;
+      }
+      kbd.on { background: var(--glow); border-color: var(--glow); color: #06121c; transform: translateY(2px); }
+
+      /* controls bar: shows riding keys on the ground and trick keys in the air; keys light up when pressed */
+      #controls {
+        position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%);
+        display: flex; flex-direction: column; align-items: center; gap: 8px;
+        padding: 10px 18px; border-radius: 16px; background: var(--panel); backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.12); max-width: calc(100vw - 420px);
+      }
+      #controls.hidden { display: none; }
+      .ctl-row { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 18px; }
+      .ctl { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--dim); white-space: nowrap; }
+      .ctl-tag {
+        font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold);
+        padding-right: 12px; border-right: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      #controls .air, #controls.air .ground { display: none; }
+      #controls.air .air { display: flex; }
+      .ctl-row.minor { gap: 4px 14px; opacity: 0.75; }
+      .ctl-row.minor .ctl { font-size: 11px; }
+      .ctl-row.minor kbd { height: 20px; min-width: 20px; font-size: 10px; border-bottom-width: 2px; }
+
+      /* round icon buttons in the corner */
+      #corner { position: absolute; right: 16px; top: 88px; display: flex; gap: 8px; }
+      /* live riders: how many people are in a ride right now, and this player's guest name */
+      #live {
+        position: absolute; left: 16px; top: 88px; display: none; align-items: center; gap: 7px;
+        padding: 6px 12px; border-radius: 999px; background: rgba(8, 6, 5, 0.5); backdrop-filter: blur(6px);
+        font: 12px ui-sans-serif, system-ui, sans-serif; letter-spacing: 0.04em; color: var(--ink);
+      }
+      #live.on { display: flex; }
+      #live i { width: 8px; height: 8px; border-radius: 50%; background: #5fe08a; box-shadow: 0 0 8px #5fe08a; animation: livePulse 1.8s ease-in-out infinite; }
+      #live small { color: var(--dim); font-size: 11px; }
+      @keyframes livePulse { 50% { opacity: 0.35; } }
+      body.touch #live { top: 116px; left: 10px; }
+      #menuLive { min-height: 18px; margin: 0 0 10px; font: 12px ui-sans-serif, system-ui, sans-serif; letter-spacing: 0.06em; color: #8fe8ac; }
+      .icon-btn {
+        width: 38px; height: 38px; padding: 0; border-radius: 50%; font-size: 16px; letter-spacing: 0;
+        color: var(--ink); background: var(--panel); border: 1px solid rgba(255, 255, 255, 0.22); box-shadow: none;
+      }
+      .icon-btn:hover { border-color: var(--glow); filter: none; }
+      .icon-btn.off { opacity: 0.45; text-decoration: line-through; }
+
+      /* opening brief: the goal and the basics, gone as soon as you move */
+      #brief {
+        position: absolute; left: 50%; top: 136px; transform: translateX(-50%); width: min(520px, calc(100vw - 32px));
+        padding: 16px 22px; border-radius: 16px; background: var(--panel); backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.14); text-align: center;
+        opacity: 0; transition: opacity 0.5s; pointer-events: none;
+      }
+      #brief.on { opacity: 1; }
+      #brief p { margin: 0; }
+      #briefLead { font-size: 17px; line-height: 1.5; margin-bottom: 12px !important; }
+      #brief .ctl-row { gap: 6px 16px; }
+      .for-touch { display: none; }
+      #touchHint { display: none; } /* the opening brief explains the touch controls now */
+      #compass { white-space: nowrap; }
+      body.touch .for-touch { display: block; }
+      body.touch .for-keys { display: none; }
+
+      #toast {
+        position: absolute; top: 33%; left: 50%; transform: translateX(-50%);
+        font-size: 26px; letter-spacing: 0.06em; color: var(--glow);
+        text-shadow: 0 0 18px var(--glow); opacity: 0; transition: opacity 0.25s;
+        white-space: nowrap;
+      }
+      #toast.on { opacity: 1; }
+      #toast.bad { color: #ff9a8a; text-shadow: 0 0 18px rgba(255, 120, 100, 0.7); }
+
+      /* touch controls: shown only on touch screens */
+      #touch { display: none; }
+      body.touch #touch { display: block; }
+      body.touch #controls { display: none; }
+      body.touch #map { bottom: calc(196px + env(safe-area-inset-bottom)); } /* sits above the thumb stick */
+      body.touch #compass { bottom: auto; top: 78px; }
+      body.touch, body.touch canvas { touch-action: none; user-select: none; -webkit-user-select: none; }
+      #stick, #jumpBtn {
+        position: absolute; bottom: calc(22px + env(safe-area-inset-bottom)); pointer-events: auto; touch-action: none;
+        border-radius: 50%; background: var(--panel); border: 1px solid rgba(255, 255, 255, 0.28);
+        -webkit-tap-highlight-color: transparent;
+      }
+      #stick { left: 22px; width: 132px; height: 132px; }
+      #knob {
+        position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px;
+        border-radius: 50%; background: var(--glow); opacity: 0.85; box-shadow: 0 0 18px var(--glow);
+      }
+      #jumpBtn {
+        right: 22px; width: 104px; height: 104px; padding: 0; color: var(--ink); font-size: 13px;
+        letter-spacing: 0.16em; box-shadow: none;
+      }
+      #jumpBtn.down { background: var(--glow); color: #06121c; }
+      #touchHint {
+        position: absolute; left: 0; right: 0; bottom: calc(168px + env(safe-area-inset-bottom));
+        text-align: center; font-size: 11px; color: var(--dim); letter-spacing: 0.08em;
+      }
+
+      @media (max-width: 480px) {
+        .chip { padding: 6px 10px; top: 12px; }
+        .chip small { font-size: 9px; letter-spacing: 0.12em; }
+        .chip b { font-size: 19px; }
+        #c-score { left: 10px; }
+        #c-time { right: 10px; }
+        body.touch #compass { top: 70px; }
+        #map { width: 104px; height: 104px; left: 10px; bottom: 18px; }
+        #corner { flex-direction: column; top: 112px; right: 10px; gap: 6px; }
+        .icon-btn { width: 34px; height: 34px; font-size: 14px; }
+        #brief { top: 276px; }
+        #briefLead { font-size: 15px; }
+        .how { font-size: 14px; }
+      }
+
+      @media (max-width: 900px) {
+        #controls { max-width: calc(100vw - 220px); left: auto; right: 12px; transform: none; }
+        #corner { top: 136px; } /* below the compass, which is centred at this width */
+        #live { top: 136px; }
+        #brief { top: 186px; }
+      }
+
+      /* full-screen screens (title, pause, end): scroll when they are taller than the screen,
+         as on a phone, while the ride itself keeps all touches for its own controls */
+      .overlay {
+        position: fixed; top: 0; left: 0; right: 0; height: var(--app-h, 100dvh); display: none; justify-content: center;
+        background: radial-gradient(ellipse at center, rgba(2, 8, 16, 0.35), rgba(2, 8, 16, 0.85));
+        text-align: center; padding: 24px; padding-bottom: calc(24px + env(safe-area-inset-bottom));
+        overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y;
+      }
+      .overlay.on { display: flex; }
+      .card { max-width: 560px; position: relative; margin: auto; } /* centred when it fits, from the top when it doesn't */
+
+      #credit {
+        position: fixed; right: 8px; bottom: 2px; z-index: 5; font: 10px ui-sans-serif, system-ui, sans-serif;
+        color: rgba(255, 255, 255, 0.75); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9); pointer-events: none;
+        max-width: 60vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .how .note { display: inline-block; margin-top: 10px; font-size: 12px; color: var(--dim); }
+      .how a { color: var(--gold); }
+
+      /* chapter picker */
+      #chapters { display: none; justify-content: center; gap: 10px; margin: 0 0 16px; flex-wrap: wrap; }
+      #chapters.on { display: flex; }
+      #chapters a, #nextCh {
+        pointer-events: auto; text-decoration: none; color: var(--dim); font-size: 12px; letter-spacing: 0.12em;
+        padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(0, 0, 0, 0.25);
+      }
+      #chapters a:hover, #nextCh:hover { color: var(--ink); border-color: var(--glow); }
+      #chapters a.active { color: #06121c; background: var(--glow); border-color: var(--glow); }
+      #nextCh { display: none; margin-top: 16px; }
+      .textlink { display: inline-block; margin-top: 18px; color: var(--dim); font-size: 12px; letter-spacing: 0.12em; pointer-events: auto; }
+      .textlink:hover { color: var(--ink); }
+      /* tip link: hidden until a tip page is set in src/support.js */
+      .tip, .tipline { display: none; }
+      body.has-tip .tip { display: inline-block; }
+      body.has-tip .tipline { display: block; }
+      .tipline { margin-top: 26px; font-size: 13px; color: var(--dim); line-height: 2.2; }
+      .tip {
+        margin-top: 14px; pointer-events: auto; text-decoration: none; font-size: 13px; letter-spacing: 0.1em;
+        color: var(--ink); padding: 8px 18px; border-radius: 999px; border: 1px solid var(--glow);
+        background: rgba(0, 0, 0, 0.25);
+      }
+      .tip:hover { background: var(--glow); color: #06121c; }
+      #nextCh.on { display: inline-block; }
+
+      /* painting intro: the original hangs on a wall; starting the ride zooms into it */
+      #frame { display: none; }
+      #menu.gallery::before {
+        content: ''; position: fixed; inset: 0; /* stays behind the card however far it scrolls */
+        background: radial-gradient(ellipse at 50% 38%, #4a3832 0%, #241916 55%, #100a09 100%);
+        transition: opacity 1s ease 0.45s;
+      }
+      #menu.gallery .card { max-width: 760px; }
+      #menu.gallery #frame {
+        display: inline-block; padding: clamp(8px, 1.6vw, 16px); background: #efe6d2;
+        border: clamp(6px, 1vw, 11px) solid #20140f; border-radius: 2px; margin-bottom: 18px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+        transform-origin: 46% 60%; will-change: transform, opacity;
+      }
+      #painting { display: block; height: min(46vh, 70vw); width: auto; max-width: 84vw; }
+      #menu.gallery h1 { font-size: clamp(24px, 4.4vw, 38px); letter-spacing: 0.16em; }
+      #menu.gallery .sub { margin: 6px 0 12px; }
+      #menu.gallery .how { font-size: 14px; line-height: 1.55; margin-bottom: 18px; color: var(--dim); }
+      #menu.gallery .card > *:not(#frame) { transition: opacity 0.35s; }
+      /* entering: the words fade, then the room fades away around the painting (the city shows
+         behind it), and main.js flies the camera through the painting into the ride */
+      #menu.entering { pointer-events: none; background: none; }
+      #menu.entering .card > *:not(#frame) { opacity: 0; }
+      #menu.entering #frame { transform-origin: 50% 50%; }
+      #menu.swapped::before { opacity: 0; transition: opacity 0.6s ease; }
+      h1 {
+        margin: 0; font-weight: normal; font-size: clamp(40px, 8vw, 76px); letter-spacing: 0.12em;
+        text-shadow: 0 0 40px var(--glow);
+      }
+      .sub { margin: 10px 0 26px; color: var(--dim); letter-spacing: 0.22em; font-size: 12px; text-transform: uppercase; }
+      .how { color: var(--ink); font-size: 16px; line-height: 1.7; margin: 0 0 26px; }
+      .how em { color: var(--gold); font-style: normal; }
+      button {
+        pointer-events: auto; cursor: pointer; font: inherit; font-size: 15px; letter-spacing: 0.2em;
+        text-transform: uppercase; color: #06121c; background: var(--glow);
+        border: 0; border-radius: 999px; padding: 14px 34px; box-shadow: 0 0 30px var(--glow);
+      }
+      button:hover { filter: brightness(1.1); }
+      .hint { margin-top: 14px; font-size: 12px; color: var(--dim); letter-spacing: 0.1em; }
+      .big { font-size: 64px; color: var(--gold); margin: 6px 0; font-variant-numeric: tabular-nums; }
+      .row { color: var(--dim); font-size: 15px; margin-bottom: 24px; line-height: 1.8; }
+
+      /* getting off the bike, and the prompt by a game table */
+      .pill {
+        position: absolute; pointer-events: auto; display: none; align-items: center; gap: 8px;
+        font: 600 14px ui-sans-serif, system-ui, sans-serif; letter-spacing: 0.04em; text-transform: none;
+        color: #2a2420; background: #fbf6ec; border: 2px solid #2f7a52; border-radius: 999px;
+        padding: 10px 18px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35); white-space: nowrap;
+      }
+      .pill.on { display: flex; }
+      .pill kbd { color: #2a2420; border-color: rgba(0, 0, 0, 0.3); background: rgba(0, 0, 0, 0.06); height: 22px; min-width: 22px; }
+      #walkBtn { right: 16px; bottom: 26px; }
+      #actBtn {
+        left: 50%; bottom: 120px; transform: translateX(-50%); font: 700 16px 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+        padding: 13px 26px; color: #fff; border: 0; background: linear-gradient(90deg, #2f7a52, #b9822c);
+        box-shadow: 0 0 0 2px rgba(255, 240, 210, 0.9), 0 0 26px rgba(244, 197, 98, 0.55);
+      }
+      #actBtn.soon { background: #fbf6ec; color: #2a2420; border-color: #7a4fc8; }
+      #actBtn kbd { color: #fff; border-color: rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.12); }
+      #actBtn.soon kbd { display: none; }
+      body.touch .pill kbd { display: none; }
+      body.touch #walkBtn { right: 22px; bottom: calc(140px + env(safe-area-inset-bottom)); }
+      body.touch #actBtn { bottom: calc(170px + env(safe-area-inset-bottom)); }
+      body.touch.on-foot #jumpBtn { display: none; }
+      #controls .foot, #controls.foot .ground, #controls.foot .air { display: none; }
+      #controls.foot .foot { display: flex; }
+      @media (max-width: 900px) { #walkBtn { bottom: 96px; } }
+
+      /* mind games: walnut-brown glass panels with brass and amber accents over the game table */
+      #mind {
+        --mg-ui: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif; --mg-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+        --mg-a: #f4c562; --mg-b: #e38a4a; --mg-green: #3f9a68; --mg-glass: rgba(38, 25, 15, 0.8); --mg-line: rgba(255, 226, 180, 0.16); --mg-dim: rgba(250, 232, 205, 0.62);
+        position: fixed; inset: 0; pointer-events: none; display: none; font-family: var(--mg-ui); color: #fff5e6;
+      }
+      #mind.on { display: block; }
+      .mg-glass {
+        background: var(--mg-glass); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%);
+        border: 1px solid var(--mg-line); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      }
+      #mind button {
+        font: 600 14px var(--mg-ui); letter-spacing: 0.02em; text-transform: none; color: #fff5e6;
+        background: rgba(255, 255, 255, 0.06); border: 1px solid var(--mg-line); border-radius: 12px; padding: 10px 16px; box-shadow: none;
+        transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      }
+      #mind button:hover { filter: none; background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.3); }
+      #mind button:active { transform: scale(0.97); }
+      #mind button.main { background: linear-gradient(90deg, var(--mg-a), var(--mg-b)); border: 0; color: #2a1708; font-weight: 700; box-shadow: 0 0 22px rgba(244, 197, 98, 0.4); }
+      #mindTop {
+        position: absolute; top: 14px; left: 50%; transform: translateX(-50%); display: flex; align-items: stretch;
+        border-radius: 20px; max-width: calc(100vw - 20px); overflow: hidden;
+      }
+      #mindTop::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(90deg, var(--mg-a), var(--mg-b)); }
+      #mindTop > div { padding: 12px 20px; display: flex; flex-direction: column; justify-content: center; gap: 3px; }
+      #mindTop > div + div { border-left: 1px solid var(--mg-line); }
+      #mindTop small { font: 600 10px var(--mg-mono); letter-spacing: 0.22em; color: var(--mg-dim); white-space: nowrap; }
+      #mindTop b { font: 700 24px var(--mg-mono); font-variant-numeric: tabular-nums; line-height: 1.1; }
+      #mindTop b i { font-style: normal; color: var(--mg-dim); font-weight: 500; font-size: 16px; }
+      #mindTop span.sub { font: 500 11px var(--mg-ui); color: var(--mg-dim); white-space: nowrap; }
+      .mt-game b { font: 700 19px var(--mg-ui) !important; white-space: nowrap; }
+      .mt-game small { color: var(--mg-a) !important; }
+      .mt-clock { min-width: 150px; }
+      #mindTime { font-size: 34px !important; letter-spacing: -0.02em; text-shadow: 0 0 18px rgba(244, 197, 98, 0.35); }
+      #mindLive { display: inline-flex; align-items: center; gap: 6px; font: 700 10px var(--mg-mono); letter-spacing: 0.22em; color: var(--mg-dim); }
+      #mindLive::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+      #mindLive[data-s='live'] { color: #ff4d6a; }
+      #mindLive[data-s='live']::before { animation: livePulse 1.1s ease-in-out infinite; box-shadow: 0 0 8px #ff4d6a; }
+      #mindLive[data-s='solved'] { color: #6fdc9a; }
+      .mt-bar { width: 100%; min-width: 90px; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.1); overflow: hidden; margin-top: 4px; }
+      #mindBarFill { height: 100%; width: 0; border-radius: 4px; background: linear-gradient(90deg, var(--mg-green), var(--mg-a)); transition: width 0.25s ease; }
+      #mindBarFill.over { background: linear-gradient(90deg, #e38a4a, #c8462e); }
+      #mindHint {
+        position: absolute; left: 50%; top: 124px; transform: translateX(-50%); width: min(520px, calc(100vw - 24px));
+        text-align: center; font-size: 14px; line-height: 1.45; padding: 10px 16px; border-radius: 14px; color: #fbeedb;
+        transition: opacity 0.5s, transform 0.5s;
+      }
+      #mindHint b { color: var(--mg-a); font-weight: 600; }
+      #mind.playing #mindHint { opacity: 0; transform: translate(-50%, -8px); }
+      #mindBar {
+        position: absolute; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+        display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; pointer-events: auto;
+        padding: 10px 12px; border-radius: 18px; width: max-content; max-width: calc(100vw - 20px);
+      }
+      #mindBar .mb-label { font: 600 10px var(--mg-mono); letter-spacing: 0.22em; color: var(--mg-dim); padding-left: 6px; }
+      #mindOpts { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
+      .mg-seg { display: flex; padding: 3px; gap: 2px; border-radius: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--mg-line); }
+      #mind .mg-seg button { min-width: 38px; height: 34px; padding: 0 10px; border: 0; border-radius: 9px; background: transparent; font: 700 14px var(--mg-mono); color: var(--mg-dim); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+      #mind .mg-seg button:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+      #mind .mg-seg button.on { background: linear-gradient(135deg, var(--mg-a), var(--mg-b)); color: #2a1708; box-shadow: 0 0 14px rgba(244, 197, 98, 0.45); }
+      #mind .mg-seg button.with-img { font: 600 13px var(--mg-ui); padding-left: 4px; }
+      .mg-seg img { width: 26px; height: 26px; object-fit: cover; border-radius: 6px; }
+      #mindRefBox { align-items: center; pointer-events: auto; cursor: zoom-in; }
+      #mindRef { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); transition: transform 0.15s; }
+      #mindRefBox:hover #mindRef { transform: scale(1.06); box-shadow: 0 0 0 2px var(--mg-a); }
+      #mindPeek {
+        position: absolute; inset: 0; display: none; align-items: center; justify-content: center; pointer-events: auto;
+        background: rgba(16, 10, 5, 0.74); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); cursor: zoom-out; animation: mgFade 0.2s ease;
+      }
+      #mindPeek.on { display: flex; }
+      .pk-card { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+      .pk-card small { font: 700 12px var(--mg-mono); letter-spacing: 0.3em; color: var(--mg-a); }
+      #mindPeekImg {
+        width: min(78vw, 64vh); height: min(78vw, 64vh); object-fit: cover; border-radius: 14px;
+        box-shadow: 0 0 0 3px var(--mg-a), 0 0 40px rgba(244, 197, 98, 0.45); animation: mgPop 0.3s cubic-bezier(0.2, 1.4, 0.4, 1);
+      }
+      .pk-card span { font: 500 13px var(--mg-ui); color: var(--mg-dim); }
+      #mindDone {
+        position: absolute; inset: 0; display: none; align-items: center; justify-content: center; pointer-events: auto;
+        background: radial-gradient(ellipse at center, rgba(40, 24, 12, 0.6), rgba(12, 8, 4, 0.86)); padding: 16px;
+        animation: mgFade 0.35s ease;
+      }
+      #mindDone.on { display: flex; }
+      .md-card { display: flex; flex-direction: column; align-items: center; gap: 16px; max-height: 100%; }
+      #mindCard {
+        max-height: calc(100vh - 130px); max-width: min(440px, calc(100vw - 32px)); border-radius: 18px;
+        box-shadow: 0 0 0 1px rgba(255, 226, 180, 0.25), 0 0 50px rgba(244, 197, 98, 0.35), 0 20px 50px rgba(0, 0, 0, 0.6);
+        animation: mgPop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1);
+      }
+      .md-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+      @keyframes mgFade { from { opacity: 0; } }
+      @keyframes mgPop { from { opacity: 0; transform: scale(0.88) translateY(14px); } }
+      @media (max-width: 600px) {
+        #mindTop { top: 8px; border-radius: 16px; }
+        #mindTop > div { padding: 8px 12px; }
+        #mindTop b { font-size: 18px; }
+        #mindTime { font-size: 24px !important; }
+        .mt-clock { min-width: 108px; }
+        .mt-game { display: none !important; }
+        #mindTop span.sub { display: none; }
+        #mindHint { top: 86px; font-size: 13px; }
+        #mind button { padding: 9px 12px; font-size: 13px; }
+        #mind .mg-seg button { min-width: 32px; padding: 0 7px; }
+        .mg-seg img { display: none; }
+        #mindRef { width: 38px; height: 38px; }
+        #mindRefBox small { display: none; }
+      }
+      /* phones: the title screen compact enough that its button usually fits without scrolling */
+      @media (max-width: 480px), (max-height: 700px) {
+        #painting { height: min(30vh, 62vw); }
+        #menu.gallery #frame { margin-bottom: 10px; }
+        #menu.gallery h1 { font-size: 26px; }
+        #menu.gallery .sub { margin: 4px 0 6px; font-size: 10px; letter-spacing: 0.14em; }
+        #menuLive { margin-bottom: 8px; font-size: 11px; }
+        #menu.gallery .how { font-size: 13px; line-height: 1.45; margin-bottom: 12px; }
+        #chapters { gap: 6px; margin-bottom: 10px; }
+        #chapters a { padding: 6px 10px; font-size: 10.5px; letter-spacing: 0.08em; }
+        #menu #start { padding: 13px 26px; font-size: 14px; }
+        #menu .hint { margin-top: 8px; }
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-oaeEkH7H.js"></script>
+  </head>
+  <body>
+    <div id="hud">
+      <div class="chip" id="c-score"><small>Score</small><b id="score">0</b></div>
+      <div class="chip" id="c-carry"><small>Carrying</small><b id="carry">0 ★</b></div>
+      <div class="chip" id="c-time"><small id="timeLabel">Until dawn</small><b id="time">3:00</b></div>
+      <canvas id="map" title="Map (Tab)"></canvas>
+      <div id="toast"></div>
+      <div id="live"><i></i><span id="liveCount"></span></div>
+      <div id="corner">
+        <button class="icon-btn" id="btnPause" title="Pause (P)" style="font-size: 12px">❚❚</button>
+        <button class="icon-btn" id="btnHelp" title="Show or hide the controls (H)">?</button>
+        <button class="icon-btn" id="btnSound" title="Sound on or off (M)">♪</button>
+        <button class="icon-btn" id="btnMap" title="Open the map (Tab)">◎</button>
+        <button class="icon-btn" id="btnFull" title="Full screen">⛶</button>
+      </div>
+      <div id="brief">
+        <p id="briefLead"></p>
+        <div class="ctl-row for-keys" id="briefKeys">
+          <span class="ctl"><kbd>W</kbd>faster</span>
+          <span class="ctl"><kbd>S</kbd>stop</span>
+          <span class="ctl"><kbd>A</kbd><kbd>D</kbd>steer</span>
+          <span class="ctl"><kbd>Space</kbd>jump</span>
+          <span class="ctl"><kbd>Drag</kbd>look around</span>
+        </div>
+        <p class="for-touch" id="briefTouch" style="font-size: 13px; color: var(--dim); line-height: 1.5">The bike rolls by itself · stick to steer and speed up, pull back to stop · JUMP to leap · drag the screen to look around</p>
+      </div>
+      <div id="controls">
+        <div class="ctl-row ground">
+          <span class="ctl-tag">Riding</span>
+          <span class="ctl"><kbd data-k="left">A</kbd><kbd data-k="right">D</kbd>steer</span>
+          <span class="ctl"><kbd data-k="up">W</kbd>faster</span>
+          <span class="ctl"><kbd data-k="down">S</kbd>stop</span>
+          <span class="ctl"><kbd data-k="jump">Space</kbd>jump</span>
+          <span class="ctl"><kbd>F</kbd>get off</span>
+        </div>
+        <div class="ctl-row foot">
+          <span class="ctl-tag">On foot</span>
+          <span class="ctl"><kbd data-k="up">W</kbd><kbd data-k="left">A</kbd><kbd data-k="down">S</kbd><kbd data-k="right">D</kbd>walk</span>
+          <span class="ctl"><kbd>E</kbd>play</span>
+          <span class="ctl"><kbd>F</kbd>ride</span>
+        </div>
+        <div class="ctl-row air">
+          <span class="ctl-tag">In the air</span>
+          <span class="ctl"><kbd data-k="up">W</kbd><kbd data-k="down">S</kbd>flip</span>
+          <span class="ctl"><kbd data-k="left">A</kbd><kbd data-k="right">D</kbd>spin</span>
+          <span class="ctl"><kbd data-k="jump">Hold Space</kbd>glide</span>
+        </div>
+        <div class="ctl-row minor">
+          <span class="ctl"><kbd>Drag</kbd>look</span>
+          <span class="ctl"><kbd>Scroll</kbd>zoom</span>
+          <span class="ctl"><kbd>Tab</kbd>map</span>
+          <span class="ctl"><kbd>M</kbd>sound</span>
+          <span class="ctl"><kbd>P</kbd>pause</span>
+          <span class="ctl"><kbd>H</kbd>hide</span>
+        </div>
+      </div>
+      <div id="touch">
+        <div id="touchHint">Stick: steer, pedal, brake · drag the screen to look around, pinch to zoom</div>
+        <div id="stick"><div id="knob"></div></div>
+        <button id="jumpBtn">JUMP</button>
+      </div>
+      <button class="pill" id="walkBtn"><span id="walkLabel">🚶 Get off</span> <kbd>F</kbd></button>
+      <button class="pill" id="actBtn"><span id="actLabel">Play</span> <kbd>E</kbd></button>
+      <div id="compass"><span id="arrowS">▲</span><span id="goalS">☀</span><span id="distS">0 m</span><span class="sep"></span><span id="arrow">▲</span><span id="goal">MONASTERY</span><span id="dist">0 m</span></div>
+    </div>
+
+    <div id="mind">
+      <div id="mindTop" class="mg-glass">
+        <div class="mt-game"><small>MIND GAMES</small><b id="mindGameName">Tower of Hanoi</b></div>
+        <div id="mindRefBox"><small>GOAL</small><img id="mindRef" alt="The finished painting" /></div>
+        <div class="mt-clock"><span id="mindLive" data-s="ready">READY</span><b id="mindTime">0:00.0</b></div>
+        <div><small id="mindMovesLabel">MOVES</small><b><span id="mindMoves">0</span><i> / <span id="mindMinN">15</span></i></b><div class="mt-bar"><div id="mindBarFill"></div></div></div>
+        <div><small>BEST</small><b id="mindBest">—</b><span class="sub" id="mindBestMoves"></span></div>
+      </div>
+      <div id="mindHint" class="mg-glass">Move the whole tower to <b>another peg</b>. Tap a peg to lift its top disc, then tap where it goes. A disc never sits on a smaller one. The clock starts on your first move.</div>
+      <div id="mindBar" class="mg-glass">
+        <div id="mindOpts"></div>
+        <button id="mindGoalBtn">👁 Goal</button>
+        <button id="mindRestart">↺ Restart</button>
+        <button id="mindLeave">Leave</button>
+      </div>
+      <div id="mindPeek"><div class="pk-card"><small>GOAL</small><img id="mindPeekImg" alt="The finished painting" /><span id="mindPeekName"></span><span>Tap anywhere to close · the clock keeps running</span></div></div>
+      <div id="mindDone">
+        <div class="md-card">
+          <img id="mindCard" alt="Your Tower of Hanoi score card" />
+          <div class="md-actions">
+            <button class="main" id="mindShare">Share</button>
+            <button id="mindSave">Save image</button>
+            <button id="mindAgain">Play again</button>
+            <button id="mindDoneLeave">Leave</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="credit"></div>
+
+    <div class="overlay on" id="menu">
+      <div class="card">
+        <div id="frame"><img id="painting" alt="" /></div>
+        <h1 id="title">PaletteRider</h1>
+        <div class="sub" id="subtitle">A night ride in the high Himalaya</div>
+        <div id="menuLive"></div>
+        <div id="chapters"><a id="ch1" href="?chapter=1">1 · CASTLE AND SUN</a><a id="ch2" href="?chapter=2">2 · CAFÉ TERRACE AT NIGHT</a><a id="ch3" href="?chapter=3">3 · THE WATER LILY POND</a><a id="chMind" href="?chapter=3&amp;spot=mind">🧩 MIND GAMES</a></div>
+        <p class="how" id="how">
+          Stars have fallen into the valley. Gather them on your bicycle and carry them up to the
+          <em>monastery</em> before dawn. The more you bring in one trip, the bigger the bonus —
+          but land a jump badly and you spill half of them.
+        </p>
+        <button id="start">Begin the ride</button>
+        <div class="hint">or press Enter</div>
+      </div>
+    </div>
+
+    <div class="overlay" id="pause">
+      <div class="card">
+        <h1 style="font-size: clamp(34px, 6vw, 56px)">PAUSED</h1>
+        <div class="sub" id="pauseInfo">The night is waiting</div>
+        <button id="resume">Resume</button>
+        <div class="hint">or press P, Esc or Enter</div>
+        <a id="restart" href="#" class="textlink">Restart this ride</a>
+        <div><a class="tip" target="_blank" rel="noopener"></a></div>
+      </div>
+    </div>
+
+    <div class="overlay" id="over">
+      <div class="card">
+        <div class="sub">Dawn has come</div>
+        <div class="big" id="final">0</div>
+        <div class="row" id="summary"></div>
+        <button id="again">Ride again</button>
+        <div class="hint">or press Enter</div>
+        <a id="nextCh" href="?chapter=2">Go to chapter 2 ›</a>
+        <div class="tipline">Enjoyed the ride?<br><a class="tip" target="_blank" rel="noopener"></a></div>
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,4220 @@
+<!doctype html>
+<html lang="tr">
+<head><script>
+(function(){try{
+  var fake={register:function(){return Promise.resolve({addEventListener:function(){},update:function(){return Promise.resolve()}})},
+    getRegistration:function(){return Promise.resolve()},getRegistrations:function(){return Promise.resolve([])},
+    addEventListener:function(){},controller:null};
+  Object.defineProperty(navigator,'serviceWorker',{configurable:true,value:fake});
+}catch(e){}})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mehter · Claude Game Arena</title>
+<meta name="arena-game" content="mehter">
+<meta name="description" content="A 3D rhythm game with an Ottoman mehter band marching down a square at dusk, redesigned in crimson, gold and deep green: hit davul, kös, zurna and zil notes on the beat across six marches. Plays in the browser.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mehter · Ottoman March Rhythm Game">
+<meta property="og:description" content="A 3D rhythm game with an Ottoman mehter band marching down a square at dusk, redesigned in crimson, gold and deep green: hit davul, kös, zurna and zil notes on the beat across six marches. Plays in the browser.">
+<meta property="og:url" content="./index.html">
+<meta property="og:image" content="./index.htmldocs/card.jpg">
+<meta property="og:image:width" content="960">
+<meta property="og:image:height" content="540">
+<meta name="twitter:card" content="summary_large_image">
+<script>/*ARENA-KIT:BEGIN v1.1.0 sha256:3bea83137e26*/
+/* ARENA-KIT v1 — shared layer for the 21 Claude Game Arena games.
+ *
+ * Injected inline into each game's index.html (between begin/end marker comments) by
+ * arena-kit/inject.py, so every game stays a single file. Plain script, no imports; the kit itself opens no
+ * connection (v1.1 play events are handed to the page's existing GoatCounter counter, if it is there).
+ * Everything is optional: a game that never calls Arena.* behaves exactly as before.
+ *
+ *   Arena.perf.attach(renderer)        dynamic pixel ratio for weak GPUs (Intel UHD)
+ *   Arena.hint(id, text)               one-time hint toast (first 30 s guidance)
+ *   Arena.endCard({...})               end-of-session card: reason, score, "again", another game
+ *   Arena.daily(game, {dayKey})        UTC-day seed (or the game's own day key) + mulberry32 rng + streak
+ *   Arena.quiet                        true on ?auto / ?nosave / ?demo: nothing is written to localStorage
+ *   Arena.share({...})                 Web Share / clipboard text + optional PNG card
+ *   Arena.profile(), Arena.award(id)   cross-game passport (shared origin localStorage)
+ *   Arena.settings / openSettings()    accessibility panel (text size, contrast, motion, vibration, auto-pause)
+ *   Arena.complete({mount, feedback})  v1.1: "completed" event + one-tap 👍/👎 (once a day per game), inline in `mount`
+ *   Arena.track(name)                  v1.1: one GoatCounter event "<game>/<name>" per page load; automatic:
+ *                                      "start" (first real input) and "return" (played this game on an earlier day)
+ *                                      Nothing is sent or shown on quiet runs; no cookies, no ids, no new service.
+ *
+ * Storage: every key starts with "arena." and is versioned; every access is wrapped in try/catch
+ * (private mode, quota, portals). Pure logic lives in Arena._core so it can be tested in Node.
+ */
+(function (root) {
+  'use strict';
+  if (root.Arena && root.Arena.version) return; // injected twice (e.g. iframe) -> keep the first
+  var VERSION = '1.1.0';
+  var hasDOM = typeof document !== 'undefined';
+
+  /* ---------- core (pure, Node-testable) ---------- */
+  var core = {};
+
+  core.dayKey = function (date) { // UTC YYYYMMDD
+    var d = date || new Date();
+    return d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate();
+  };
+  core.localDayKey = function (date) { // local-time YYYYMMDD (for games whose own daily turns at local midnight)
+    var d = date || new Date();
+    return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  };
+  // Bot / demo / no-save runs must not touch the player's storage: ?auto, ?nosave, ?demo (any value).
+  core.isQuiet = function (search) { return /[?&](auto|nosave|demo)(=|&|$)/.test(search || ''); };
+  core.prevDayKey = function (key) {
+    var y = Math.floor(key / 10000), m = Math.floor(key / 100) % 100, d = key % 100;
+    return core.dayKey(new Date(Date.UTC(y, m - 1, d) - 86400000));
+  };
+  // v1.1: a player is "returning" if this game was last played on an earlier day (old profiles: any earlier play)
+  core.isReturn = function (lastDay, plays, lastAnyAt, today) {
+    if (lastDay) return lastDay < today;
+    return !!(plays > 0 && lastAnyAt && core.dayKey(new Date(lastAnyAt)) < today);
+  };
+  core.eventName = function (name) { return String(name || '').replace(/[^a-z0-9-]/gi, '').slice(0, 24).toLowerCase(); };
+  core.hash = function (str) { // FNV-1a 32-bit
+    var h = 0x811c9dc5;
+    for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+    return h >>> 0;
+  };
+  core.mulberry32 = function (seed) {
+    var a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      var t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  };
+  // Streak after finishing the daily run on `today`: same day keeps it, yesterday +1, gap resets to 1.
+  core.nextStreak = function (rec, today) {
+    rec = rec || { last: 0, streak: 0, best: 0 };
+    var out = { last: today, streak: 1, best: rec.best || 0 };
+    if (rec.last === today) out.streak = rec.streak || 1;
+    else if (rec.last && rec.last === core.prevDayKey(today)) out.streak = (rec.streak || 0) + 1;
+    out.best = Math.max(out.best, out.streak);
+    return out;
+  };
+  // Dynamic-resolution controller. Feed frame times (ms); returns the pixel ratio to use.
+  core.perfController = function (opts) {
+    opts = opts || {};
+    var s = {
+      min: opts.min || 0.6, max: opts.max || 2, ratio: opts.start || opts.max || 2,
+      slow: opts.slowMs || 22, fast: opts.fastMs || 14, avg: 16.7, n: 0, cool: 0,
+    };
+    s.feed = function (dt, now) {
+      if (!(dt > 0) || dt > 250) return s.ratio; // tab switch / breakpoint: ignore
+      s.avg += (dt - s.avg) * (1 / 30); s.n++;
+      if (s.n < 60 || now < s.cool) return s.ratio;
+      if (s.avg > s.slow && s.ratio > s.min) { s.ratio = Math.max(s.min, +(s.ratio * 0.85).toFixed(3)); s.cool = now + 2000; }
+      else if (s.avg < s.fast && s.ratio < s.max) { s.ratio = Math.min(s.max, +(s.ratio * 1.1).toFixed(3)); s.cool = now + 4000; }
+      return s.ratio;
+    };
+    return s;
+  };
+  core.shareText = function (o) {
+    var lines = [o.title || o.game || 'Claude Game Arena'];
+    (o.lines || []).forEach(function (l) { lines.push(String(l)); });
+    if (o.url) lines.push(o.url);
+    return lines.join('\n');
+  };
+
+  /* ---------- storage ---------- */
+  var mem = {};
+  var quiet = false;
+  try { quiet = hasDOM && core.isQuiet(location.search); } catch (e) {}
+  function store() { if (quiet) return null; try { return root.localStorage; } catch (e) { return null; } }
+  function get(key, fallback) {
+    var s = store(), raw = null;
+    try { raw = s ? s.getItem('arena.' + key) : (key in mem ? mem[key] : null); } catch (e) { raw = null; }
+    if (raw == null) return fallback;
+    try { var v = JSON.parse(raw); return v == null ? fallback : v; } catch (e) { return fallback; }
+  }
+  function set(key, val) {
+    var raw = JSON.stringify(val), s = store();
+    try { if (s) s.setItem('arena.' + key, raw); else mem[key] = raw; } catch (e) { mem[key] = raw; }
+  }
+
+  /* ---------- language ---------- */
+  var STR = {
+    tr: { again: 'Bir daha', another: 'Başka bir oyun dene', close: 'Kapat', settings: 'Erişilebilirlik',
+      textSize: 'Yazı boyutu', contrast: 'Yüksek karşıtlık', motion: 'Hareketi azalt', vibration: 'Titreşim',
+      autoPause: 'Sekme değişince duraklat', copied: 'Panoya kopyalandı', streak: 'Seri', days: 'gün', share: 'Paylaş',
+      fbAsk: 'Beğendin mi?', like: 'Beğendim', dislike: 'Beğenmedim', thanks: 'Teşekkürler!' },
+    en: { again: 'Play again', another: 'Try another game', close: 'Close', settings: 'Accessibility',
+      textSize: 'Text size', contrast: 'High contrast', motion: 'Reduce motion', vibration: 'Vibration',
+      autoPause: 'Pause when the tab is hidden', copied: 'Copied to clipboard', streak: 'Streak', days: 'days', share: 'Share',
+      fbAsk: 'Did you enjoy it?', like: 'I liked it', dislike: 'I did not like it', thanks: 'Thanks!' },
+  };
+  var lang = 'en';
+  try { lang = /^tr/i.test((hasDOM && document.documentElement.lang) || (root.navigator && navigator.language) || '') ? 'tr' : 'en'; } catch (e) {}
+  function t(k) { return (STR[lang] && STR[lang][k]) || STR.en[k] || k; }
+
+  /* ---------- game id + passport ---------- */
+  var GAMES = ['bogaz-vapuru', 'carsi-kacisi', 'cay-ocagi', 'cini-ustasi', 'dolmus', 'ebru', 'fay-hatti', 'hamsi',
+    'kale-savunmasi', 'kapadokya-balonu', 'karagoz', 'kervan', 'kirkpinar', 'lale-bahcesi', 'marti', 'mehter',
+    'mimar-sinan', 'pamukkale', 'peri-golf', 'simit-firini', 'topkapi-gecesi'];
+  var gameId = 'unknown';
+  try {
+    var seg = (hasDOM && location.pathname.split('/').filter(Boolean)[0]) || '';
+    var meta = hasDOM && document.querySelector('meta[name="arena-game"]');
+    gameId = (meta && meta.content) || (GAMES.indexOf(seg) >= 0 ? seg : 'unknown');
+  } catch (e) {}
+  function profile() { return get('profile.v1', { plays: {}, badges: {}, last: null, first: null }); }
+  var returning = false;
+  function touchProfile() {
+    var p = profile(), now = Date.now(), today = core.dayKey();
+    p.lastDay = p.lastDay || {};
+    returning = core.isReturn(p.lastDay[gameId], p.plays[gameId] || 0, p.last && p.last.at, today);
+    p.plays[gameId] = (p.plays[gameId] || 0) + 1; p.last = { game: gameId, at: now }; p.first = p.first || now;
+    p.lastDay[gameId] = today;
+    set('profile.v1', p); return p;
+  }
+  function award(id, label) {
+    var p = profile(); if (p.badges[id]) return false;
+    p.badges[id] = { at: Date.now(), game: gameId, label: label || id }; set('profile.v1', p); return true;
+  }
+
+  /* ---------- settings ---------- */
+  var DEFAULTS = { textScale: 1, highContrast: false, reducedMotion: null, vibration: true, autoPause: true };
+  var settings = Object.assign({}, DEFAULTS, get('settings.v1', {}));
+  if (settings.reducedMotion === null) {
+    try { settings.reducedMotion = !!(root.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { settings.reducedMotion = false; }
+  }
+  var listeners = { pause: [], resume: [], settings: [] };
+  function emit(name, arg) { (listeners[name] || []).forEach(function (f) { try { f(arg); } catch (e) {} }); }
+  function applySettings() {
+    if (!hasDOM) return;
+    var h = document.documentElement;
+    h.style.setProperty('--arena-text-scale', String(settings.textScale));
+    h.toggleAttribute('data-arena-contrast', !!settings.highContrast);
+    h.toggleAttribute('data-arena-reduced-motion', !!settings.reducedMotion);
+    emit('settings', settings);
+  }
+  // Vibration toggle without touching game code: wrap navigator.vibrate once.
+  try {
+    if (root.navigator && typeof navigator.vibrate === 'function' && !navigator.__arenaWrapped) {
+      var vib = navigator.vibrate.bind(navigator);
+      navigator.vibrate = function (p) { return settings.vibration ? vib(p) : false; };
+      navigator.__arenaWrapped = true;
+    }
+  } catch (e) {}
+
+  /* ---------- DOM helpers (kit UI) ---------- */
+  var CSS = '' +
+    '.arena-toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:2147483000;' +
+    'max-width:min(92vw,520px);padding:10px 14px;border-radius:10px;background:rgba(14,13,11,.88);color:#f6f1e6;' +
+    'font:500 calc(14px*var(--arena-text-scale,1))/1.35 system-ui,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.35);pointer-events:none;' +
+    'opacity:0;transition:opacity .25s}' +
+    '.arena-toast.on{opacity:1}' +
+    '.arena-modal{position:fixed;inset:0;z-index:2147483001;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45)}' +
+    '.arena-card{width:min(92vw,420px);padding:20px;border-radius:14px;background:#f6f1e6;color:#1a1712;' +
+    'font:500 calc(15px*var(--arena-text-scale,1))/1.45 system-ui,sans-serif;box-shadow:0 18px 50px rgba(0,0,0,.4)}' +
+    '.arena-card h2{margin:0 0 6px;font-size:1.3em}.arena-card p{margin:4px 0}' +
+    '.arena-card button,.arena-card a.arena-btn{display:block;width:100%;margin-top:10px;padding:11px;border:0;border-radius:10px;' +
+    'font:inherit;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;box-sizing:border-box}' +
+    '.arena-primary{background:#e2552f;color:#fff}.arena-secondary{background:#e7dfd0;color:#1a1712}' +
+    '.arena-card label{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px 0}' +
+    '.arena-card button:focus-visible,.arena-card a:focus-visible,.arena-card input:focus-visible{outline:3px solid #3fd4dc;outline-offset:2px}' +
+    '.arena-gear{position:fixed;right:calc(10px + env(safe-area-inset-right));bottom:calc(10px + env(safe-area-inset-bottom));z-index:2147482999;' +
+    'width:40px;height:40px;border-radius:50%;border:0;background:rgba(14,13,11,.7);color:#f6f1e6;font:20px/40px system-ui;cursor:pointer;opacity:.7}' +
+    '.arena-gear:hover,.arena-gear:focus-visible{opacity:1}' +
+    'html[data-arena-contrast] body{filter:contrast(1.25) saturate(1.1)}' +
+    '.arena-fb{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translateX(-50%);z-index:2147483000;white-space:nowrap;' +
+    'display:flex;align-items:center;gap:8px;padding:6px 6px 6px 14px;border-radius:999px;background:rgba(14,13,11,.9);color:#f6f1e6;' +
+    'font:600 calc(15px*var(--arena-text-scale,1))/1.2 system-ui,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.35)}' +
+    '.arena-fb button{min-width:44px;min-height:44px;border:0;border-radius:50%;background:#2b2722;color:#f6f1e6;font:22px/1 system-ui;cursor:pointer}' +
+    '.arena-fb button.arena-fb-x{font-size:16px;background:transparent}' +
+    '.arena-fb.arena-fb-inline{position:static;transform:none;margin:12px auto 0;width:max-content;max-width:100%;box-shadow:none}' +
+    '.arena-fb button:focus-visible{outline:3px solid #3fd4dc;outline-offset:2px}' +
+    'html[data-arena-reduced-motion] *{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}';
+  var styled = false;
+  function style() {
+    if (styled || !hasDOM) return; styled = true;
+    var s = document.createElement('style'); s.id = 'arena-kit-style'; s.textContent = CSS; document.head.appendChild(s);
+  }
+  function el(tag, attrs, kids) {
+    var e = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) { if (k === 'text') e.textContent = attrs[k]; else e.setAttribute(k, attrs[k]); });
+    (kids || []).forEach(function (c) { e.appendChild(c); });
+    return e;
+  }
+  var live = null;
+  function announce(text) { // screen readers
+    if (!hasDOM) return;
+    if (!live) { live = el('div', { 'aria-live': 'polite', style: 'position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden' }); document.body.appendChild(live); }
+    live.textContent = ''; setTimeout(function () { live.textContent = text; }, 30);
+  }
+  var toastTimer = null, toastEl = null;
+  function toast(text, ms) {
+    if (!hasDOM || !document.body) return;
+    style();
+    if (!toastEl) { toastEl = el('div', { class: 'arena-toast', role: 'status' }); document.body.appendChild(toastEl); }
+    toastEl.textContent = text; toastEl.classList.add('on'); announce(text);
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { toastEl.classList.remove('on'); }, ms || 4000);
+  }
+  function modal(card) {
+    style();
+    var m = el('div', { class: 'arena-modal', role: 'dialog', 'aria-modal': 'true' }, [card]);
+    function close() { if (m.parentNode) m.parentNode.removeChild(m); document.removeEventListener('keydown', onKey, true); }
+    function onKey(e) { if (e.key === 'Escape') { e.stopPropagation(); close(); } }
+    m.addEventListener('click', function (e) { if (e.target === m) close(); });
+    document.addEventListener('keydown', onKey, true);
+    document.body.appendChild(m);
+    var f = card.querySelector('button,a,input'); if (f) f.focus();
+    return close;
+  }
+
+  /* ---------- features ---------- */
+  function hint(id, text, opts) {
+    var seen = get('hints.v1', {});
+    if (seen[gameId + ':' + id]) return false;
+    seen[gameId + ':' + id] = Date.now(); set('hints.v1', seen);
+    setTimeout(function () { toast(text, (opts && opts.ms) || 5000); }, (opts && opts.delay) || 0);
+    return true;
+  }
+
+  function endCard(o) {
+    if (!hasDOM) return function () {};
+    o = o || {};
+    var others = GAMES.filter(function (g) { return g !== gameId; });
+    var pick = others[core.hash(String(Date.now() / 60000 | 0) + gameId) % others.length];
+    var kids = [el('h2', { text: o.title || '' })];
+    if (o.reason) kids.push(el('p', { text: o.reason }));
+    (o.lines || []).forEach(function (l) { kids.push(el('p', { text: l })); });
+    var again = el('button', { class: 'arena-primary', type: 'button', text: o.againLabel || t('again') });
+    kids.push(again);
+    if (o.share) {
+      var sh = el('button', { class: 'arena-secondary', type: 'button', text: t('share') });
+      sh.addEventListener('click', function () { share(o.share); });
+      kids.push(sh);
+    }
+    if (o.another !== false) {
+      kids.push(el('a', { class: 'arena-btn arena-secondary', href: 'https://furkiozknn.github.io/' + pick + '/', target: '_blank', rel: 'noopener', text: t('another') }));
+    }
+    var close = modal(el('div', { class: 'arena-card' }, kids));
+    again.addEventListener('click', function () { close(); if (o.onAgain) o.onAgain(); });
+    return close;
+  }
+
+  /* ---------- play events (v1.1) ---------- */
+  // Handed to the page's own GoatCounter (`window.goatcounter.count`, already on 20 of 21 pages). The kit opens no
+  // connection itself; without the counter (or on ?auto / ?nosave / ?demo) the events are simply dropped.
+  var sent = {}, pending = [];
+  function gcSend(path, title) {
+    var gc = root.goatcounter;
+    if (!gc || typeof gc.count !== 'function') return false;
+    try { gc.count({ path: path, title: title || path, event: true }); } catch (e) {}
+    return true;
+  }
+  function flush(tries) {
+    pending = pending.filter(function (e) { return !gcSend(e[0], e[1]); });
+    if (pending.length && tries < 20) setTimeout(function () { flush(tries + 1); }, 500); // count.js loads async
+  }
+  function track(name, title) {
+    name = core.eventName(name);
+    if (quiet || !hasDOM || !name || sent[name]) return false;
+    sent[name] = 1;
+    var path = gameId + '/' + name;
+    if (!gcSend(path, title)) { pending.push([path, title]); if (pending.length === 1) flush(0); }
+    return true;
+  }
+  var fbEl = null;
+  function complete(o) {
+    o = o || {};
+    track('complete');
+    if (quiet || !hasDOM || !document.body || o.feedback === false || fbEl) return;
+    var asked = get('feedback.v1', {}), today = core.dayKey();
+    if (asked[gameId] === today) return;
+    style();
+    var up = el('button', { type: 'button', 'aria-label': t('like'), title: t('like'), text: '👍' });
+    var down = el('button', { type: 'button', 'aria-label': t('dislike'), title: t('dislike'), text: '👎' });
+    var x = el('button', { type: 'button', class: 'arena-fb-x', 'aria-label': t('close'), title: t('close'), text: '✕' });
+    var label = el('span', { text: t('fbAsk') });
+    var mount = o.mount && o.mount.appendChild ? o.mount : null;   // inline in the game's own end screen if given
+    fbEl = el('div', { class: mount ? 'arena-fb arena-fb-inline' : 'arena-fb', role: 'group', 'aria-label': t('fbAsk') }, [label, up, down, x]);
+    function done() { if (fbEl && fbEl.parentNode) fbEl.parentNode.removeChild(fbEl); fbEl = null; }
+    function vote(v) {
+      track(v); var a = get('feedback.v1', {}); a[gameId] = today; set('feedback.v1', a);
+      [up, down, x].forEach(function (b) { b.remove(); }); label.textContent = t('thanks'); announce(t('thanks'));
+      setTimeout(done, 1500);
+    }
+    up.addEventListener('click', function () { vote('like'); });
+    down.addEventListener('click', function () { vote('dislike'); });
+    x.addEventListener('click', done);
+    (mount || document.body).appendChild(fbEl);
+    if (!mount) setTimeout(done, o.ms || 20000);   // floating panel fades out; an inline one stays with the end screen
+  }
+
+  function daily(game, opts) {
+    game = game || gameId;
+    var own = opts && /^\d{8}$/.test(String(opts.dayKey || '')) ? +opts.dayKey : 0;
+    var q = null;
+    try { q = hasDOM && new URLSearchParams(location.search).get('d'); } catch (e) {}
+    var day = /^\d{8}$/.test(q || '') ? +q : (own || core.dayKey());
+    var seed = core.hash(game + ':' + day);
+    var recs = get('daily.v1', {});
+    var rec = recs[game] || { last: 0, streak: 0, best: 0 };
+    return {
+      day: day, seed: seed, rng: core.mulberry32(seed), streak: rec.last === day || rec.last === core.prevDayKey(day) ? rec.streak : 0,
+      done: rec.last === day, best: rec.best || 0,
+      complete: function (score) {
+        var all = get('daily.v1', {});
+        var next = core.nextStreak(all[game], day);
+        next.score = Math.max(score || 0, (all[game] && all[game].last === day && all[game].score) || 0);
+        all[game] = next; set('daily.v1', all);
+        if (next.streak >= 3) award('streak3-' + game, game + ' 3');
+        if (next.streak >= 7) award('streak7', '7');
+        return next;
+      },
+    };
+  }
+
+  function share(o) {
+    o = o || {};
+    var text = core.shareText(o);
+    var nav = root.navigator || {};
+    if (nav.share) return nav.share({ title: o.title, text: text, url: o.url }).catch(function () {});
+    if (nav.clipboard && nav.clipboard.writeText) return nav.clipboard.writeText(text).then(function () { toast(t('copied'), 2500); }, function () {});
+    return Promise.resolve();
+  }
+  function shareCard(o) { // 1080x1350 PNG blob; returns Promise<Blob|null>
+    if (!hasDOM) return Promise.resolve(null);
+    var c = document.createElement('canvas'); c.width = 1080; c.height = 1350;
+    var g = c.getContext('2d'); if (!g) return Promise.resolve(null);
+    g.fillStyle = o.bg || '#1a1712'; g.fillRect(0, 0, 1080, 1350);
+    g.fillStyle = o.accent || '#e2552f'; g.fillRect(0, 0, 1080, 18);
+    g.fillStyle = '#f6f1e6'; g.font = '700 84px system-ui,sans-serif'; g.fillText(o.title || gameId, 72, 220);
+    g.font = '500 52px system-ui,sans-serif';
+    (o.lines || []).forEach(function (l, i) { g.fillText(String(l), 72, 340 + i * 78); });
+    g.font = '500 36px system-ui,sans-serif'; g.fillStyle = '#c9bda4'; g.fillText(o.url || ('furkiozknn.github.io/' + gameId), 72, 1270);
+    return new Promise(function (res) { c.toBlob ? c.toBlob(function (b) { res(b); }, 'image/png') : res(null); });
+  }
+
+  function openSettings() {
+    if (!hasDOM) return;
+    function row(label, input) { return el('label', {}, [el('span', { text: label }), input]); }
+    function check(key) {
+      var i = el('input', { type: 'checkbox' }); i.checked = !!settings[key];
+      i.addEventListener('change', function () { settings[key] = i.checked; set('settings.v1', settings); applySettings(); });
+      return i;
+    }
+    var size = el('input', { type: 'range', min: '0.85', max: '1.6', step: '0.05', 'aria-label': t('textSize') });
+    size.value = String(settings.textScale);
+    size.addEventListener('input', function () { settings.textScale = +size.value; set('settings.v1', settings); applySettings(); });
+    var closeBtn = el('button', { class: 'arena-secondary', type: 'button', text: t('close') });
+    var close = modal(el('div', { class: 'arena-card' }, [
+      el('h2', { text: t('settings') }), row(t('textSize'), size), row(t('contrast'), check('highContrast')),
+      row(t('motion'), check('reducedMotion')), row(t('vibration'), check('vibration')), row(t('autoPause'), check('autoPause')), closeBtn]));
+    closeBtn.addEventListener('click', close);
+  }
+  function mountSettingsButton() {
+    if (!hasDOM || document.querySelector('.arena-gear')) return;
+    style();
+    var b = el('button', { class: 'arena-gear', type: 'button', 'aria-label': t('settings'), title: t('settings'), text: '♿' });
+    b.addEventListener('click', openSettings);
+    document.body.appendChild(b);
+  }
+
+  var perf = {
+    attach: function (renderer, opts) {
+      if (!renderer || typeof renderer.setPixelRatio !== 'function' || !root.requestAnimationFrame) return null;
+      var dpr = Math.min((root.devicePixelRatio || 1), (opts && opts.max) || 2);
+      var ctl = core.perfController(Object.assign({ max: dpr, start: dpr }, opts || {}));
+      var last = 0, applied = dpr, stopped = false;
+      function loop(now) {
+        if (stopped) return;
+        if (last) {
+          var r = ctl.feed(now - last, now);
+          if (Math.abs(r - applied) > 0.01 && settingsQuality() === 'auto') { applied = r; try { renderer.setPixelRatio(r); } catch (e) {} }
+        }
+        last = now; root.requestAnimationFrame(loop);
+      }
+      root.requestAnimationFrame(loop);
+      perf.state = ctl;
+      return { stop: function () { stopped = true; }, state: ctl };
+    },
+  };
+  function settingsQuality() { return settings.quality || 'auto'; }
+
+  if (hasDOM) {
+    document.addEventListener('visibilitychange', function () {
+      if (!settings.autoPause) return;
+      emit(document.hidden ? 'pause' : 'resume');
+    });
+    var boot = function () {
+      applySettings(); touchProfile();
+      if (quiet) return;
+      var first = function (e) {
+        if (e && e.isTrusted === false) return;
+        ['pointerdown', 'keydown', 'touchstart'].forEach(function (n) { document.removeEventListener(n, first, true); });
+        track('start'); if (returning) track('return');
+      };
+      ['pointerdown', 'keydown', 'touchstart'].forEach(function (n) { document.addEventListener(n, first, true); });
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+  }
+
+  root.Arena = {
+    version: VERSION, quiet: quiet, game: gameId, games: GAMES.slice(), lang: function (l) { if (l) lang = l === 'tr' ? 'tr' : 'en'; return lang; },
+    perf: perf, hint: hint, toast: toast, endCard: endCard, daily: daily, share: share, shareCard: shareCard,
+    profile: profile, award: award, settings: settings, openSettings: openSettings, mountSettingsButton: mountSettingsButton,
+    track: track, complete: complete,
+    on: function (name, fn) { (listeners[name] = listeners[name] || []).push(fn); },
+    _core: core, _store: { get: get, set: set },
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+/*ARENA-KIT:END*/</script>
+<script type="importmap">{"imports":{"three":"./vendor/build/three.module.js","three/addons/":"./vendor/examples/jsm/"}}</script>
+<link rel="preconnect" href="./_offline-stub.js">
+<link rel="preconnect" href="./_offline-stub.js" crossorigin>
+<link href="./_remote/fonts.googleapis.com/css2__q_family_Amiri_ital_wght_0_400_0_700_1_400_1_700_family_Nunito_Sans_ital_opsz_wght_0_6..12_400_0_6..12_600_0_6..12_700_0_6..12_800_1_6..12_400_display_swap" rel="stylesheet">
+<style>
+/* --------------------------------------------------------------------------
+   Mehter: Nevbet-i Zeref (Gilded Nevbet) Design System
+   Ottoman miniature meets illuminated manuscript & night parade
+   -------------------------------------------------------------------------- */
+:root {
+  /* Core 8-color palette */
+  --ink-night: #120B1E;
+  --aubergine: #231438;
+  --aubergine-deep: #170C25;
+  --crimson: #8C1D2F;
+  --crimson-hi: #B52A42;
+  --gold: #E8B23A;
+  --gold-hi: #F7D47C;
+  --gold-dark: #9E7418;
+  --parchment: #F5E6C4;
+  --parchment-dim: rgba(245, 230, 196, 0.76);
+  --iznik-green: #2E6B4F;
+  --iznik-green-hi: #3F8F6A;
+  --iznik-cobalt: #3E7EA6;
+  --iznik-cobalt-hi: #55A2D1;
+  --torch-ember: #D96C2C;
+  --torch-ember-hi: #F28544;
+
+  /* Instrument semantic lane colors */
+  --lane-davul: #D96C2C;
+  --lane-kos: #8C1D2F;
+  --lane-zurna: #3E7EA6;
+  --lane-zil: #2E6B4F;
+
+  /* UI tokens */
+  --bg-panel: rgba(35, 20, 56, 0.94);
+  --bg-scrim: rgba(18, 11, 30, 0.78);
+  --line-gold: rgba(232, 178, 58, 0.45);
+  --line-gold-bright: rgba(247, 212, 124, 0.85);
+  --focus-ring: #F7D47C;
+  --font-display: 'Amiri', Georgia, 'Times New Roman', serif;
+  --font-body: 'Nunito Sans', system-ui, -apple-system, sans-serif;
+  --radius-panel: 18px;
+  --radius-card: 14px;
+  --radius-btn: 12px;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--ink-night);
+  overflow: hidden;
+}
+body {
+  font: 15px/1.5 var(--font-body);
+  color: var(--parchment);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom themed scrollbars & selection */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: rgba(18, 11, 30, 0.7); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(232, 178, 58, 0.35); border-radius: 4px; border: 1px solid rgba(232, 178, 58, 0.2); }
+::-webkit-scrollbar-thumb:hover { background: rgba(232, 178, 58, 0.65); }
+::selection { background: var(--gold); color: var(--ink-night); }
+
+#gl {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+/* Base button styles */
+button {
+  font: inherit;
+  color: inherit;
+  min-height: 48px;
+  min-width: 48px;
+  padding: 10px 18px;
+  border-radius: var(--radius-btn);
+  border: 1.5px solid var(--line-gold);
+  background: rgba(35, 20, 56, 0.82);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
+}
+button:hover {
+  background: rgba(55, 31, 88, 0.95);
+  border-color: var(--gold-hi);
+  box-shadow: 0 4px 16px rgba(232, 178, 58, 0.25);
+  transform: translateY(-1px);
+}
+button:active {
+  transform: scale(0.97) translateY(1px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Primary gilded button */
+button.primary {
+  background: linear-gradient(180deg, var(--gold-hi) 0%, var(--gold) 100%);
+  border-color: var(--gold-hi);
+  color: #170C25;
+  font-weight: 800;
+  box-shadow: 0 3px 0 var(--gold-dark), 0 6px 20px rgba(232, 178, 58, 0.45);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+button.primary:hover {
+  background: linear-gradient(180deg, #FFF0B8 0%, #F0B93E 100%);
+  box-shadow: 0 4px 0 var(--gold-dark), 0 8px 24px rgba(232, 178, 58, 0.6);
+}
+button.primary:active {
+  box-shadow: 0 1px 0 var(--gold-dark), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+button.on {
+  background: linear-gradient(180deg, rgba(232, 178, 58, 0.4) 0%, rgba(232, 178, 58, 0.2) 100%);
+  border-color: var(--gold-hi);
+  color: #FFFFFF;
+  box-shadow: 0 0 12px rgba(232, 178, 58, 0.35);
+}
+button:focus-visible, input:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+/* Custom Range Sliders */
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  min-height: 44px;
+  background: transparent;
+  cursor: pointer;
+}
+input[type=range]:focus { outline: none; }
+input[type=range]::-webkit-slider-runnable-track {
+  height: 8px;
+  background: rgba(18, 11, 30, 0.85);
+  border: 1px solid var(--line-gold);
+  border-radius: 4px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--gold-hi), var(--gold) 70%, var(--gold-dark) 100%);
+  border: 2px solid var(--parchment);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.6), 0 0 8px rgba(232,178,58,0.5);
+  margin-top: -8px;
+  transition: transform 0.1s ease;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+input[type=range]::-moz-range-track {
+  height: 8px;
+  background: rgba(18, 11, 30, 0.85);
+  border: 1px solid var(--line-gold);
+  border-radius: 4px;
+}
+input[type=range]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--gold-hi), var(--gold));
+  border: 2px solid var(--parchment);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.hidden { display: none !important; }
+
+/* Backdrop scrim & screens */
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(circle at 50% 30%, rgba(35, 20, 56, 0.45) 0%, rgba(18, 11, 30, 0.82) 100%);
+  overflow-y: auto;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: opacity 0.25s ease;
+}
+#scr-title {
+  background: radial-gradient(ellipse at 50% 90%, rgba(217, 108, 44, 0.12) 0%, transparent 60%),
+              radial-gradient(ellipse at 50% 20%, rgba(35, 20, 56, 0.5) 0%, rgba(18, 11, 30, 0.85) 100%);
+}
+#scr-pause {
+  background: rgba(18, 11, 30, 0.76);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Panel ("Murakka" Album Page) */
+.panel {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  padding: 30px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 92vh;
+  overflow-y: auto;
+  background: var(--bg-panel);
+  border: 1.5px solid var(--gold);
+  border-radius: var(--radius-panel);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8),
+              0 0 0 1px rgba(247, 212, 124, 0.3),
+              inset 0 0 40px rgba(18, 11, 30, 0.6);
+}
+/* Inner ornamental hairline */
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(232, 178, 58, 0.35);
+  border-radius: calc(var(--radius-panel) - 5px);
+  pointer-events: none;
+}
+/* Corner Seljuk 8-point stars */
+.panel::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background-image: 
+    radial-gradient(circle at 10px 10px, var(--gold) 2px, transparent 2.5px),
+    radial-gradient(circle at calc(100% - 10px) 10px, var(--gold) 2px, transparent 2.5px),
+    radial-gradient(circle at 10px calc(100% - 10px), var(--gold) 2px, transparent 2.5px),
+    radial-gradient(circle at calc(100% - 10px) calc(100% - 10px), var(--gold) 2px, transparent 2.5px);
+  pointer-events: none;
+}
+.panel > * { flex-shrink: 0; }
+.panel.wide { max-width: 860px; }
+
+#scr-title .panel {
+  background: rgba(26, 13, 42, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(232, 178, 58, 0.6);
+  padding: 32px 26px;
+  max-width: 580px;
+}
+
+/* Typography */
+h1, h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--gold-hi);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(232, 178, 58, 0.4);
+}
+h1 {
+  font-size: clamp(44px, 8.5vw, 68px);
+  line-height: 1.05;
+  text-align: center;
+}
+h2 {
+  font-size: 24px;
+  text-align: center;
+}
+.tagline {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  color: var(--torch-ember-hi);
+  text-transform: uppercase;
+  margin: 4px 0 2px 0;
+  text-align: center;
+}
+.muted {
+  opacity: 0.82;
+  font-size: 14px;
+  margin: 0;
+  color: var(--parchment);
+  text-align: center;
+}
+.center {
+  text-align: center;
+  align-items: center;
+}
+
+/* Ornaments & Crests */
+.orn {
+  width: min(240px, 75vw);
+  height: 24px;
+  display: block;
+  margin: 0 auto;
+  flex: none;
+}
+.logo {
+  width: 104px;
+  height: 104px;
+  margin: 0 auto;
+  display: block;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.6));
+}
+.brand-svg {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+}
+
+/* Layout helpers */
+.btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  width: 100%;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.row > label, .row > span:first-child {
+  min-width: 100px;
+  font-weight: 700;
+  color: var(--parchment);
+}
+.seg {
+  display: flex;
+  gap: 6px;
+  background: rgba(18, 11, 30, 0.6);
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid rgba(232, 178, 58, 0.25);
+}
+.seg button {
+  flex: 1;
+  min-height: 44px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 14px;
+}
+.seg button.on {
+  background: linear-gradient(180deg, var(--gold-hi), var(--gold));
+  color: #170C25;
+  font-weight: 800;
+  border-color: var(--gold-hi);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* How to play Bento Cards on Title Screen */
+.howto-bento {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin: 4px 0;
+}
+.howto-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(18, 11, 30, 0.55);
+  border: 1px solid rgba(232, 178, 58, 0.25);
+  border-radius: 10px;
+  text-align: left;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--parchment);
+}
+.howto-card .ht-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--gold-hi);
+  min-width: 22px;
+  text-align: center;
+}
+
+/* Title Actions */
+.title-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+}
+.play-btn {
+  width: 100%;
+  max-width: 280px;
+  min-height: 52px;
+  font-size: 18px;
+  letter-spacing: 0.06em;
+}
+.sub-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+.sub-actions button {
+  flex: 1;
+  min-width: 100px;
+  font-size: 14px;
+}
+.title-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+.best-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(232, 178, 58, 0.12);
+  border: 1px solid var(--line-gold);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--parchment);
+}
+.best-ribbon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--gold-hi);
+}
+.ribbon-grade {
+  display: inline-block;
+  padding: 1px 7px;
+  background: var(--gold);
+  color: #170C25;
+  border-radius: 6px;
+  font-weight: 800;
+}
+.loading {
+  color: var(--gold-hi);
+  font-size: 13px;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+/* Footer */
+.foot {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.85;
+  z-index: 21;
+  pointer-events: none;
+}
+.foot a {
+  pointer-events: auto;
+  color: var(--gold-hi);
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(232, 178, 58, 0.5);
+}
+.foot a:hover {
+  color: #FFF;
+  border-bottom-style: solid;
+}
+#scr-title .foot { pointer-events: auto; }
+
+/* Song Select Screen: Imperial Defter Cards */
+.select-panel { max-width: 880px; }
+.panel-header { text-align: center; }
+.panel-orn { width: 140px; height: 16px; margin: 0 auto 4px auto; display: block; }
+.ledger-desc { font-size: 13px; opacity: 0.8; margin: 4px 0 0 0; }
+.diff-seg { max-width: 360px; margin: 0 auto; width: 100%; }
+.nofail-row { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; margin: 6px auto 0; max-width: 360px; cursor: pointer; font-size: 14px; }
+.nofail-row input { width: 22px; height: 22px; flex: none; accent-color: var(--gold); cursor: pointer; }
+.nofail-row small { display: block; font-size: 11px; opacity: 0.75; }
+
+.songs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+.card {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--radius-card);
+  border: 1.5px solid rgba(232, 178, 58, 0.3);
+  background: rgba(26, 14, 40, 0.85);
+  cursor: pointer;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+  min-height: 48px;
+  outline: none;
+}
+.card:hover {
+  border-color: var(--gold-hi);
+  background: rgba(45, 24, 70, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 12px rgba(232, 178, 58, 0.2);
+}
+.card.sel {
+  border-color: var(--gold-hi);
+  background: linear-gradient(135deg, rgba(55, 29, 86, 0.95), rgba(35, 18, 58, 0.95));
+  box-shadow: 0 0 0 1px var(--gold-hi), 0 8px 24px rgba(232, 178, 58, 0.35);
+}
+.card-spine {
+  width: 4px;
+  border-radius: 2px;
+  background: var(--gold);
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity 0.16s ease;
+}
+.card.sel .card-spine {
+  opacity: 1;
+  background: linear-gradient(to bottom, var(--torch-ember), var(--gold-hi));
+}
+.card-main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--parchment);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card.sel .card-title { color: var(--gold-hi); }
+.card-bpm {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  background: rgba(18, 11, 30, 0.6);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.card-desc {
+  font-size: 12px;
+  opacity: 0.78;
+  line-height: 1.35;
+}
+.card-usul {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+.usul-dots {
+  color: var(--gold-hi);
+  letter-spacing: 2px;
+  font-size: 10px;
+}
+.usul-name {
+  color: var(--torch-ember-hi);
+  text-transform: capitalize;
+  font-weight: 600;
+}
+.card .tail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(232, 178, 58, 0.18);
+}
+.best-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+}
+.best-lbl { opacity: 0.75; font-size: 10.5px; text-transform: uppercase; }
+.best-val { font-variant-numeric: tabular-nums; color: var(--parchment); }
+.grade-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+  font-size: 11px;
+  background: var(--gold);
+  color: #170C25;
+}
+.grade-tag.grade-S { background: #E8B23A; color: #170C25; box-shadow: 0 0 8px rgba(232, 178, 58, 0.6); }
+.grade-tag.grade-A { background: #3E7EA6; color: #FFF; }
+.grade-tag.grade-B { background: #2E6B4F; color: #FFF; }
+.grade-tag.grade-C { background: #8C1D2F; color: #FFF; }
+
+.preview-btn {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px;
+  border-radius: 10px;
+  background: rgba(232, 178, 58, 0.15);
+  border-color: rgba(232, 178, 58, 0.4);
+  color: var(--gold-hi);
+}
+.preview-btn:hover {
+  background: var(--gold);
+  color: #170C25;
+}
+.panel-footer { margin-top: 6px; }
+.start-btn { min-width: 140px; }
+
+/* Settings Screen */
+.settings-panel { max-width: 580px; gap: 18px; }
+.setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(18, 11, 30, 0.5);
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(232, 178, 58, 0.2);
+}
+.range-wrap { flex: 1; min-width: 160px; display: flex; align-items: center; }
+.speed-val { min-width: 44px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 800; font-size: 14px; color: var(--gold-hi); margin-left: 8px; flex: none; }
+.full-btn { width: 100%; }
+.keys-header { display: flex; justify-content: space-between; align-items: baseline; }
+.keys-header span { font-weight: 700; }
+.keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; }
+.keys button {
+  min-height: 54px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px;
+  border-color: var(--line-gold);
+}
+.k-inst { font-size: 9.5px; opacity: 0.72; letter-spacing: 0.08em; text-transform: uppercase; }
+.key-label { font-size: 18px; font-weight: 800; color: var(--gold-hi); }
+#rebind-msg { color: var(--torch-ember-hi); font-weight: 700; font-size: 13px; }
+
+/* Calibration Screen */
+.calib-panel { max-width: 500px; gap: 16px; }
+.calib-drum-stage {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  margin: 10px auto;
+  display: grid;
+  place-items: center;
+}
+.calib-drum {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, var(--parchment), #CDBB94 70%, #8C754A 100%);
+  border: 4px solid var(--gold);
+  box-shadow: 0 0 0 3px #170C25, 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 20px rgba(232, 178, 58, 0.4);
+  position: relative;
+  display: grid;
+  place-items: center;
+  transition: transform 0.08s ease-out;
+}
+.calib-drum .drum-center {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--crimson);
+  border: 2px solid var(--gold);
+}
+.calib-result {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--gold-hi);
+  margin: 0;
+  min-height: 34px;
+}
+.calib-btns { margin-top: 4px; }
+.tap-btn {
+  min-height: 52px;
+  min-width: 110px;
+  font-size: 16px;
+  background: linear-gradient(180deg, rgba(232, 178, 58, 0.3), rgba(232, 178, 58, 0.15));
+  border-color: var(--gold-hi);
+}
+
+/* Pause Screen */
+.pause-panel { max-width: 440px; padding: 32px 28px; }
+.pause-crest svg { width: 54px; height: 54px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6)); }
+.pause-btn-col { flex-direction: column; width: 100%; gap: 10px; margin-top: 8px; }
+.pause-btn-col button { width: 100%; min-height: 50px; font-size: 16px; }
+
+/* Results Screen: Royal Ferman */
+.results-panel { max-width: 580px; padding: 28px 22px; gap: 14px; }
+.results-crest {
+  position: relative;
+  width: 140px;
+  height: 130px;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+}
+.results-rays {
+  position: absolute;
+  inset: -20px;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  animation: slow-rotate 40s linear infinite;
+  pointer-events: none;
+}
+@keyframes slow-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.grade {
+  font-family: var(--font-display);
+  font-size: 100px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  color: var(--gold-hi);
+  text-shadow: 0 4px 0 var(--gold-dark), 0 0 40px rgba(232, 178, 58, 0.7);
+  z-index: 2;
+}
+.grade.grade-S { color: var(--gold-hi); text-shadow: 0 0 35px rgba(232, 178, 58, 0.9), 0 4px 0 #7A570C; }
+.grade.grade-A { color: #8FD5FF; text-shadow: 0 0 35px rgba(62, 126, 166, 0.8), 0 4px 0 #184A6E; }
+.grade.grade-B { color: #8FF0B8; text-shadow: 0 0 30px rgba(46, 107, 79, 0.8), 0 4px 0 #13452E; }
+.grade.grade-C { color: #FFA0A0; text-shadow: 0 0 30px rgba(140, 29, 47, 0.8), 0 4px 0 #5E0E1B; }
+
+#res-main {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold-hi);
+  margin: -6px 0 0 0;
+}
+.results-subtitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--parchment);
+  opacity: 0.88;
+  margin: 0;
+}
+.seal-record { min-height: 28px; display: grid; place-items: center; }
+.wax-seal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: radial-gradient(circle, var(--crimson-hi), var(--crimson));
+  border: 1.5px solid var(--gold-hi);
+  border-radius: 20px;
+  color: var(--parchment);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  box-shadow: 0 4px 14px rgba(140, 29, 47, 0.6), inset 0 1px 0 rgba(255,255,255,0.3);
+  animation: seal-pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+@keyframes seal-pop {
+  0% { transform: scale(0.6) rotate(-8deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 16px;
+  width: 100%;
+  background: rgba(18, 11, 30, 0.55);
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(232, 178, 58, 0.25);
+  font-variant-numeric: tabular-nums;
+}
+.stats-grid div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid rgba(232, 178, 58, 0.15);
+  padding: 5px 0;
+  font-size: 13.5px;
+}
+.stats-grid span { opacity: 0.78; }
+.stats-grid b { font-weight: 800; color: var(--gold-hi); font-size: 15px; }
+
+.hist-box {
+  width: 100%;
+  background: rgba(18, 11, 30, 0.55);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(232, 178, 58, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hist-header {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--parchment);
+  opacity: 0.75;
+  text-align: left;
+}
+.hist {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 90px;
+  width: 100%;
+}
+.hist i {
+  flex: 1;
+  background: linear-gradient(to top, var(--crimson), var(--torch-ember));
+  border-radius: 3px 3px 0 0;
+  min-height: 3px;
+  transition: height 0.3s ease;
+}
+.hist i.hist-center {
+  background: linear-gradient(to top, var(--gold-dark), var(--gold-hi));
+  box-shadow: 0 0 8px rgba(232, 178, 58, 0.5);
+}
+.hist-l {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* ==========================================================================
+   IN-GAME HUD (Nevbet-i Zeref Rebalanced 3-part layout)
+   ========================================================================== */
+#hud {
+  position: fixed;
+  left: 14px;
+  right: 14px;
+  top: 12px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 16px;
+  background: rgba(35, 20, 56, 0.88);
+  border: 1.5px solid var(--gold);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(247, 212, 124, 0.25);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.brand .nm {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--gold-hi);
+}
+.brand .sub-nm {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: var(--torch-ember-hi);
+  text-transform: uppercase;
+}
+
+.song-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(18, 11, 30, 0.6);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(232, 178, 58, 0.25);
+}
+#h-song {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--parchment);
+  white-space: nowrap;
+}
+.diff-badge {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--gold);
+  color: #170C25;
+}
+.diff-badge[data-diff="easy"] { background: var(--iznik-green-hi); color: #FFF; }
+.diff-badge[data-diff="normal"] { background: var(--gold); color: #170C25; }
+.diff-badge[data-diff="hard"] { background: var(--crimson-hi); color: #FFF; }
+
+.stats {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
+}
+.stat span {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.72;
+}
+.stat b {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+  color: var(--parchment);
+}
+.score-stat b {
+  font-size: 26px;
+  color: var(--gold-hi);
+  text-shadow: 0 0 12px rgba(232, 178, 58, 0.4);
+}
+.combo-stat b {
+  color: var(--torch-ember-hi);
+}
+
+.tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.ibtn {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--line-gold);
+  background: rgba(18, 11, 30, 0.65);
+  color: var(--parchment);
+  display: grid;
+  place-items: center;
+}
+.ibtn:hover {
+  background: rgba(55, 31, 88, 0.95);
+  border-color: var(--gold-hi);
+  color: #FFF;
+}
+.ibtn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+.ibtn.txt {
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--gold-hi);
+}
+
+/* Spirit Meter: Çevgen Standard */
+#spirit {
+  position: fixed;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 40vh;
+  z-index: 9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.spirit-crown {
+  width: 20px;
+  height: 14px;
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+}
+.spirit-crown svg { width: 18px; height: 12px; }
+#spirit .bar {
+  position: relative;
+  flex: 1;
+  width: 16px;
+  border-radius: 8px;
+  background: rgba(18, 11, 30, 0.85);
+  border: 1.5px solid var(--gold);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7), inset 0 0 6px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+}
+#spirit .fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  background: linear-gradient(to top, var(--crimson) 0%, var(--torch-ember) 35%, var(--gold) 70%, var(--iznik-green-hi) 100%);
+  transform-origin: bottom;
+  transform: scaleY(1);
+  transition: transform 0.1s ease-out;
+}
+.spirit-lines {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  pointer-events: none;
+}
+.spirit-lines i {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.25);
+  width: 100%;
+}
+.spirit-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.spirit-label span {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold-hi);
+}
+.spirit-pct {
+  font-size: 10px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+}
+#spirit.spirit-low .bar {
+  border-color: #FF5E74;
+  box-shadow: 0 0 16px rgba(255, 94, 116, 0.8);
+  animation: pulse-danger 0.6s infinite alternate;
+}
+@keyframes pulse-danger {
+  from { border-color: #FF5E74; box-shadow: 0 0 10px rgba(255, 94, 116, 0.4); }
+  to { border-color: #FF1A38; box-shadow: 0 0 22px rgba(255, 26, 56, 0.9); }
+}
+
+/* Lane Zones & Touch Docks */
+#touch {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 38vh;
+  z-index: 8;
+  display: flex;
+  touch-action: none;
+  pointer-events: none;
+}
+#touch .tz {
+  pointer-events: auto;
+  flex: 1 1 0;
+  min-width: 0;
+  width: 0;
+  border-left: 1px solid rgba(232, 178, 58, 0.15);
+  background: linear-gradient(to top, rgba(18, 11, 30, 0.4) 0%, transparent 60%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 14px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.1s ease;
+}
+#touch .tz:last-child { border-right: 1px solid rgba(232, 178, 58, 0.15); }
+
+/* Instrument color stripes & docks */
+.tz-dock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: rgba(26, 14, 40, 0.88);
+  border: 1.5px solid var(--line-gold);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  min-width: 64px;
+  transition: transform 0.08s ease, border-color 0.1s ease, box-shadow 0.1s ease;
+}
+.tz-icon-box {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--parchment);
+}
+.tz-icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+.tz-name {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  opacity: 0.85;
+}
+#touch .tz .key-label {
+  display: inline-block;
+  font-size: 18px;
+  font-weight: 900;
+  color: #170C25;
+  background: linear-gradient(180deg, var(--gold-hi), var(--gold));
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 2px 0 var(--gold-dark);
+}
+
+/* Instrument-specific styling for lanes */
+.tz[data-lane="0"] .tz-dock { border-top: 3px solid var(--lane-davul); }
+.tz[data-lane="0"] .tz-icon-box { color: var(--torch-ember-hi); }
+.tz[data-lane="1"] .tz-dock { border-top: 3px solid var(--lane-kos); }
+.tz[data-lane="1"] .tz-icon-box { color: var(--crimson-hi); }
+.tz[data-lane="2"] .tz-dock { border-top: 3px solid var(--lane-zurna); }
+.tz[data-lane="2"] .tz-icon-box { color: var(--iznik-cobalt-hi); }
+.tz[data-lane="3"] .tz-dock { border-top: 3px solid var(--lane-zil); }
+.tz[data-lane="3"] .tz-icon-box { color: var(--iznik-green-hi); }
+
+/* Lane active tap aura */
+.tz[data-lane="0"]:active, .tz[data-lane="0"].active {
+  background: radial-gradient(circle at 50% 100%, rgba(217, 108, 44, 0.45) 0%, transparent 70%);
+}
+.tz[data-lane="1"]:active, .tz[data-lane="1"].active {
+  background: radial-gradient(circle at 50% 100%, rgba(140, 29, 47, 0.45) 0%, transparent 70%);
+}
+.tz[data-lane="2"]:active, .tz[data-lane="2"].active {
+  background: radial-gradient(circle at 50% 100%, rgba(62, 126, 166, 0.45) 0%, transparent 70%);
+}
+.tz[data-lane="3"]:active, .tz[data-lane="3"].active {
+  background: radial-gradient(circle at 50% 100%, rgba(46, 107, 79, 0.45) 0%, transparent 70%);
+}
+#touch .tz:active .tz-dock, #touch .tz.active .tz-dock {
+  transform: translateY(3px) scale(0.96);
+  border-color: var(--gold-hi);
+  box-shadow: 0 0 20px rgba(232, 178, 58, 0.6);
+}
+
+/* Judgement Feedback */
+#judge {
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(34px, 6.5vw, 56px);
+  pointer-events: none;
+  z-index: 12;
+  opacity: 0;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+#judge.show { animation: judge-pop 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+#judge.perfect {
+  color: var(--gold-hi);
+  text-shadow: 0 0 24px rgba(232, 178, 58, 0.9), 0 3px 6px rgba(0, 0, 0, 0.9);
+}
+#judge.good {
+  color: #8FD5FF;
+  text-shadow: 0 0 24px rgba(62, 126, 166, 0.8), 0 3px 6px rgba(0, 0, 0, 0.9);
+}
+#judge.miss {
+  color: #FF5E74;
+  text-shadow: 0 0 24px rgba(255, 94, 116, 0.8), 0 3px 6px rgba(0, 0, 0, 0.9);
+}
+#judge.brk {
+  color: #FFA534;
+  text-shadow: 0 0 24px rgba(217, 108, 44, 0.8), 0 3px 6px rgba(0, 0, 0, 0.9);
+}
+@keyframes judge-pop {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+  60% { opacity: 1; transform: translate(-50%, -58%) scale(1.05); }
+  100% { opacity: 0; transform: translate(-50%, -68%) scale(0.95); }
+}
+
+/* Toast Notifications */
+#toasts {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  width: min(92vw, 400px);
+}
+#toasts div {
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: rgba(35, 20, 56, 0.95);
+  border: 1.5px solid var(--gold);
+  color: var(--parchment);
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  animation: toast-in 0.2s ease-out;
+}
+#toasts .bad { border-color: #FF5E74; color: #FFAAB5; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Debug Console */
+#dbg {
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+  z-index: 40;
+  margin: 0;
+  max-width: 60vw;
+  max-height: 45vh;
+  overflow: auto;
+  background: rgba(18, 11, 30, 0.9);
+  border: 1px solid var(--line-gold);
+  color: #A6E3E9;
+  font: 11px/1.35 Consolas, monospace;
+  padding: 8px 12px;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+
+/* Dört Katman: four music layers (davul, zurna, boru, zil) */
+#layers {
+  position: fixed;
+  right: 14px;
+  top: 84px;
+  z-index: 10;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: rgba(35, 20, 56, 0.82);
+  border: 1px solid var(--line-gold);
+  border-radius: 12px;
+  pointer-events: none;
+}
+#layers .ly-title {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--parchment-dim);
+  margin-right: 2px;
+}
+#layers .ly {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 7px;
+  border: 1px solid rgba(245, 230, 196, 0.22);
+  color: rgba(245, 230, 196, 0.42);
+  background: rgba(18, 11, 30, 0.5);
+  transition: background 0.25s, color 0.25s, transform 0.25s;
+}
+#layers .ly.on { color: #FFF; border-color: var(--gold-hi); transform: translateY(-1px); }
+#layers .ly.on[data-ly="0"] { background: var(--lane-davul); }
+#layers .ly.on[data-ly="1"] { background: var(--lane-zurna); }
+#layers .ly.on[data-ly="2"] { background: var(--gold-dark); }
+#layers .ly.on[data-ly="3"] { background: var(--lane-zil); }
+#layers .ly.next { border-style: dashed; border-color: var(--gold); }
+#layers b {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--gold-hi);
+  font-variant-numeric: tabular-nums;
+  margin-left: 4px;
+}
+#layers.drop { animation: ly-drop 0.5s ease-out; }
+@keyframes ly-drop { 0%, 40% { border-color: #FF5E74; box-shadow: 0 0 16px rgba(255, 94, 116, 0.7); } }
+
+/* State visibility triggers */
+body.playing #touch { display: flex; }
+body:not(.playing) #touch { display: none; }
+body:not(.playing) #hud, body:not(.playing) #spirit { display: none; }
+body:not(.playing) #judge { display: none; }
+body.playing #hud, body.playing #spirit, body.playing #layers { display: flex; }
+#spirit { display: none; }
+
+/* Responsive adjustments */
+@media (max-width: 720px) {
+  #hud {
+    padding: 6px 10px;
+    gap: 8px;
+  }
+  .brand .sub-nm { display: none; }
+  .brand .nm { font-size: 16px; }
+  .song-meta { padding: 2px 6px; }
+  #h-song { font-size: 14px; }
+  .stats { gap: 10px; }
+  .stat span { font-size: 9px; }
+  .stat b { font-size: 16px; }
+  .score-stat b { font-size: 20px; }
+  .tools { gap: 4px; }
+  .ibtn { min-width: 44px; min-height: 44px; padding: 6px; }
+  
+  #spirit { left: 8px; width: 20px; }
+  #layers { top: 64px; right: 8px; gap: 3px; padding: 4px 6px; }
+  #layers .ly-title { display: none; }
+  #layers .ly { font-size: 10px; padding: 2px 5px; }
+  #spirit .bar { width: 12px; }
+  
+  .tz-dock { padding: 6px 8px; min-width: 48px; }
+  .tz-name { display: none; }
+  #touch .tz .key-label { width: 28px; height: 28px; line-height: 28px; font-size: 15px; }
+  
+  .howto-bento { gap: 6px; }
+  .howto-card { font-size: 12.5px; padding: 8px 10px; }
+  
+  .songs { grid-template-columns: 1fr; }
+}
+
+/* Phone HUD: row 1 = crest, song, buttons; row 2 = score, combo, accuracy */
+@media (max-width: 560px) {
+  #hud { left: 8px; right: 8px; top: 8px; flex-wrap: wrap; row-gap: 2px; column-gap: 6px; padding: 5px 8px; }
+  .brand-text { display: none; }
+  .brand-svg { width: 28px; height: 28px; }
+  .song-meta { flex: 1 1 0; min-width: 0; }
+  #h-song { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 13px; }
+  .stats { order: 3; flex: 1 0 100%; justify-content: space-around; gap: 6px; }
+  .stat { flex-direction: row; align-items: baseline; gap: 5px; }
+  .stat b { font-size: 15px; }
+  .score-stat b { font-size: 17px; }
+  #layers { top: 96px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+</style>
+<script data-goatcounter="./_remote/furkiozknn.goatcounter.com/count__q_p_2Fmehter_2F_t_Mehter_20_C2_B7_20Claude_20Game_20Arena_s_1280_b_153_rnd_zvtlc" async src="./_remote/gc.zgo.at/count.js"></script>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<!-- 4 Lanes with authentic instrument docks -->
+<div id="touch" aria-label="lanes">
+  <div class="tz" role="button" aria-label="Lane 1 (D)" data-lane="0">
+    <div class="tz-dock">
+      <div class="tz-icon-box">
+        <svg class="tz-icon" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="7" rx="8" ry="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 7v9c0 2 3.6 3.5 8 3.5s8-1.5 8-3.5V7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 7l6 9M18 7l-6 9" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span class="tz-name">DAVUL</span>
+      </div>
+      <span class="key-label">D</span>
+    </div>
+  </div>
+  <div class="tz" role="button" aria-label="Lane 2 (F)" data-lane="1">
+    <div class="tz-dock">
+      <div class="tz-icon-box">
+        <svg class="tz-icon" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="8" rx="8.5" ry="3.8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 8c0 5.5 3.8 11 8.5 11s8.5-5.5 8.5-11" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="8" r="1.8" fill="currentColor"/></svg>
+        <span class="tz-name">KÖS</span>
+      </div>
+      <span class="key-label">F</span>
+    </div>
+  </div>
+  <div class="tz" role="button" aria-label="Lane 3 (J)" data-lane="2">
+    <div class="tz-dock">
+      <div class="tz-icon-box">
+        <svg class="tz-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3l13 13M9 2l13 13" stroke="currentColor" stroke-width="1.5"/><path d="M4 3l4 4-2 2-4-4zM16 15l5 5-2 2-5-5z" fill="currentColor"/><circle cx="11" cy="11" r="1" fill="currentColor"/><circle cx="14" cy="14" r="1" fill="currentColor"/></svg>
+        <span class="tz-name">ZURNA</span>
+      </div>
+      <span class="key-label">J</span>
+    </div>
+  </div>
+  <div class="tz" role="button" aria-label="Lane 4 (K)" data-lane="3">
+    <div class="tz-dock">
+      <div class="tz-icon-box">
+        <svg class="tz-icon" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="8.5" ry="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 9v-4M10 5h4" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span class="tz-name">ZİL</span>
+      </div>
+      <span class="key-label">K</span>
+    </div>
+  </div>
+</div>
+
+<!-- Reborn HUD: Rebalanced 3-part layout -->
+<header id="hud" aria-label="HUD">
+  <div class="brand">
+    <svg class="brand-svg" viewBox="0 0 120 120" aria-hidden="true">
+      <circle cx="60" cy="60" r="56" fill="#8C1D2F" stroke="#E8B23A" stroke-width="5"/>
+      <circle cx="60" cy="60" r="46" fill="none" stroke="#E8B23A" stroke-width="1.5" stroke-dasharray="3 3"/>
+      <path d="M72 24a38 38 0 1 0 0 72a30 30 0 1 1 0-72z" fill="#E8B23A"/>
+      <polygon points="82,48 85,56 94,57 87,63 89,72 82,67 75,72 77,63 70,57 79,56" fill="#F5E6C4"/>
+    </svg>
+    <div class="brand-text">
+      <span class="nm">MEHTER</span>
+      <span class="sub-nm">NEVBET-İ ZEREF</span>
+    </div>
+  </div>
+
+  <div class="song-meta">
+    <b id="h-song">–</b>
+    <span class="diff-badge" id="h-diff">–</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat score-stat">
+      <span data-i18n="score">Skor</span>
+      <b id="h-score">0</b>
+    </div>
+    <div class="stat combo-stat">
+      <span data-i18n="combo">Kombo</span>
+      <b id="h-combo">0 ×1</b>
+    </div>
+    <div class="stat acc-stat">
+      <span data-i18n="acc">İsabet</span>
+      <b id="h-acc">100%</b>
+    </div>
+  </div>
+
+  <div class="tools">
+    <button id="b-pause" class="ibtn" data-i18n-aria="pause" aria-label="Duraklat">
+      <svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+    </button>
+    <button id="b-sound" class="ibtn" data-i18n-aria="sound" aria-label="Ses">
+      <svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 8.5a5 5 0 0 1 0 7M19 6a9 9 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button id="b-practice-h" class="ibtn txt" data-i18n="practiceBadge" data-i18n-aria="practiceBadge" data-i18n-title="practice" aria-label="Pratik" title="Pratik Modu">Pratik</button>
+    <button id="b-lang-h" class="ibtn txt" data-i18n-aria="language" aria-label="Dil">TR</button>
+  </div>
+</header>
+
+<!-- Spirit Meter: Çevgen Standard with finials -->
+<div id="spirit" aria-label="spirit">
+  <div class="spirit-crown">
+    <svg viewBox="0 0 24 16" aria-hidden="true"><path d="M12 2l3 6 6 1-4.5 4.5 1 6.5-5.5-3.5L6.5 20l1-6.5L3 9l6-1z" fill="#E8B23A"/></svg>
+  </div>
+  <div class="bar">
+    <div class="fill" id="spirit-fill"></div>
+    <div class="spirit-lines"><i></i><i></i><i></i></div>
+  </div>
+  <div class="spirit-label">
+    <span data-i18n="spirit">Ruh</span>
+    <b class="spirit-pct" id="spirit-val">100%</b>
+  </div>
+</div>
+
+<!-- Dört Katman: active music layers and their score multiplier -->
+<div id="layers" aria-live="polite">
+  <span class="ly-title" data-i18n="layers">Katman</span>
+  <span class="ly" data-ly="0" data-i18n="lyDavul">Davul</span>
+  <span class="ly" data-ly="1" data-i18n="lyZurna">Zurna</span>
+  <span class="ly" data-ly="2" data-i18n="lyBoru">Boru</span>
+  <span class="ly" data-ly="3" data-i18n="lyZil">Zil</span>
+  <b id="h-layer">×1</b>
+</div>
+
+<div id="judge" aria-live="polite"></div>
+<div id="toasts" role="status" aria-live="polite"></div>
+<pre id="dbg" class="hidden"></pre>
+
+<!-- TITLE SCREEN -->
+<section id="scr-title" class="screen" role="dialog" aria-modal="true" aria-labelledby="t-name">
+  <div class="panel center">
+    <div class="crest-box">
+      <svg class="logo" viewBox="0 0 140 140" aria-hidden="true">
+        <defs>
+          <radialGradient id="crest-bg" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#3A184D"/>
+            <stop offset="70%" stop-color="#1A0D2A"/>
+            <stop offset="100%" stop-color="#120B1E"/>
+          </radialGradient>
+        </defs>
+        <circle cx="70" cy="70" r="66" fill="#8C1D2F" stroke="#E8B23A" stroke-width="4"/>
+        <circle cx="70" cy="70" r="58" fill="url(#crest-bg)" stroke="#E8B23A" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <path d="M38 38l64 64M102 38L38 102" stroke="#E8B23A" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+        <circle cx="38" cy="38" r="3" fill="#E8B23A" opacity="0.6"/><circle cx="102" cy="38" r="3" fill="#E8B23A" opacity="0.6"/>
+        <path d="M84 28a42 42 0 1 0 0 84a34 34 0 1 1 0-84z" fill="#E8B23A"/>
+        <polygon points="96,54 99,63 108,64 101,70 103,79 96,74 89,79 91,70 84,64 93,63" fill="#F5E6C4"/>
+        <path d="M70 120c-8-6-16-4-20-10m40 10c8-6 16-4 20-10" fill="none" stroke="#E8B23A" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    
+    <div class="title-head">
+      <svg class="orn" viewBox="0 0 280 28" aria-hidden="true">
+        <path d="M10 14h85M185 14h85" stroke="#E8B23A" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="10" cy="14" r="2.5" fill="#E8B23A"/><circle cx="270" cy="14" r="2.5" fill="#E8B23A"/>
+        <path d="M140 3l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#E8B23A"/>
+        <circle cx="140" cy="14" r="3" fill="#8C1D2F"/>
+        <path d="M110 14c8-8 18-8 24 0M170 14c-8-8-18-8-24 0" fill="none" stroke="#E8B23A" stroke-width="1.4"/>
+      </svg>
+      <h1 id="t-name">MEHTER</h1>
+      <p class="tagline">NEVBET-İ ZEREF · OSMANLI RİTİM YÜRÜYÜŞÜ</p>
+      <p class="muted" data-i18n="subtitle">Davul, kös, zurna ve zil bu caddede sizin ritminizle yürür.</p>
+    </div>
+
+    <!-- How to play Bento Cards -->
+    <div class="howto-bento">
+      <div class="howto-card">
+        <div class="ht-num">I</div>
+        <div class="ht-text" data-i18n="howto1">Notalar vuruş çizgisine doğru gelir. Tam anda D F J K tuşlarına basın ya da şeritlere dokunun.</div>
+      </div>
+      <div class="howto-card">
+        <div class="ht-num">II</div>
+        <div class="ht-text" data-i18n="howto2">Zurna uzun notalarında tuşu basılı tutun. Kombo çarpanı artar; ruh sıfıra inerse şarkı biter.</div>
+      </div>
+      <div class="howto-card">
+        <div class="ht-num">III</div>
+        <div class="ht-text" data-i18n="howto3">Gecikmenizi kalibrasyon ekranında ölçün.</div>
+      </div>
+      <div class="howto-card">
+        <div class="ht-num">IV</div>
+        <div class="ht-text" data-i18n="howto4">Dört Katman: isabetli seri tuttukça zurna, boru ve zil takımları yürüyüşe katılır; her katman puanı artırır. Çok kaçırırsanız en üst takım saftan düşer.</div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="title-actions">
+      <button id="b-play" class="primary play-btn" disabled data-i18n="play">Oyna</button>
+      <button id="b-daily" disabled data-i18n="daily">Günün Meydan Okuması</button>
+      <div class="sub-actions">
+        <button id="b-title-cal" data-i18n="calib">Kalibrasyon</button>
+        <button id="b-title-set" data-i18n="settings">Ayarlar</button>
+        <button id="b-title-lang" data-i18n-aria="language" aria-label="Dil">TR / EN</button>
+      </div>
+    </div>
+
+    <div class="title-meta">
+      <p class="loading" id="loading">Yükleniyor… 0/1</p>
+      <div id="title-best"></div>
+      <p id="title-daily" class="muted"></p>
+    </div>
+  </div>
+  <div class="foot"><a href="./_offline-stub.js">Claude Game Arena</a> · built by Claude Haiku 5.5</div>
+</section>
+
+<!-- SONG SELECT SCREEN: Imperial Defter -->
+<section id="scr-select" class="screen hidden" role="dialog" aria-modal="true" aria-labelledby="sel-title">
+  <div class="panel wide select-panel">
+    <div class="panel-header">
+      <svg class="panel-orn" viewBox="0 0 200 20" aria-hidden="true"><path d="M10 10h60M130 10h60" stroke="#E8B23A" stroke-width="1.5"/><circle cx="100" cy="10" r="4" fill="#E8B23A"/><circle cx="90" cy="10" r="2.5" fill="#E8B23A"/><circle cx="110" cy="10" r="2.5" fill="#E8B23A"/></svg>
+      <h2 id="sel-title" data-i18n="selectSong">Şarkı seç</h2>
+      <p class="ledger-desc">Tarihi usul ritimleriyle bestelenmiş 6 mehter marşı</p>
+    </div>
+    
+    <div class="seg diff-seg" id="diffs" role="radiogroup">
+      <button data-diff="easy" data-i18n="easy">Kolay</button>
+      <button data-diff="normal" data-i18n="normal">Normal</button>
+      <button data-diff="hard" data-i18n="hard">Zor</button>
+    </div>
+    <label class="nofail-row" for="s-nofail">
+      <input type="checkbox" id="s-nofail">
+      <span><b data-i18n="noFail">Ruh tükenmez</b> <small data-i18n="noFailNote">Açıkken rekor ve rozet yazılmaz</small></span>
+    </label>
+
+    <div class="songs" id="song-list"></div>
+
+    <div class="btns panel-footer">
+      <button id="b-sel-back" data-i18n="back">Geri</button>
+      <button id="b-sel-start" class="primary start-btn" data-i18n="start">Başla</button>
+    </div>
+  </div>
+</section>
+
+<!-- SETTINGS SCREEN -->
+<section id="scr-settings" class="screen hidden" role="dialog" aria-modal="true" aria-labelledby="set-title">
+  <div class="panel settings-panel">
+    <div class="panel-header">
+      <h2 id="set-title" data-i18n="settings">Ayarlar</h2>
+    </div>
+
+    <div class="setting-group">
+      <div class="row">
+        <label for="s-master" data-i18n="master">Ana ses</label>
+        <div class="range-wrap"><input id="s-master" type="range" min="0" max="1" step="0.01" data-i18n-aria="master" aria-label="Ana ses"></div>
+      </div>
+      <div class="row">
+        <label for="s-music" data-i18n="music">Müzik</label>
+        <div class="range-wrap"><input id="s-music" type="range" min="0" max="1" step="0.01" data-i18n-aria="music" aria-label="Müzik"></div>
+      </div>
+      <div class="row">
+        <label for="s-sfx" data-i18n="sfx">Efektler</label>
+        <div class="range-wrap"><input id="s-sfx" type="range" min="0" max="1" step="0.01" data-i18n-aria="sfx" aria-label="Efektler"></div>
+      </div>
+    </div>
+
+    <div class="setting-group">
+      <div class="row">
+        <label for="s-speed" data-i18n="noteSpeed">Nota hızı</label>
+        <div class="range-wrap">
+          <input id="s-speed" type="range" min="0.7" max="1.5" step="0.1" value="1.0" data-i18n-aria="noteSpeed" aria-label="Nota hızı">
+          <span id="s-speed-val" class="speed-val">1.0×</span>
+        </div>
+      </div>
+      <div class="row">
+        <span data-i18n="language">Dil</span>
+        <div class="seg" style="flex:1"><button data-lang="tr">Türkçe</button><button data-lang="en">English</button></div>
+      </div>
+      <div class="row">
+        <span data-i18n="quality">Kalite</span>
+        <div class="seg" style="flex:1"><button data-q="low" data-i18n="low">Düşük</button><button data-q="high" data-i18n="high">Yüksek</button></div>
+      </div>
+      <div class="row">
+        <span data-i18n="practice">Pratik Modu</span>
+        <div class="seg" style="flex:1"><button data-prac="0" data-i18n="off">Kapalı</button><button data-prac="1" data-i18n="on">Açık</button></div>
+      </div>
+      <div class="row">
+        <button id="b-fs" class="full-btn" data-i18n="fullscreen">Tam ekran</button>
+      </div>
+      <div class="row">
+        <button id="b-a11y" class="full-btn" data-i18n="a11y">Erişilebilirlik</button>
+      </div>
+    </div>
+
+    <div class="setting-group">
+      <div class="keys-header">
+        <span data-i18n="keys">Tuşlar</span>
+        <span id="rebind-msg" class="muted"></span>
+      </div>
+      <div class="row keys">
+        <button data-lane="0"><span class="k-inst">DAVUL</span><span class="key-label">D</span></button>
+        <button data-lane="1"><span class="k-inst">KÖS</span><span class="key-label">F</span></button>
+        <button data-lane="2"><span class="k-inst">ZURNA</span><span class="key-label">J</span></button>
+        <button data-lane="3"><span class="k-inst">ZİL</span><span class="key-label">K</span></button>
+      </div>
+    </div>
+
+    <div class="btns">
+      <button id="b-set-back" class="primary" data-i18n="back">Geri</button>
+    </div>
+  </div>
+</section>
+
+<!-- CALIBRATION SCREEN -->
+<section id="scr-calib" class="screen hidden" role="dialog" aria-modal="true" aria-labelledby="cal-title">
+  <div class="panel center calib-panel">
+    <h2 id="cal-title" data-i18n="calibTitle">Gecikme kalibrasyonu</h2>
+    <p class="muted" data-i18n="calibHelp">Metronomun her vuruşuna bir tuş basın (Boşluk, D F J K veya düğme).</p>
+    
+    <div class="calib-drum-stage">
+      <div id="dot" class="calib-drum" aria-hidden="true">
+        <div class="drum-center"></div>
+      </div>
+    </div>
+
+    <p id="cal-msg" class="muted"></p>
+    <p id="cal-res" class="calib-result"></p>
+
+    <div class="btns calib-btns">
+      <button id="b-cal-start" class="primary" data-i18n="start">Başla</button>
+      <button id="b-cal-tap" class="tap-btn" data-i18n="tapBtn">Vur</button>
+      <button id="b-cal-reset" data-i18n="reset">Sıfırla</button>
+      <button id="b-cal-back" data-i18n="back">Geri</button>
+    </div>
+  </div>
+</section>
+
+<!-- PAUSE SCREEN -->
+<section id="scr-pause" class="screen hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+  <div class="panel center pause-panel">
+    <div class="pause-crest">
+      <svg viewBox="0 0 60 60" aria-hidden="true">
+        <circle cx="30" cy="30" r="27" fill="#8C1D2F" stroke="#E8B23A" stroke-width="2"/>
+        <path d="M18 18l24 24M42 18L18 42" stroke="#E8B23A" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="18" cy="18" r="2.5" fill="#E8B23A"/><circle cx="42" cy="18" r="2.5" fill="#E8B23A"/>
+      </svg>
+    </div>
+    <h2 id="pause-title" data-i18n="pause">Duraklat</h2>
+    <p class="muted" data-i18n="pauseHint">Devam etmek için Devam’a basın</p>
+    <div class="btns pause-btn-col">
+      <button id="b-resume" class="primary" data-i18n="resume">Devam</button>
+      <button id="b-restart" data-i18n="restart">Yeniden başlat</button>
+      <button id="b-pause-set" data-i18n="settings">Ayarlar</button>
+      <button id="b-main" data-i18n="mainMenu">Ana menü</button>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS SCREEN: Royal Ferman -->
+<section id="scr-results" class="screen hidden" role="dialog" aria-modal="true" aria-labelledby="r-title">
+  <div class="panel center results-panel">
+    <div class="results-crest">
+      <svg class="results-rays" viewBox="0 0 200 200" aria-hidden="true">
+        <g stroke="#E8B23A" stroke-width="1.5" opacity="0.35">
+          <line x1="100" y1="10" x2="100" y2="35"/><line x1="100" y1="165" x2="100" y2="190"/>
+          <line x1="10" y1="100" x2="35" y2="100"/><line x1="165" y1="100" x2="190" y2="100"/>
+          <line x1="36" y1="36" x2="54" y2="54"/><line x1="146" y1="146" x2="164" y2="164"/>
+          <line x1="36" y1="164" x2="54" y2="146"/><line x1="146" y1="54" x2="164" y2="36"/>
+        </g>
+      </svg>
+      <div class="grade" id="r-grade">–</div>
+    </div>
+    <div id="res-main"></div>
+    <h2 id="r-title" class="results-subtitle"></h2>
+    
+    <div id="r-record" class="seal-record"></div>
+    <p id="r-daily" class="muted"></p>
+
+    <div class="stats-grid" id="r-stats"></div>
+
+    <div class="hist-box">
+      <div class="hist-header" data-i18n="histogram">Vuruş zamanlaması (ms)</div>
+      <div class="hist" id="r-hist"></div>
+      <div class="hist-l">
+        <span data-i18n="early">erken</span>
+        <span>0 ms</span>
+        <span data-i18n="late">geç</span>
+      </div>
+    </div>
+
+    <div class="btns">
+      <button id="b-easy" class="primary hidden" data-i18n="tryEasy">Kolay’da dene</button>
+      <button id="b-again" class="primary" data-i18n="playAgain">Tekrar oyna</button>
+      <button id="b-main2" data-i18n="mainMenu">Ana menü</button>
+    </div>
+    <div class="btns">
+      <button id="b-share" data-i18n="share">Paylaş</button>
+      <button id="b-other" data-i18n="anotherGame">Başka oyun</button>
+    </div>
+  </div>
+</section>
+
+<script type="module">
+// ---------------------------------------------------------------------------
+// Mehter: 3D rhythm march. Single file. Three.js r170 (CDN) + Web Audio.
+// ---------------------------------------------------------------------------
+let THREE = null;
+
+// ----- query flags and settings -------------------------------------------
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const Q = new URLSearchParams(location.search);
+const FLAG = { auto: Q.has('auto'), debug: Q.has('debug'), low: Q.has('low'), noassets: Q.has('noassets') };
+const PHONE = matchMedia('(pointer: coarse)').matches;
+/** arena-kit "reduce motion": the scene lights stop swelling on the beat. Read live (visual layer only, the sim never reads it). */
+const calm = () => !!(window.Arena && Arena.settings && Arena.settings.reducedMotion);
+const DEF_LANG = /^tr/i.test(navigator.language || '') ? 'tr' : 'en';
+const DEF = { master: 0.8, music: 0.6, sfx: 0.8, musicOn: true, sfxOn: true, lang: DEF_LANG, quality: PHONE ? 'low' : 'high', keys: ['d', 'f', 'j', 'k'], calib: 0, noFail: false, speed: 1.0 };
+
+function store(key, fallback) {
+  try { const raw = localStorage.getItem(key); return raw ? { ...fallback, ...JSON.parse(raw) } : { ...fallback }; }
+  catch (e) { return { ...fallback }; }
+}
+function persist(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* private mode */ } }
+
+const S = store('arena.mehter.settings', DEF);
+if (typeof S.speed !== 'number' || isNaN(S.speed)) S.speed = 1.0;
+S.speed = Math.max(0.7, Math.min(1.5, Math.round(S.speed * 100) / 100));
+if (Q.has('speed')) { const qs = parseFloat(Q.get('speed')); if (!isNaN(qs) && qs >= 0.7 && qs <= 1.5) S.speed = Math.round(qs * 100) / 100; }
+S.noteSpeed = S.speed;
+let LANG = Q.get('lang') === 'en' ? 'en' : Q.get('lang') === 'tr' ? 'tr' : S.lang;   // S.lang defaults to the browser language
+const lowQ = () => FLAG.low || S.quality === 'low';
+const saveSettings = () => persist('arena.mehter.settings', S);
+const loadBest = () => store('arena.mehter.best', {});
+const saveBest = (b) => persist('arena.mehter.best', b);
+// Easy records live in their own key (KARARLAR #8): the old arena.mehter.best entries stay as they were.
+// A legacy "N-easy" entry in the old key is still shown until a new Easy record replaces it here.
+const loadBestEasy = () => store('arena.mehter.best.easy', {});
+const saveBestEasy = (b) => persist('arena.mehter.best.easy', b);
+// First experience: a player with no saved difficulty starts on Easy, unless they already hold records
+// (those were set on the old Normal default). The difficulty the player picks is remembered in S.diff.
+const DIFFS = ['easy', 'normal', 'hard'];
+if (!DIFFS.includes(S.diff)) S.diff = Object.keys(loadBest()).length ? 'normal' : 'easy';
+
+// ----- strings -------------------------------------------------------------
+const I18N = {
+  tr: {
+    subtitle: 'Davul, kös, zurna ve zil bu caddede sizin ritminizle yürür.',
+    howto1: 'Notalar vuruş çizgisine doğru gelir. Tam anda D F J K tuşlarına basın ya da şeritlere dokunun.',
+    howto1Touch: 'Notalar vuruş çizgisine doğru gelir. Tam anda alttaki dört şeride dokunun.',
+    howto2: 'Zurna uzun notalarında tuşu basılı tutun. Kombo çarpanı artar; ruh sıfıra inerse şarkı biter.',
+    howto3: 'Gecikmenizi kalibrasyon ekranında ölçün.',
+    play: 'Oyna', settings: 'Ayarlar', calib: 'Kalibrasyon', back: 'Geri', start: 'Başla',
+    selectSong: 'Şarkı seç', easy: 'Kolay', normal: 'Normal', hard: 'Zor',
+    resume: 'Devam', restart: 'Yeniden başlat', mainMenu: 'Ana menü',
+    master: 'Ana ses', music: 'Müzik', sfx: 'Efektler', noteSpeed: 'Nota hızı', language: 'Dil', quality: 'Kalite', low: 'Düşük', high: 'Yüksek',
+    fullscreen: 'Tam ekran', keys: 'Tuşlar', pressKey: 'Bir tuşa basın', rebindDone: 'Tuş atandı',
+    qualitySet: 'Kalite: {q}. Sayfa yenilenince uygulanır.',
+    noFail: 'Ruh tükenmez', noFailNote: 'Açıkken rekor ve rozet yazılmaz', noFailResult: 'Ruh tükenmez açık: rekor yazılmadı', tryEasy: 'Kolay’da dene',
+    playAgain: 'Tekrar oyna', score: 'Skor', combo: 'Kombo', acc: 'İsabet', spirit: 'Ruh', song: 'Şarkı',
+    pause: 'Duraklat', grade: 'Derece', diff: 'Zorluk', newRecord: 'Yeni rekor!', defeat: 'Ruh tükendi', cleared: 'Şarkı tamam',
+    perfect: 'MÜKEMMEL', good: 'İYİ', miss: 'KAÇTI', brk: 'KOPTU',
+    maxCombo: 'En yüksek kombo', perfectN: 'Mükemmel', goodN: 'İyi', missN: 'Kaçan', brkN: 'Kopan', accN: 'İsabet',
+    histogram: 'Vuruş zamanlaması (ms)', early: 'erken', late: 'geç',
+    calibTitle: 'Gecikme kalibrasyonu', calibHelp: 'Metronomun her vuruşuna bir tuş basın (Boşluk, D F J K veya düğme).',
+    calibNeedAudio: 'Ses için önce Oyna düğmesine bir kez basın.', calibNone: 'Yeterli vuruş yok, tekrar deneyin.',
+    calibDone: 'Ortalama gecikme', tapBtn: 'Vur', reset: 'Sıfırla', calibSaved: 'Kalibrasyon kaydedildi',
+    loading: 'Yükleniyor… 0/1', loaded: 'Hazır', loadFail: 'Three.js yüklenemedi; internet bağlantınızı kontrol edin.',
+    noAudio: 'Ses bu tarayıcıda kullanılamıyor; oyun sessiz çalışır.',
+    sound: 'Ses', pauseHint: 'Devam etmek için Devam’a basın',
+    tk: 'Tuşlar: D F J K · Duraklat: P / Esc · Ses: M / X · Dil: L',
+    laneTouch: 'Şerit',
+    bpm: 'BPM', best: 'En iyi', none: 'Henüz yok', preview: 'Dinle', stop: 'Durdur',
+    tabHidden: 'Sekme gizlenince duraklatıldı', resetDone: 'Kalibrasyon sıfırlandı', fsErr: 'Tam ekran açılamadı',
+    diffBest: 'Zorluk', completeAuto: 'Otomatik oynatma bitti',
+    layers: 'Katman', lyDavul: 'Davul', lyZurna: 'Zurna', lyBoru: 'Boru', lyZil: 'Zil',
+    layerUp: 'katılıyor!', layerDown: 'saftan düştü', maxLayer: 'En çok katman',
+    howto4: 'Dört Katman: isabetli seri tuttukça zurna, boru ve zil takımları yürüyüşe katılır; her katman puanı artırır. Çok kaçırırsanız en üst takım saftan düşer.',
+    practice: 'Pratik Modu',
+    practiceBadge: 'Pratik',
+    off: 'Kapalı',
+    on: 'Açık',
+    a11y: 'Erişilebilirlik', share: 'Paylaş', anotherGame: 'Başka oyun', daily: 'Günün Meydan Okuması',
+    dailySong: 'Günün Marşı', dailyDesc: 'Herkese aynı usul, tempo ve zurna ezgisi', dailyLine: 'seri {s} gün · en iyi {b}', dailyDone: 'bugün tamam',
+    shareLine: '{song} · {diff} · {grade} · {score} puan', awS: 'Mehter: S notu', awLayers: 'Mehter: dört katman', awZafer: 'Mehter: Zafer Marşı',
+    names: ['Düyek Yürüyüşü', 'Sofyan Geçidi', 'Semai Alayı', 'Nevbet Meydanı', 'Devr-i Kebir', 'Zafer Marşı'],
+    descs: ['Ağır adım, düyek ölçüsü', 'Sofyan adımı, hızlanan davul', 'Semai ölçüsü, zurna ağırlıklı', 'Nevbet töreni, yoğun kös', 'Devr-i kebir, uzun zurna notaları', 'Zafer yürüyüşü, en hızlı tempo'],
+  },
+  en: {
+    practice: 'Practice Mode',
+    practiceBadge: 'Practice',
+    off: 'Off',
+    on: 'On',
+    subtitle: 'Davul, kös, zurna and zil march down this avenue to your rhythm.',
+    howto1: 'Notes roll toward the hit line. Press D F J K on the beat, or tap the lanes.',
+    howto1Touch: 'Notes roll toward the hit line. Tap the four lanes at the bottom on the beat.',
+    howto2: 'Hold long zurna notes. Combos raise the multiplier; if band spirit hits zero the song ends.',
+    howto3: 'Measure your input lag on the calibration screen.',
+    play: 'Play', settings: 'Settings', calib: 'Calibration', back: 'Back', start: 'Start',
+    selectSong: 'Choose a song', easy: 'Easy', normal: 'Normal', hard: 'Hard',
+    resume: 'Resume', restart: 'Restart', mainMenu: 'Main menu',
+    master: 'Master', music: 'Music', sfx: 'Effects', noteSpeed: 'Note speed', language: 'Language', quality: 'Quality', low: 'Low', high: 'High',
+    fullscreen: 'Fullscreen', keys: 'Keys', pressKey: 'Press a key', rebindDone: 'Key set',
+    qualitySet: 'Quality: {q}. It applies after a page reload.',
+    noFail: 'No-fail', noFailNote: 'While on, no records or badges are saved', noFailResult: 'No-fail on: no record saved', tryEasy: 'Try on Easy',
+    playAgain: 'Play again', score: 'Score', combo: 'Combo', acc: 'Accuracy', spirit: 'Spirit', song: 'Song',
+    pause: 'Pause', grade: 'Grade', diff: 'Difficulty', newRecord: 'New record!', defeat: 'Spirit broke', cleared: 'Song complete',
+    perfect: 'PERFECT', good: 'GOOD', miss: 'MISS', brk: 'BREAK',
+    maxCombo: 'Max combo', perfectN: 'Perfect', goodN: 'Good', missN: 'Missed', brkN: 'Broken holds', accN: 'Accuracy',
+    histogram: 'Hit timing (ms)', early: 'early', late: 'late',
+    calibTitle: 'Input latency calibration', calibHelp: 'Press a key or the button on every metronome beat (Space, D F J K or the button).',
+    calibNeedAudio: 'Press Play once first so audio can run.', calibNone: 'Not enough taps, try again.',
+    calibDone: 'Average offset', tapBtn: 'Tap', reset: 'Reset', calibSaved: 'Calibration saved',
+    loading: 'Loading… 0/1', loaded: 'Ready', loadFail: 'Could not load Three.js; check your connection.',
+    noAudio: 'Audio is not available in this browser; the game runs silent.',
+    sound: 'Sound', pauseHint: 'Press Resume to continue',
+    tk: 'Keys: D F J K · Pause: P / Esc · Sound: M / X · Language: L',
+    laneTouch: 'Lane',
+    bpm: 'BPM', best: 'Best', none: 'None yet', preview: 'Listen', stop: 'Stop',
+    tabHidden: 'Paused when the tab was hidden', resetDone: 'Calibration reset', fsErr: 'Fullscreen is not available',
+    diffBest: 'Difficulty', completeAuto: 'Auto play finished',
+    layers: 'Layers', lyDavul: 'Drum', lyZurna: 'Zurna', lyBoru: 'Horn', lyZil: 'Cymbal',
+    layerUp: 'joins the march!', layerDown: 'falls out of step', maxLayer: 'Most layers',
+    howto4: 'Four Layers: keep an accurate streak and the zurna, horn and cymbal sections join the march; each layer raises your score. Miss too much and the top section falls out of formation.',
+    a11y: 'Accessibility', share: 'Share', anotherGame: 'Another game', daily: 'Daily challenge',
+    dailySong: 'Today’s March', dailyDesc: 'The same usul, tempo and zurna tune for everyone', dailyLine: 'streak {s} · best {b}', dailyDone: 'done today',
+    shareLine: '{song} · {diff} · {grade} · {score} points', awS: 'Mehter: grade S', awLayers: 'Mehter: all four layers', awZafer: 'Mehter: March of Victory',
+    names: ['Düyek March', 'Sofyan Pass', 'Semai Procession', 'Nevbet Square', 'Grand Cycle', 'March of Victory'],
+    descs: ['Slow steps, düyek cycle', 'Sofyan steps, speeding drums', 'Semai cycle, zurna led', 'Nevbet ceremony, dense kös', 'Grand cycle, long zurna notes', 'Victory march, fastest tempo'],
+  },
+};
+const T = (k) => (I18N[LANG][k] ?? I18N.en[k] ?? k);
+const setText = (el, v) => { if (el && el.textContent !== v) el.textContent = v; };
+
+// ----- song model (generated in code) -------------------------------------
+const LEAD = 2.0;                       // seconds before the first bar
+const LANE_X = [-1.5, -0.5, 0.5, 1.5];  // lane centres on the highway
+const LANE_HEX = [0xD96C2C, 0x8C1D2F, 0x3E7EA6, 0x2E6B4F];  // Nevbet-i Zeref: davul(ember), kos(crimson), zurna(cobalt), zil(iznik green)
+const FAM = ['davul', 'kos', 'zurna', 'cevgen'];
+const WIN_PERFECT = 0.045, WIN_GOOD = 0.11;
+// Dört Katman (Four Layers): the band plays in 4 layers. Layer 1 (davul + kös) always marches; every
+// LAYER_STEP hits in a row unlock the next one (zurna, boru, zil). Each miss or broken hold adds 1 slip
+// and resets the climb; each hit takes 1/8 slip away. SLIP_MAX slips drop the top layer.
+const LAYER_KEYS = ['lyDavul', 'lyZurna', 'lyBoru', 'lyZil'];
+const LAYER_STEP = 16, SLIP_MAX = 3, SLIP_HEAL = 1 / 8;
+const LAYER_MULT = [1, 1.5, 2, 2.5];   // score multiplier for 1..4 active layers, on top of the combo multiplier
+const LANE_LAYER = [0, 0, 1, 3];       // davul and kös: layer 1, zurna: layer 2, zil: layer 4 (boru, layer 3, has no lane)
+const HIT_Z = 2.2, SPAWN_Z = -12.5, SPEED = 8.0;
+const noteSpeedMult = () => Math.max(0.7, Math.min(1.5, Number(S.speed ?? S.noteSpeed ?? 1.0) || 1.0));
+const noteSpeed = () => SPEED * noteSpeedMult();
+const noteTravelTime = () => (HIT_Z - SPAWN_Z) / noteSpeed();
+const noteLookAhead = () => noteTravelTime() + 0.25;
+const LOOK = (HIT_Z - SPAWN_Z) / SPEED + 0.25;
+// 16 sixteenth slots per bar: D strong davul, t light davul, z zil. Kös and zurna are placed by rule.
+const USUL = {
+  duyek: 'D.t.tD.tD.t.tD.t',
+  sofyan: 'D..tD..tD..tD..t',
+  semai: 'D..t..zD..t..z.t',
+  nevbet: 'D.tzD.tzD.tzD.tz',
+  devr: 'Dt.tDt.tDt.tDtzt',
+  zafer: 'D.tDt.zDD.tDtzDt',
+};
+const HICAZ = [0, 1, 4, 5, 7, 8, 10];   // semitones from D (hicaz-like)
+const SONG_DEFS = [
+  { usul: 'duyek', bpm: 96, bars: 32, seed: 11 },
+  { usul: 'sofyan', bpm: 112, bars: 36, seed: 23 },
+  { usul: 'semai', bpm: 124, bars: 40, seed: 37 },
+  { usul: 'nevbet', bpm: 138, bars: 40, seed: 41 },
+  { usul: 'devr', bpm: 156, bars: 44, seed: 53 },
+  { usul: 'zafer', bpm: 176, bars: 48, seed: 67 },
+];
+
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function buildSong(d, idx) {
+  const sx = 60 / d.bpm / 4;                  // one sixteenth in seconds
+  const bar = 16 * sx;
+  const pat = USUL[d.usul];
+  if (pat.length !== 16) throw new Error('usul pattern must have 16 slots: ' + d.usul);
+  const rnd = mulberry32(d.seed);
+  const full = [], bass = [];
+  let zBusy = 0;
+  for (let b = 0; b < d.bars; b++) {
+    const bt = LEAD + b * bar;
+    bass.push(bt);
+    for (let i = 0; i < 16; i++) {
+      const t = bt + i * sx, c = pat[i];
+      if (c === 'D') full.push({ t, lane: 0, dur: 0, lvl: 1, acc: 1, freq: 0 });
+      else if (c === 't') full.push({ t, lane: 0, dur: 0, lvl: 2, acc: 0, freq: 0 });
+      else if (c === 'z') full.push({ t, lane: 3, dur: 0, lvl: 2, acc: 0, freq: 0 });
+      if (i % 4 === 0) full.push({ t, lane: 1, dur: 0, lvl: 1, acc: 1, freq: 0 });
+      else if (i % 4 === 2) full.push({ t, lane: 1, dur: 0, lvl: 3, acc: 0, freq: 0 });
+    }
+    // zurna motif: a few phrases per bar, some held, more on later songs
+    const n = 2 + (idx >> 1);
+    const picks = [];
+    const used = new Set();
+    for (let k = 0; k < n; k++) {
+      const slot = Math.floor(rnd() * 8) * 2;
+      if (used.has(slot)) continue;
+      used.add(slot);
+      const r = rnd();
+      const len = r < 0.5 ? 0 : r < 0.8 ? 4 : 8;      // sixteenths: tap, quarter hold, half hold
+      const semi = HICAZ[Math.floor(rnd() * HICAZ.length)] + (rnd() < 0.3 ? 12 : 0);
+      picks.push({ slot, len, semi });
+    }
+    picks.sort((a, z) => a.slot - z.slot);
+    for (const p of picks) {
+      const t = bt + p.slot * sx;
+      if (t < zBusy) continue;
+      const dur = p.len * sx;
+      full.push({ t, lane: 2, dur, lvl: p.len === 8 ? 3 : 2, acc: 0, freq: 293.66 * Math.pow(2, p.semi / 12) });
+      zBusy = t + (dur || sx * 2);
+    }
+  }
+  full.sort((a, b) => a.t - b.t || a.lane - b.lane);
+  const end = Math.max(...full.map((e) => e.t + e.dur)) + 1.5;
+  return { idx, ...d, name: { tr: I18N.tr.names[idx], en: I18N.en.names[idx] }, desc: { tr: I18N.tr.descs[idx], en: I18N.en.descs[idx] }, full, bass, barDur: bar, end, seed: d.seed };
+}
+const SONGS = SONG_DEFS.map((d, i) => buildSong(d, i));
+// Daily challenge (arena-kit): the day's generator picks the usul, tempo and zurna density, and the day seed
+// writes the zurna tune, so everyone marches the same song today (?d=YYYYMMDD replays another day).
+function dailySong(d) {
+  const r = d.rng, usuls = Object.keys(USUL);
+  const usul = usuls[(r() * usuls.length) | 0], bpm = 104 + ((r() * 49) | 0), density = 2 + ((r() * 3) | 0);
+  const song = buildSong({ usul, bpm, bars: 32, seed: d.seed }, density);
+  song.idx = -1; song.day = d.day;
+  song.name = { tr: I18N.tr.dailySong, en: I18N.en.dailySong };
+  song.desc = { tr: I18N.tr.dailyDesc, en: I18N.en.dailyDesc };
+  return song;
+}
+
+function makeChart(s, diff) {
+  const lim = { easy: 1, normal: 2, hard: 3 }[diff];
+  const jit = mulberry32(s.seed * 31 + lim);
+  const out = [];
+  for (const e of s.full) {
+    if (e.lvl <= lim) out.push({ t: e.t, lane: e.lane, dur: e.dur, freq: e.freq, acc: e.acc, state: 0, w: 0, tick: 0, bj: (jit() * 2 - 1) * 0.018 });
+  }
+  return out;
+}
+
+// ----- audio (Web Audio clock) ---------------------------------------------
+const AU = { ctx: null, master: null, music: null, sfx: null, noise: null, nodes: [], lay: [] };
+// CC0 one-shots (Kenney): only UI clicks and the results fanfare. Music and hit sounds stay synthesized.
+const SAMPLE_FILES = { click: 'assets/sfx/ui-click.mp3', fanfare: 'assets/sfx/results-fanfare.mp3' };
+const SAMPLE_BYTES = {}, SAMPLES = {};
+async function decodeSamples(ctx) {
+  for (const k of Object.keys(SAMPLE_BYTES)) {
+    if (SAMPLES[k]) continue;
+    try { SAMPLES[k] = await ctx.decodeAudioData(SAMPLE_BYTES[k].slice(0)); } catch (e) { /* bad file: synth fallback */ }
+  }
+  G.assets.sfx = Object.keys(SAMPLES).length > 0;
+}
+function playSample(k, gain = 1) {
+  const buf = SAMPLES[k];
+  if (!AU.ctx || !buf || AU.ctx.state !== 'running') return false;
+  const src = AU.ctx.createBufferSource(), g = AU.ctx.createGain();
+  src.buffer = buf; g.gain.value = gain;
+  src.connect(g); g.connect(AU.sfx);
+  src.start(AU.ctx.currentTime + 0.001);
+  track(src);
+  return true;
+}
+function audioInit() {
+  if (AU.ctx) return AU.ctx;
+  try {
+    const C = window.AudioContext || window.webkitAudioContext;
+    if (!C) return null;
+    const ctx = new C();
+    AU.ctx = ctx;
+    AU.master = ctx.createGain(); AU.master.connect(ctx.destination);
+    AU.music = ctx.createGain(); AU.music.connect(AU.master);
+    AU.sfx = ctx.createGain(); AU.sfx.connect(AU.master);
+    AU.lay = [0, 1, 2, 3].map(() => { const g = ctx.createGain(); g.connect(AU.music); return g; });
+    const len = Math.floor(ctx.sampleRate * 0.5);
+    AU.noise = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = AU.noise.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    applyVolumes();
+    decodeSamples(ctx);
+  } catch (e) { AU.ctx = null; }
+  return AU.ctx;
+}
+async function readyAudio() {
+  const ctx = audioInit();
+  if (!ctx) return null;
+  if (ctx.state !== 'running') { try { await ctx.resume(); } catch (e) { /* blocked */ } }
+  return ctx.state === 'running' ? ctx : null;
+}
+function applyVolumes() {
+  if (!AU.ctx) return;
+  AU.master.gain.value = S.master;
+  AU.music.gain.value = S.musicOn ? S.music : 0;
+  AU.sfx.gain.value = S.sfxOn ? S.sfx * 0.9 : 0;
+}
+function track(node) {
+  AU.nodes.push(node);
+  if (AU.nodes.length > 800) AU.nodes.splice(0, 400);
+}
+function stopAll() {
+  for (const n of AU.nodes) { try { n.stop(); } catch (e) { /* already ended */ } }
+  AU.nodes.length = 0;
+}
+function tone(dest, w, type, f0, f1, dur, vol, filt) {
+  if (!AU.ctx) return;
+  const ctx = AU.ctx;
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = type;
+  o.frequency.setValueAtTime(f0, w);
+  if (f1 && f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, w + dur);
+  g.gain.setValueAtTime(0.0001, w);
+  g.gain.exponentialRampToValueAtTime(vol, w + 0.006);
+  g.gain.exponentialRampToValueAtTime(0.0001, w + dur);
+  o.connect(g);
+  let last = g;
+  if (filt) { const f = ctx.createBiquadFilter(); f.type = filt.type; f.frequency.value = filt.f; f.Q.value = filt.q || 0.7; g.connect(f); last = f; }
+  last.connect(dest);
+  o.start(w); o.stop(w + dur + 0.05); track(o);
+}
+function noiseHit(dest, w, dur, vol, type, f) {
+  if (!AU.ctx) return;
+  const ctx = AU.ctx;
+  const s = ctx.createBufferSource(); s.buffer = AU.noise;
+  const flt = ctx.createBiquadFilter(); flt.type = type; flt.frequency.value = f;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(vol, w); g.gain.exponentialRampToValueAtTime(0.0001, w + dur);
+  s.connect(flt); flt.connect(g); g.connect(dest);
+  s.start(w, Math.random() * 0.3); s.stop(w + dur + 0.02); track(s);
+}
+const layOut = (i) => AU.lay[i] || AU.music;   // the music bus of one layer
+function sndDavul(w, acc) { tone(layOut(0), w, 'sine', 190, 60, 0.18, acc ? 0.9 : 0.55); noiseHit(layOut(0), w, 0.05, acc ? 0.25 : 0.12, 'highpass', 3000); }
+function sndKos(w) { tone(layOut(0), w, 'sine', 110, 40, 0.45, 0.9); noiseHit(layOut(0), w, 0.1, 0.2, 'lowpass', 600); }
+function sndZurna(w, f, dur) { tone(layOut(1), w, 'sawtooth', f, f * 1.01, Math.max(0.2, dur), 0.1, { type: 'lowpass', f: 1600, q: 1.2 }); }
+function sndZil(w) { noiseHit(layOut(3), w, 0.25, 0.2, 'bandpass', 6500); tone(layOut(3), w, 'square', 2400, 2200, 0.12, 0.025, { type: 'highpass', f: 2000 }); }
+// boru (natural horn): two detuned saws through a lowpass that opens on the attack, like a brass swell
+function sndBoru(w, f, dur) {
+  if (!AU.ctx) return;
+  const ctx = AU.ctx, out = layOut(2);
+  const flt = ctx.createBiquadFilter(); flt.type = 'lowpass'; flt.Q.value = 2;
+  flt.frequency.setValueAtTime(350, w); flt.frequency.linearRampToValueAtTime(1500, w + 0.08); flt.frequency.exponentialRampToValueAtTime(800, w + dur);
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0.0001, w); g.gain.exponentialRampToValueAtTime(0.07, w + 0.05);
+  g.gain.setValueAtTime(0.07, w + dur * 0.7); g.gain.exponentialRampToValueAtTime(0.0001, w + dur);
+  flt.connect(g); g.connect(out);
+  for (const det of [-5, 5]) {
+    const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = det;
+    o.connect(flt); o.start(w); o.stop(w + dur + 0.05); track(o);
+  }
+}
+// one bar of boru: two half-note calls on D and A, the second half moves to C and G on odd bars
+function boruBar(w, b, bar) {
+  const half = bar / 2;
+  for (const f of [146.83, 220]) sndBoru(w, f, half * 0.92);
+  for (const f of (b % 2 ? [130.81, 196] : [146.83, 220])) sndBoru(w + half, f, half * 0.92);
+}
+// fade each layer bus to on (layer active) or off; all on outside a song (preview, menus)
+function setLayerGains(n, now) {
+  if (!AU.ctx || !AU.lay.length) return;
+  const t = AU.ctx.currentTime;
+  AU.lay.forEach((g, i) => {
+    const v = i < n ? 1 : 0;
+    g.gain.cancelScheduledValues(t);
+    if (now) g.gain.setValueAtTime(v, t); else g.gain.setTargetAtTime(v, t, 0.06);
+  });
+}
+function sndBass(w, dur) { tone(AU.music, w, 'sine', 55, 50, dur * 0.95, 0.12); }
+function sndCheer() { if (AU.ctx) noiseHit(AU.sfx, AU.ctx.currentTime + 0.001, 1.1, 0.3, 'bandpass', 1400); }
+function sndHit(perfect) { if (AU.ctx) tone(AU.sfx, AU.ctx.currentTime + 0.001, 'sine', perfect ? 1320 : 880, perfect ? 1320 : 880, 0.08, perfect ? 0.22 : 0.16); }
+function sndMiss() { if (AU.ctx) tone(AU.sfx, AU.ctx.currentTime + 0.001, 'triangle', 150, 60, 0.2, 0.3, { type: 'lowpass', f: 500 }); }
+function sndClick(w, accent) { tone(AU.sfx, w, 'square', accent ? 1500 : 1000, accent ? 1500 : 1000, 0.05, 0.28, { type: 'bandpass', f: accent ? 1500 : 1000, q: 3 }); }
+function playEvent(e, w) {
+  if (e.lane === 0) sndDavul(w, e.acc);
+  else if (e.lane === 1) sndKos(w);
+  else if (e.lane === 2) sndZurna(w, e.freq, e.dur || 0.22);
+  else sndZil(w);
+}
+
+// ----- game state ----------------------------------------------------------
+const G = {
+  ready: false, screen: 'title', song: null, visSong: null, idx: 0, sel: 0, diff: S.diff, noFail: false,
+  clock: 'wall', audioT0: 0, gt: 0, idleT: 0, paused: false, auto: false, bot: false, autoDone: false,
+  endAt: Infinity, ended: false, notes: [], lanes: [[], [], [], []], lp: [0, 0, 0, 0], vis: 0,
+  holds: [null, null, null, null], held: [false, false, false, false], flash: [0, 0, 0, 0], instFlash: { davul: 0, kos: 0, zurna: 0, cevgen: 0 },
+  score: 0, combo: 0, maxCombo: 0, spirit: 100, cnt: { perfect: 0, good: 0, miss: 0, brk: 0 }, weight: 0, judged: 0,
+  hist: [], mIdx: 0, bIdx: 0, cheer: 0.15, dark: 0.25, errors: [], fps: 0, result: null, rebind: -1, returnTo: 'title',
+  preview: -1, calibOn: false, frames: 0, assets: { band: false, cobble: false, sfx: false, sky: false },
+  layers: 1, lstreak: 0, slip: 0, maxLayers: 1, layerLog: [],
+};
+const CAL = { t0: 0, taps: [], end: 0, n: 12, beat: 0.6, on: false };
+
+// ----- screens and HUD -----------------------------------------------------
+const SCREENS = ['title', 'select', 'settings', 'calib', 'pause', 'results'];
+function show(name) {
+  G.screen = name;
+  for (const s of SCREENS) {
+    const el = $('#scr-' + s);
+    if (el) {
+      const active = s === name;
+      el.classList.toggle('hidden', !active);
+      el.inert = !active;
+    }
+  }
+  document.body.classList.toggle('playing', name === 'play' || name === 'pause');
+}
+function judgeShow(kind) {
+  const el = $('#judge');
+  el.className = '';
+  void el.offsetWidth;
+  el.textContent = T(kind === 'miss' ? 'miss' : kind === 'brk' ? 'brk' : kind);
+  el.className = kind + ' show';
+}
+function toast(msg, kind) {
+  const d = document.createElement('div');
+  if (kind === 'bad') d.className = 'bad';
+  d.textContent = msg;
+  $('#toasts').appendChild(d);
+  setTimeout(() => d.remove(), 2400);
+}
+const mult = (c) => (c >= 50 ? 4 : c >= 25 ? 3 : c >= 10 ? 2 : 1);
+const lmult = () => LAYER_MULT[G.layers - 1];
+const scoreMult = () => mult(G.combo) * lmult();
+// Dört Katman: a hit climbs toward the next layer, a miss slips toward losing the top one
+function layerHit() {
+  G.slip = Math.max(0, G.slip - SLIP_HEAL);
+  if (G.layers >= 4) return;
+  if (++G.lstreak >= LAYER_STEP) setLayers(G.layers + 1);
+}
+function layerSlip() {
+  G.lstreak = 0;
+  G.slip += 1;
+  if (G.slip >= SLIP_MAX) { G.slip = 0; if (G.layers > 1) setLayers(G.layers - 1); }
+}
+function setLayers(n) {
+  const up = n > G.layers;
+  const changed = up ? n - 1 : G.layers - 1;   // the layer that joins or drops out
+  G.layers = n; G.lstreak = 0; G.maxLayers = Math.max(G.maxLayers, n);
+  G.layerLog.push({ judged: G.judged, gt: +G.gt.toFixed(3), layers: n });
+  setLayerGains(n, false);
+  toast(T(LAYER_KEYS[changed]) + ' ' + T(up ? 'layerUp' : 'layerDown'), up ? undefined : 'bad');
+  if (up) { petals(lowQ() ? 12 : 24); } else { const el = $('#layers'); if (el) { el.classList.remove('drop'); void el.offsetWidth; el.classList.add('drop'); } }
+}
+const fmt = (n) => Math.round(n).toLocaleString(LANG === 'tr' ? 'tr-TR' : 'en-US');
+function refreshHud() {
+  if (!G.song) return;
+  setText($('#h-song'), G.song.name[LANG]);
+  const diffEl = $('#h-diff');
+  if (diffEl) {
+    setText(diffEl, T(G.diff));
+    diffEl.dataset.diff = G.diff;
+  }
+  setText($('#h-score'), fmt(G.score));
+  setText($('#h-combo'), G.combo + ' ×' + mult(G.combo));
+  for (const el of $$('#layers .ly')) {
+    const i = +el.dataset.ly;
+    el.classList.toggle('on', i < G.layers);
+    el.classList.toggle('next', i === G.layers);
+  }
+  setText($('#h-layer'), '×' + lmult());
+  const acc = G.judged ? G.weight / G.judged : 1;
+  setText($('#h-acc'), Math.round(acc * 100) + '%');
+  const pct = Math.max(0, Math.min(1, G.spirit / 100));
+  const fill = $('#spirit-fill');
+  if (fill) fill.style.transform = `scaleY(${pct})`;
+  const val = $('#spirit-val');
+  if (val) setText(val, Math.round(G.spirit) + '%');
+  const sp = $('#spirit');
+  if (sp) sp.classList.toggle('spirit-low', G.spirit < 30);
+}
+
+// ----- song flow -----------------------------------------------------------
+function startSong(idx, diff, opts = {}) {
+  const s = opts.song || SONGS[idx];   // opts.song: the daily song (idx -1)
+  stopAll();
+  G.song = s; G.visSong = s; G.idx = idx; G.diff = diff; if (idx >= 0) G.sel = idx;
+  G.daily = s.idx < 0 ? s.day : 0;
+  G.auto = !!opts.auto; G.bot = !!opts.bot; G.autoDone = false;
+  G.noFail = !!S.noFail && !G.auto && !G.bot;
+  G.notes = makeChart(s, diff);
+  G.lanes = [[], [], [], []];
+  G.notes.forEach((n) => G.lanes[n.lane].push(n));
+  G.vis = 0; G.lp = [0, 0, 0, 0]; G.holds = [null, null, null, null]; G.held = [false, false, false, false];
+  G.flash = [0, 0, 0, 0];
+  G.score = 0; G.combo = 0; G.maxCombo = 0; G.spirit = 100; G.cnt = { perfect: 0, good: 0, miss: 0, brk: 0 };
+  G.weight = 0; G.judged = 0; G.hist = []; G.mIdx = 0; G.bIdx = 0;
+  G.layers = 1; G.lstreak = 0; G.slip = 0; G.maxLayers = 1; G.layerLog = [];
+  setLayerGains(1, true);
+  G.ended = false; G.endAt = Infinity; G.paused = false; G.result = null; G.cheer = 0.15;
+  const ctx = AU.ctx;
+  let clock = opts.clock || (ctx && ctx.state === 'running' ? 'audio' : 'wall');
+  if (clock === 'audio' && !(ctx && ctx.state === 'running')) clock = 'wall';
+  G.clock = clock;
+  if (clock === 'audio') { G.audioT0 = ctx.currentTime + 0.15; G.gt = -0.15; } else { G.gt = 0; }
+  show('play');
+  refreshHud();
+}
+
+function tickGame(dt) {
+  if (G.paused) return;
+  if (G.screen !== 'play' && G.screen !== 'results') return;
+  if (G.clock === 'audio' && AU.ctx) G.gt = AU.ctx.currentTime - G.audioT0;
+  else G.gt += dt;
+  if (G.screen === 'play') {
+    logic();
+    if (G.screen === 'play' && G.clock === 'audio') scheduleAudio();
+    if (G.screen === 'play' && !G.ended && G.gt >= G.song.end) endSong(false);
+  } else if (G.auto && !G.autoDone && G.gt >= G.endAt) {
+    advanceAuto();
+  }
+}
+function advanceAuto() {
+  if (G.idx >= SONGS.length - 1) { G.autoDone = true; toast(T('completeAuto')); return; }
+  startSong(G.idx + 1, G.diff, { auto: true, bot: true, clock: G.clock });
+}
+function scheduleAudio() {
+  const ctx = AU.ctx;
+  if (!ctx) return;
+  const horizon = G.gt + 0.3;
+  const ev = G.song.full;
+  while (G.mIdx < ev.length && ev[G.mIdx].t <= horizon) { playEvent(ev[G.mIdx], G.audioT0 + ev[G.mIdx].t); G.mIdx++; }
+  const bs = G.song.bass;
+  while (G.bIdx < bs.length && bs[G.bIdx] <= horizon) {
+    sndBass(G.audioT0 + bs[G.bIdx], G.song.barDur);
+    boruBar(G.audioT0 + bs[G.bIdx], G.bIdx, G.song.barDur);
+    G.bIdx++;
+  }
+}
+function logic() {
+  const gt = G.gt;
+  if (G.bot) botTick();
+  for (let l = 0; l < 4; l++) {
+    const h = G.holds[l];
+    if (h) {
+      if (gt >= h.t + h.dur) completeHold(l, h);
+      else if (gt >= h.tick) { h.tick = gt + 0.25; G.score += 12 * scoreMult(); G.spirit = Math.min(100, G.spirit + 0.1); }
+    }
+    const L = G.lanes[l];
+    let i = G.lp[l];
+    while (i < L.length) {
+      const n = L[i];
+      if (n.state === 2) { i++; continue; }
+      if (n.state === 0 && gt > n.t + WIN_GOOD + 0.01) { onMiss(n); i++; continue; }
+      break;
+    }
+    G.lp[l] = i;
+  }
+  checkFail();
+}
+function botTick() {
+  // press every note that is due, not only the first one, so the bot keeps up when frames are slow
+  for (let l = 0; l < 4; l++) {
+    const L = G.lanes[l];
+    for (let i = G.lp[l]; i < L.length; i++) {
+      const n = L[i];
+      if (n.state !== 0) continue;
+      if (G.gt < n.t + n.bj) break;
+      const h = G.holds[l];
+      if (h && n.t >= h.t + h.dur) completeHold(l, h);
+      press(l, n.t + n.bj);
+    }
+  }
+}
+function press(l, t) {
+  G.held[l] = true;
+  const L = G.lanes[l];
+  let best = null, bd = Infinity;
+  for (let i = G.lp[l]; i < L.length; i++) {
+    const n = L[i];
+    if (n.t - t > WIN_GOOD) break;
+    if (n.state !== 0) continue;
+    const d = Math.abs(n.t - t);
+    if (d <= WIN_GOOD && d < bd) { bd = d; best = n; }
+  }
+  if (!best) return;
+  const dd = t - best.t;
+  G.hist.push(Math.round(dd * 1000));
+  onHit(best, bd <= WIN_PERFECT ? 'perfect' : 'good');
+}
+function release(l, t) {
+  G.held[l] = false;
+  const n = G.holds[l];
+  if (!n) return;
+  if (t < n.t + n.dur - 0.12) breakHold(l, n); else completeHold(l, n);
+}
+function onHit(n, grade) {
+  const perfect = grade === 'perfect';
+  G.judged++; G.combo++; G.maxCombo = Math.max(G.maxCombo, G.combo); G.cnt[grade]++;
+  n.w = perfect ? 1 : 0.6; G.weight += n.w;
+  layerHit();
+  G.score += (perfect ? 100 : 60) * scoreMult();
+  G.spirit = Math.min(100, G.spirit + (perfect ? 1.2 : 0.6));
+  judgeShow(grade);
+  sndHit(perfect);
+  G.flash[n.lane] = 1; G.instFlash[FAM[n.lane]] = 1;
+  sparks(LANE_X[n.lane], 0.3, HIT_Z, perfect ? 12 : 6, n.lane === 3 ? 0xf1e3c6 : 0xF3D27A);
+  if (n.dur > 0) { n.state = 1; n.tick = G.gt + 0.25; G.holds[n.lane] = n; } else n.state = 2;
+  if (G.combo >= 10 && G.combo % 10 === 0) { petals(lowQ() ? 18 : 36); sndCheer(); }
+}
+// warm-up: notes in the first 2 bars of a song cost no spirit (scores and layers count as usual)
+const warmNote = (n) => !!(G.song && n.t < LEAD + 2 * G.song.barDur);
+function onMiss(n) {
+  G.judged++; G.cnt.miss++; G.combo = 0;
+  layerSlip();
+  if (!warmNote(n)) G.spirit -= 7;
+  n.w = 0; n.state = 2;
+  judgeShow('miss'); sndMiss();
+  checkFail();
+}
+function completeHold(l, n) {
+  n.state = 2; G.holds[l] = null;
+  G.score += 40 * scoreMult(); G.spirit = Math.min(100, G.spirit + 0.6);
+  G.flash[l] = 1;
+}
+function breakHold(l, n) {
+  n.state = 2; G.holds[l] = null;
+  G.cnt.brk++; G.combo = 0; G.judged += 0;
+  layerSlip();
+  G.weight -= n.w * 0.5; n.w *= 0.5;
+  if (!warmNote(n)) G.spirit -= 5;
+  judgeShow('brk'); sndMiss();
+  checkFail();
+}
+function checkFail() {
+  if (G.noFail) { G.spirit = Math.max(0, G.spirit); return; }   // no-fail: the song always plays to the end
+  if (G.screen === 'play' && G.spirit <= 0 && !G.ended) endSong(true);
+}
+
+function endSong(defeat) {
+  G.ended = true;
+  const total = Math.max(1, G.notes.length);
+  const acc = Math.max(0, G.weight / total);
+  const grade = defeat ? 'C' : acc >= 0.95 ? 'S' : acc >= 0.85 ? 'A' : acc >= 0.7 ? 'B' : 'C';
+  const key = `${G.idx}-${G.diff}`;
+  const easy = G.diff === 'easy';
+  const best = easy ? loadBestEasy() : loadBest();
+  const prev = bestOf(G.idx, G.diff);
+  let record = false;
+  if (G.idx >= 0 && !defeat && !G.noFail && (!prev || G.score > prev.score)) {
+    best[key] = { score: Math.round(G.score), grade };
+    if (easy) saveBestEasy(best); else saveBest(best);
+    record = true;
+  }
+  G.result = { defeat, acc, grade, record, noFail: G.noFail, score: Math.round(G.score), maxCombo: G.maxCombo, maxLayers: G.maxLayers, cnt: { ...G.cnt }, hist: G.hist.slice(), name: G.song.name[LANG] };
+  G.endAt = G.gt + 2.5;
+  if (G.auto && G.idx >= SONGS.length - 1) G.autoDone = true;
+  // arena-kit: passport badges and the daily streak (the bot never writes to the player's passport)
+  if (window.Arena && !G.auto && !G.bot && !G.noFail) {
+    if (!defeat && grade === 'S') Arena.award('mehter-s', T('awS'));
+    if (G.maxLayers >= 4) Arena.award('mehter-4layers', T('awLayers'));
+    if (!defeat && G.idx === SONGS.length - 1) Arena.award('mehter-zafer', T('awZafer'));
+    if (G.daily) { const d = Arena.daily(); if (d.day === G.daily) G.result.streak = d.complete(G.result.score); }
+  }
+  showResults();
+  if (window.Arena && Arena.complete) Arena.complete({ mount: $('#scr-results .results-panel') });   // arena-kit v1.1: mehter/complete + one-tap 👍/👎 (nothing on ?auto)
+}
+function showResults() {
+  const r = G.result;
+  if (!r) return;
+  show('results');
+  if (!r.defeat && !playSample('fanfare', 0.9)) sndCheer();
+  const gradeEl = $('#r-grade');
+  if (gradeEl) {
+    setText(gradeEl, r.grade);
+    gradeEl.className = 'grade grade-' + r.grade;
+  }
+  setText($('#res-main'), r.defeat ? T('defeat') : T('cleared'));
+  setText($('#r-daily'), r.streak ? T('daily') + ' · ' + T('dailyLine').replace('{s}', r.streak.streak).replace('{b}', r.streak.best) : '');
+  setText($('#r-title'), r.name + ' · ' + T(G.diff));
+  const recEl = $('#r-record');
+  if (recEl) {
+    let badgeHtml = '';
+    if (r.noFail) {
+      badgeHtml += `<span class="wax-seal-badge" style="background:radial-gradient(circle, #3E7EA6, #2E6B4F);margin-right:6px;">${T('practiceBadge')}</span>`;
+    }
+    if (r.record) {
+      badgeHtml += `<span class="wax-seal-badge"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2l3 6 6 1-4.5 4.5 1 6.5-5.5-3.5L6.5 20l1-6.5L3 9l6-1z"/></svg> ${T('newRecord')}</span>`;
+    }
+    if (r.noFail && !r.record) badgeHtml += `<span>${T('noFailResult')}</span>`;
+    recEl.innerHTML = badgeHtml;
+  }
+  // a defeat off Easy suggests the easier chart (not for the daily song, which is always Normal)
+  const easyBtn = $('#b-easy');
+  if (easyBtn) easyBtn.classList.toggle('hidden', !(r.defeat && G.diff !== 'easy' && G.idx >= 0 && !G.auto));
+  const rows = [[T('score'), fmt(r.score)], [T('maxCombo'), r.maxCombo], [T('maxLayer'), r.maxLayers + '/4'], [T('perfectN'), r.cnt.perfect], [T('goodN'), r.cnt.good], [T('missN'), r.cnt.miss], [T('brkN'), r.cnt.brk], [T('accN'), Math.round(r.acc * 100) + '%'], [T('grade'), r.grade]];
+  $('#r-stats').innerHTML = rows.map(([a, b]) => `<div><span>${a}</span><b>${b}</b></div>`).join('');
+  const bins = new Array(11).fill(0);
+  for (const ms of r.hist) bins[Math.max(0, Math.min(10, Math.floor((ms + 110) / 20)))]++;
+  const mx = Math.max(1, ...bins);
+  $('#r-hist').innerHTML = bins.map((b, idx) => {
+    const isCenter = idx === 5;
+    return `<i class="${isCenter ? 'hist-center' : ''}" style="height:${Math.max(3, Math.round((b / mx) * 100))}%" title="${b}"></i>`;
+  }).join('');
+}
+function goTitle() {
+  stopAll();
+  G.notes = []; G.lanes = [[], [], [], []]; G.song = null; G.visSong = SONGS[G.sel];
+  setLayerGains(4, true);
+  G.paused = false; G.calibOn = false;
+  show('title');
+  refreshBest();
+}
+function pauseGame() {
+  if (G.screen !== 'play' || G.paused) return;
+  G.paused = true;
+  if (G.clock === 'audio' && AU.ctx) AU.ctx.suspend();
+  show('pause');
+}
+function resumeGame() {
+  if (G.screen !== 'pause') return;
+  G.paused = false;
+  if (G.clock === 'audio' && AU.ctx) AU.ctx.resume();
+  show('play');
+}
+function nowSong() { return G.clock === 'audio' && AU.ctx ? AU.ctx.currentTime - G.audioT0 : G.gt; }
+function laneDown(l) {
+  if (G.screen === 'calib') { calibTap(); return; }
+  if (G.screen !== 'play' || G.paused) return;
+  press(l, nowSong() - S.calib);
+  G.flash[l] = Math.max(G.flash[l], 0.25);
+  const tz = $(`#touch .tz[data-lane="${l}"]`);
+  if (tz) { tz.classList.add('active'); setTimeout(() => tz.classList.remove('active'), 120); }
+}
+function laneUp(l) {
+  if (G.screen !== 'play' || G.paused) return;
+  release(l, nowSong() - S.calib);
+  const tz = $(`#touch .tz[data-lane="${l}"]`);
+  if (tz) tz.classList.remove('active');
+}
+
+// ----- preview and calibration --------------------------------------------
+async function previewSong(idx) {
+  stopAll();
+  G.preview = idx;
+  const ctx = await readyAudio();
+  if (!ctx) { toast(T('noAudio'), 'bad'); return; }
+  const s = SONGS[idx];
+  const t0 = ctx.currentTime + 0.05;
+  setLayerGains(4, true);
+  s.bass.forEach((b, i) => { if (b <= 14) boruBar(t0 + b, i, s.barDur); });
+  for (const e of s.full) { if (e.t > 14) break; playEvent(e, t0 + e.t); }
+  for (const b of s.bass) { if (b > 14) break; sndBass(t0 + b, s.barDur); }
+}
+async function calibStart() {
+  const ctx = await readyAudio();
+  if (!ctx) { setText($('#cal-msg'), T('calibNeedAudio')); return; }
+  stopAll();
+  CAL.t0 = ctx.currentTime + 0.8;
+  CAL.taps = [];
+  CAL.end = CAL.t0 + CAL.n * CAL.beat + 0.5;
+  for (let i = 0; i < CAL.n; i++) sndClick(CAL.t0 + i * CAL.beat, i % 4 === 0);
+  CAL.on = true;
+  setText($('#cal-res'), '');
+  setText($('#cal-msg'), '');
+}
+function calibTap() {
+  if (!CAL.on || !AU.ctx) return;
+  const now = AU.ctx.currentTime - CAL.t0;
+  const idx = Math.round(now / CAL.beat);
+  const d = now - idx * CAL.beat;
+  if (idx >= 2 && idx < CAL.n && Math.abs(d) < 0.3) CAL.taps.push(d);
+}
+function calibTick() {
+  if (!CAL.on || !AU.ctx) return;
+  const now = AU.ctx.currentTime;
+  const phase = ((now - CAL.t0) / CAL.beat) % 1;
+  const dot = $('#dot');
+  if (dot && now >= CAL.t0) dot.style.transform = `scale(${1 + 0.35 * Math.max(0, 1 - phase * 4)})`;
+  if (now > CAL.end) {
+    CAL.on = false;
+    if (CAL.taps.length < 4) { setText($('#cal-res'), ''); setText($('#cal-msg'), T('calibNone')); return; }
+    const v = CAL.taps.slice().sort((a, b) => a - b);
+    const med = v[Math.floor(v.length / 2)];
+    S.calib = Math.round(med * 1000) / 1000;
+    saveSettings();
+    setText($('#cal-res'), `${T('calibDone')}: ${Math.round(S.calib * 1000)} ms`);
+    setText($('#cal-msg'), T('calibSaved'));
+  }
+}
+
+// ----- three.js world (built in code) --------------------------------------
+let R = null, scene = null, cam = null, sun = null, hemi = null, BEAT_PULSE = 0;
+const C = {};
+const BAND = [];
+const CROWD = [];
+const TMP = { c: null, dusk: null, night: null, m: null, p: null, q: null, s: null, e: null, col: null };
+const PTS = {};
+const BANNERS = [];
+const BAND_SCALE = 1.5;   // band size on screen (pivot at z = -15)
+const BAND_Z = 15;
+
+function lamb(hex = 0xffffff) { return new THREE.MeshLambertMaterial({ color: hex, flatShading: true }); }
+function inst(geo, mat, n, cast = true) {
+  const m = new THREE.InstancedMesh(geo, mat, Math.max(1, n));
+  m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  m.castShadow = cast && !lowQ() ? true : false;
+  m.receiveShadow = false;
+  scene.add(m);
+  return m;
+}
+function put(mesh, i, x, y, z, sx = 1, sy = 1, sz = 1, ry = 0, rx = 0) {
+  TMP.e.set(rx, ry, 0);
+  TMP.q.setFromEuler(TMP.e);
+  TMP.p.set(x, y, z);
+  TMP.s.set(sx, sy, sz);
+  TMP.m.compose(TMP.p, TMP.q, TMP.s);
+  mesh.setMatrixAt(i, TMP.m);
+}
+function paint(mesh, i, hex) { mesh.setColorAt(i, TMP.col.setHex(hex)); }
+
+class Mesh3 {
+  constructor() { this.p = []; this.c = []; }
+  tri(a, b, c, col) { for (const v of [a, b, c]) { this.p.push(v[0], v[1], v[2]); this.c.push(col.r, col.g, col.b); } }
+  box(x0, x1, y0, y1, z0, z1, hex) {
+    const col = new THREE.Color(hex);
+    const v = [[x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0], [x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]];
+    const f = [[0, 1, 2, 3], [5, 4, 7, 6], [4, 0, 3, 7], [1, 5, 6, 2], [3, 2, 6, 7], [4, 5, 1, 0]];
+    for (const [a, b, c, d] of f) { this.tri(v[a], v[b], v[c], col); this.tri(v[a], v[c], v[d], col); }
+  }
+  geo() {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(this.p, 3));
+    g.setAttribute('color', new THREE.Float32BufferAttribute(this.c, 3));
+    g.computeVertexNormals();
+    return g;
+  }
+}
+
+function softTexture() {
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = 64;
+  const g = cv.getContext('2d');
+  const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  gr.addColorStop(0, 'rgba(255,255,255,1)');
+  gr.addColorStop(0.45, 'rgba(255,255,255,0.6)');
+  gr.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = gr;
+  g.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(cv);
+}
+function makePts(n, size) {
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(n * 3), col = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) pos[i * 3 + 1] = -99;
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  const mat = new THREE.PointsMaterial({ size, map: PTS.tex, vertexColors: true, transparent: true, depthWrite: false });
+  const p = new THREE.Points(geo, mat);
+  p.frustumCulled = false;
+  scene.add(p);
+  return { p, pos, col, vel: new Float32Array(n * 3), life: new Float32Array(n), n, cur: 0 };
+}
+// Pre-allocated InstancedBufferGeometry particle pool (max 200 particles) for per-hit sparks
+const MAX_SPARKS = 200;
+function makeSparkPool(n, size) {
+  const geo = new THREE.InstancedBufferGeometry();
+  const baseQuad = new THREE.PlaneGeometry(size, size);
+  geo.setIndex(baseQuad.index);
+  geo.setAttribute('position', baseQuad.attributes.position);
+  geo.setAttribute('uv', baseQuad.attributes.uv);
+  geo.instanceCount = n;
+
+  const pos = new Float32Array(n * 3);
+  const col = new Float32Array(n * 3);
+  const life = new Float32Array(n);
+  const maxLife = new Float32Array(n);
+  const scale = new Float32Array(n);
+  const vel = new Float32Array(n * 3);
+
+  for (let i = 0; i < n; i++) {
+    pos[i * 3 + 1] = -99;
+    life[i] = 0;
+    maxLife[i] = 0.5;
+    scale[i] = 1.0;
+  }
+
+  const aOffset = new THREE.InstancedBufferAttribute(pos, 3);
+  const aColor = new THREE.InstancedBufferAttribute(col, 3);
+  const aLife = new THREE.InstancedBufferAttribute(life, 1);
+  const aMaxLife = new THREE.InstancedBufferAttribute(maxLife, 1);
+  const aScale = new THREE.InstancedBufferAttribute(scale, 1);
+
+  aOffset.setUsage(THREE.DynamicDrawUsage);
+  aColor.setUsage(THREE.DynamicDrawUsage);
+  aLife.setUsage(THREE.DynamicDrawUsage);
+  aMaxLife.setUsage(THREE.DynamicDrawUsage);
+  aScale.setUsage(THREE.DynamicDrawUsage);
+
+  geo.setAttribute('aOffset', aOffset);
+  geo.setAttribute('aColor', aColor);
+  geo.setAttribute('aLife', aLife);
+  geo.setAttribute('aMaxLife', aMaxLife);
+  geo.setAttribute('aScale', aScale);
+
+  const mat = new THREE.ShaderMaterial({
+    uniforms: {
+      map: { value: PTS.tex },
+    },
+    vertexShader: `
+      attribute vec3 aOffset;
+      attribute vec3 aColor;
+      attribute float aLife;
+      attribute float aMaxLife;
+      attribute float aScale;
+      varying vec3 vColor;
+      varying vec2 vUv;
+      varying float vAlpha;
+      void main() {
+        vColor = aColor;
+        vUv = uv;
+        if (aLife <= 0.0) {
+          vAlpha = 0.0;
+          gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+          return;
+        }
+        float normLife = clamp(aLife / max(0.001, aMaxLife), 0.0, 1.0);
+        vAlpha = normLife;
+        vec4 mvPosition = modelViewMatrix * vec4(aOffset, 1.0);
+        mvPosition.xy += position.xy * (aScale * (0.6 + 0.4 * normLife));
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D map;
+      varying vec3 vColor;
+      varying vec2 vUv;
+      varying float vAlpha;
+      void main() {
+        if (vAlpha <= 0.0) discard;
+        vec4 tex = texture2D(map, vUv);
+        gl_FragColor = vec4(vColor * (1.0 + vAlpha * 0.5), tex.a * vAlpha);
+      }
+    `,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.frustumCulled = false;
+  scene.add(mesh);
+
+  return {
+    isInstanced: true,
+    p: mesh,
+    mesh,
+    geo,
+    geometry: geo,
+    pos,
+    col,
+    vel,
+    life,
+    maxLife,
+    scale,
+    aOffset,
+    aColor,
+    aLife,
+    aMaxLife,
+    aScale,
+    n,
+    cur: 0,
+    dirtyProps: false,
+  };
+}
+function emit(pool, x, y, z, vx, vy, vz, life, hex) {
+  const i = pool.cur; pool.cur = (pool.cur + 1) % pool.n;
+  pool.pos[i * 3] = x; pool.pos[i * 3 + 1] = y; pool.pos[i * 3 + 2] = z;
+  pool.vel[i * 3] = vx; pool.vel[i * 3 + 1] = vy; pool.vel[i * 3 + 2] = vz;
+  pool.life[i] = life;
+  if (pool.maxLife) pool.maxLife[i] = life;
+  if (pool.scale) pool.scale[i] = 1.0;
+  TMP.col.setHex(hex);
+  pool.col[i * 3] = TMP.col.r; pool.col[i * 3 + 1] = TMP.col.g; pool.col[i * 3 + 2] = TMP.col.b;
+  if (pool.isInstanced) pool.dirtyProps = true;
+}
+function sparks(x, y, z, n, hex) { for (let i = 0; i < n; i++) emit(PTS.spark, x, y, z, (Math.random() - 0.5) * 3, 2 + Math.random() * 3, (Math.random() - 0.5) * 2, 0.5, hex); }
+function petals(n) {
+  const pal = [0xD4AF37, 0xA4161A, 0xF1E3C6, 0xF3D27A];   // gold and crimson confetti on a combo of 10
+  for (let i = 0; i < n; i++) {
+    const side = Math.random() < 0.5 ? -1 : 1;
+    emit(PTS.petal, side * (8 + Math.random() * 4), 5.5 + Math.random() * 2, -22 + Math.random() * 26, (Math.random() - 0.5) * 1.2, -0.8 - Math.random(), (Math.random() - 0.5) * 1.2, 4 + Math.random() * 2, pal[i % pal.length]);
+  }
+}
+function tickPool(pool, dt, g) {
+  const p = pool.pos, v = pool.vel, L = pool.life;
+  for (let i = 0; i < pool.n; i++) {
+    if (L[i] <= 0) continue;
+    L[i] -= dt;
+    v[i * 3 + 1] -= g * dt;
+    p[i * 3] += v[i * 3] * dt; p[i * 3 + 1] += v[i * 3 + 1] * dt; p[i * 3 + 2] += v[i * 3 + 2] * dt;
+    if (L[i] <= 0 || p[i * 3 + 1] < 0) { L[i] = 0; p[i * 3 + 1] = -99; }
+  }
+  if (pool.isInstanced) {
+    pool.aOffset.needsUpdate = true;
+    pool.aLife.needsUpdate = true;
+    if (pool.dirtyProps) {
+      pool.aColor.needsUpdate = true;
+      pool.aMaxLife.needsUpdate = true;
+      pool.aScale.needsUpdate = true;
+      pool.dirtyProps = false;
+    }
+  } else {
+    pool.p.geometry.attributes.position.needsUpdate = true;
+    // colours are written by emit(); without this flag the GPU keeps the all-zero (black) colours
+    pool.p.geometry.attributes.color.needsUpdate = true;
+  }
+}
+
+// one house on the square: plastered wall, gold cornice, a row of arches with striped awnings, crenellated roof
+function arcadeHouse(m, side, xa, w, z, d, h, wall) {
+  const fx = side < 0 ? xa + w : xa;      // street-facing wall
+  const dir = -side;                      // towards the avenue
+  const at = (depth) => [Math.min(fx, fx + dir * depth), Math.max(fx, fx + dir * depth)];
+  m.box(xa, xa + w, 0, h, z, z + d, wall);
+  const [c0, c1] = at(0.3);
+  m.box(c0, c1, h - 0.4, h + 0.2, z - 0.05, z + d + 0.05, 0xD4AF37);
+  let k = 0;
+  for (let zz = z + 0.6; zz + 1.3 < z + d; zz += 2.4, k++) {
+    const [a0, a1] = at(0.12);
+    m.box(a0, a1, 0, 2.3, zz, zz + 1.1, 0x2a1d12);                       // doorway
+    m.box(a0, a1, 2.3, 2.5, zz + 0.1, zz + 1.0, 0xF1E3C6);               // arch courses, narrowing to the crown
+    m.box(a0, a1, 2.5, 2.7, zz + 0.25, zz + 0.85, 0xF1E3C6);
+    m.box(a0, a1, 2.7, 2.85, zz + 0.4, zz + 0.7, 0xF1E3C6);
+    m.box(a0, a1, 0, 2.3, zz - 0.12, zz, 0xd8c79a);                      // pillars
+    m.box(a0, a1, 0, 2.3, zz + 1.1, zz + 1.22, 0xd8c79a);
+    const [w0, w1] = at(0.7);
+    m.box(w0, w1, 2.95, 3.05, zz - 0.2, zz + 1.3, k % 2 ? 0x1B4332 : 0xA4161A);   // striped awning
+  }
+  for (let zz = z + 0.3; zz < z + d - 0.5; zz += 1.1) {
+    if (Math.floor(zz * 3) % 3 !== 0) m.box(xa + 0.2, xa + w - 0.2, h + 0.2, h + 0.7, zz, zz + 0.5, wall);   // roof battlements
+  }
+}
+
+// mosaic floor of the square: a star-and-diamond tile drawn on a canvas, laid over the plain slab
+function mosaicTexture() {
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = 128;
+  const g = cv.getContext('2d');
+  g.fillStyle = '#cbb68a';
+  g.fillRect(0, 0, 128, 128);
+  g.fillStyle = '#A4161A';
+  g.beginPath(); g.moveTo(64, 14); g.lineTo(90, 64); g.lineTo(64, 114); g.lineTo(38, 64); g.closePath(); g.fill();
+  g.fillStyle = '#1B4332';
+  g.beginPath(); g.moveTo(64, 36); g.lineTo(78, 64); g.lineTo(64, 92); g.lineTo(50, 64); g.closePath(); g.fill();
+  g.fillStyle = '#D4AF37';
+  g.beginPath(); g.arc(64, 64, 6, 0, Math.PI * 2); g.fill();
+  g.strokeStyle = '#6b5a3a'; g.lineWidth = 3; g.strokeRect(1, 1, 126, 126);
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(2, 12);
+  tex.anisotropy = 4;
+  return tex;
+}
+
+function buildWorld() {
+  const m = new Mesh3();
+  m.box(-40, 40, -0.3, 0, -50, 22, 0x1b4332);
+  m.box(-6, 6, 0, 0.02, -50, 22, 0xb89d6e);
+  m.box(-7.5, -6, 0, 0.25, -50, 22, 0xd8c79a);
+  m.box(6, 7.5, 0, 0.25, -50, 22, 0xd8c79a);
+  m.box(-2.5, 2.5, 0.02, 0.05, -50, 8, 0xA4161A);
+  for (let i = 0; i < 4; i++) m.box(LANE_X[i] - 0.47, LANE_X[i] + 0.47, 0.05, 0.08, -12.6, 2.6, i % 2 ? 0x2b5c46 : 0x1b4332);
+  for (const x of [-2, -1, 0, 1, 2]) m.box(x - 0.035, x + 0.035, 0.05, 0.1, -12.6, 2.6, 0xD4AF37);
+  // arcaded houses around the square, seeded so every load looks the same
+  let seed = 7;
+  const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+  const WALL = [0xe9dcc0, 0xd9c08a, 0x9b3a2a, 0xc9b58a];
+  for (const side of [-1, 1]) {
+    for (let z = -50; z < 20;) {
+      const w = rnd() * 2 + 4, h = rnd() * 3 + 6, d = rnd() * 2 + 6;
+      const xa = side < 0 ? -14 - w : 14;
+      arcadeHouse(m, side, xa, w, z, d, h, WALL[Math.floor(rnd() * WALL.length)]);
+      z += d + 0.4;
+    }
+  }
+  // poles for torches and banners
+  for (const side of [-1, 1]) {
+    const x = side * 6.8;
+    for (let z = -30; z <= 8; z += 7) m.box(x - 0.07, x + 0.07, 0.25, 3.4, z - 0.07, z + 0.07, 0x3b2a1a);
+    for (const z of [-18, -6, 6]) m.box(x - 0.06, x + 0.06, 0.25, 4.9, z - 0.06, z + 0.06, 0x3b2a1a);
+  }
+  // a mosque dome closing the far end of the square, and two minarets either side of the houses
+  m.box(-5, 5, 0, 3, -56, -49, 0xF1E3C6);
+  m.box(-4, 4, 3, 4.2, -55.6, -49.4, 0x5d7266);
+  m.box(-3, 3, 4.2, 5.2, -55.2, -49.8, 0x5d7266);
+  m.box(-1.8, 1.8, 5.2, 6, -54.8, -50.2, 0x5d7266);
+  m.box(-0.12, 0.12, 6, 7.2, -52.6, -52.4, 0xD4AF37);
+  for (const side of [-1, 1]) {
+    const x = side * 24, z = -38;
+    m.box(x - 1.1, x + 1.1, 0, 3, z - 1.1, z + 1.1, 0xF1E3C6);
+    m.box(x - 0.7, x + 0.7, 3, 11, z - 0.7, z + 0.7, 0xF1E3C6);
+    m.box(x - 0.95, x + 0.95, 7.4, 7.8, z - 0.95, z + 0.95, 0xD4AF37);
+    m.box(x - 0.5, x + 0.5, 11, 12.4, z - 0.5, z + 0.5, 0xF1E3C6);
+    m.box(x - 0.55, x + 0.55, 12.4, 12.8, z - 0.55, z + 0.55, 0xD4AF37);
+    m.box(x - 0.1, x + 0.1, 12.8, 14.6, z - 0.1, z + 0.1, 0xD4AF37);
+  }
+  C.world = new THREE.Mesh(m.geo(), new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true, side: THREE.DoubleSide }));
+  C.world.receiveShadow = !lowQ();
+  scene.add(C.world);
+  const tiles = new THREE.Mesh(new THREE.PlaneGeometry(12, 72), new THREE.MeshLambertMaterial({ map: mosaicTexture() }));
+  tiles.rotation.x = -Math.PI / 2;
+  tiles.position.set(0, 0.025, -14);
+  tiles.receiveShadow = !lowQ();
+  scene.add(tiles);
+}
+
+// a banner cloth: field colour, gold border, crescent and star (drawn on a canvas, so no image file is needed)
+function bannerTexture(field) {
+  const cv = document.createElement('canvas');
+  cv.width = 128; cv.height = 256;
+  const g = cv.getContext('2d');
+  g.fillStyle = field; g.fillRect(0, 0, 128, 256);
+  g.strokeStyle = '#D4AF37'; g.lineWidth = 8; g.strokeRect(10, 10, 108, 236);
+  g.fillStyle = '#D4AF37'; g.fillRect(14, 186, 100, 6); g.fillRect(14, 200, 100, 6);
+  g.fillStyle = '#D4AF37';
+  g.beginPath(); g.arc(64, 96, 24, 0, Math.PI * 2); g.fill();          // crescent: gold disc with a field-coloured bite
+  g.fillStyle = field;
+  g.beginPath(); g.arc(73, 90, 20, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#D4AF37';
+  g.beginPath();
+  for (let i = 0; i < 10; i++) {                                         // five-point star
+    const r = i % 2 ? 6 : 14, a = -Math.PI / 2 + i * Math.PI / 5;
+    g.lineTo(96 + Math.cos(a) * r, 74 + Math.sin(a) * r);
+  }
+  g.closePath(); g.fill();
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
+  return tex;
+}
+
+function buildBanners() {
+  const fields = ['#A4161A', '#1B4332', '#A4161A', '#1B4332', '#A4161A', '#1B4332'];
+  let k = 0;
+  for (const side of [-1, 1]) {
+    for (const z of [-18, -6, 6]) {
+      const geo = new THREE.PlaneGeometry(1.2, 2.6, 2, 8);
+      const mesh = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: bannerTexture(fields[k]), side: THREE.DoubleSide }));
+      mesh.position.set(side * 6.72, 2.9, z);
+      mesh.rotation.y = side < 0 ? Math.PI / 2 : -Math.PI / 2;
+      scene.add(mesh);
+      BANNERS.push({ mesh, base: geo.attributes.position.array.slice(), ph: k * 1.3 });
+      k++;
+    }
+  }
+}
+
+function buildTrees() {
+  // plane trees: tall pale trunk, canopy made of three leafy clumps (instanced, 3 per tree)
+  const N = 16;
+  C.trunk = inst(new THREE.CylinderGeometry(0.1, 0.16, 2.6, 7), lamb(0x9a8a72), N);
+  C.canopy = inst(new THREE.IcosahedronGeometry(0.9, 0), lamb(0xffffff), N * 3);
+  const greens = [0x6b7a34, 0x7d8a3c, 0x8a7a2f];
+  const CLUMP = [[0, 0, 0, 1], [0.55, -0.2, 0.15, 0.75], [-0.5, -0.1, -0.2, 0.8]];
+  let i = 0;
+  for (const side of [-1, 1]) for (let z = -32; z <= 10; z += 6) {
+    const x = side * 8.4;
+    put(C.trunk, i, x, 1.3, z);
+    CLUMP.forEach(([dx, dy, dz, s], k) => {
+      put(C.canopy, i * 3 + k, x + dx, 3.4 + dy, z + dz, s, s, s);
+      paint(C.canopy, i * 3 + k, greens[i % greens.length]);
+    });
+    i++;
+  }
+  C.trunk.instanceMatrix.needsUpdate = true;
+  C.canopy.instanceMatrix.needsUpdate = true;
+  C.canopy.instanceColor.needsUpdate = true;
+}
+
+function buildTorches() {
+  const pos = [];
+  for (const side of [-1, 1]) for (let z = -30; z <= 8; z += 7) pos.push([side * 6.8, z]);
+  C.torchN = pos.length;
+  C.flames = inst(new THREE.ConeGeometry(0.16, 0.5, 6), new THREE.MeshLambertMaterial({ color: 0xffb347, emissive: 0xff7a1a, emissiveIntensity: 0.4 }), pos.length, false);
+  C.glows = inst(new THREE.SphereGeometry(0.6, 8, 6), new THREE.MeshLambertMaterial({ color: 0xffa040, emissive: 0xff8020, transparent: true, opacity: 0, depthWrite: false }), pos.length, false);
+  C.flameMat = C.flames.material;
+  C.glowMat = C.glows.material;
+  C.torchPos = pos;
+}
+
+function buildCrowd() {
+  let seed = 99;
+  const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+  const PAL = [0xA4161A, 0x1B4332, 0xD4AF37, 0xF1E3C6, 0x3a2a1a, 0x2b4a7a, 0x7a1414, 0x5d4a3a];
+  for (const side of [-1, 1]) for (let row = 0; row < 3; row++) for (let z = -30; z < 10; z += 0.9) {
+    CROWD.push({ x: side * (9.3 + row * 1.05) + (rnd() - 0.5) * 0.2, z: z + (rnd() - 0.5) * 0.3, h: 0.9 + rnd() * 0.25, ph: rnd() * 6.28, c: PAL[Math.floor(rnd() * PAL.length)] });
+  }
+  const n = CROWD.length;
+  // people, not boxes: tapered torso, round head, two arms (instanced; arms are 2 per figure)
+  C.cBody = inst(new THREE.CylinderGeometry(0.17, 0.22, 1, 7), lamb(0xffffff), n, false);
+  C.cHead = inst(new THREE.SphereGeometry(0.14, 8, 6), lamb(0xd8a57c), n, false);
+  C.cArm = inst(new THREE.CylinderGeometry(0.045, 0.04, 0.55, 5), lamb(0xffffff), n * 2, false);
+  CROWD.forEach((c, i) => { paint(C.cBody, i, c.c); paint(C.cArm, 2 * i, c.c); paint(C.cArm, 2 * i + 1, c.c); });
+  C.cBody.instanceColor.needsUpdate = true;
+  C.cArm.instanceColor.needsUpdate = true;
+}
+
+function buildBand() {
+  const rows = [
+    ['kos', 'kos', 'kos', 'kos', 'kos', 'kos'],
+    ['davul', 'davul', 'davul', 'davul', 'davul', 'davul'],
+    ['zurna', 'zurna', 'zurna', 'zurna', 'zurna', 'zurna'],
+    ['boru', 'boru', 'boru', 'boru', 'boru', 'boru'],
+    ['cevgen', 'cevgen', 'cevgen', 'cevgen', 'cevgen', 'cevgen'],
+  ];
+  BAND.length = 0;
+  // Dört Katman: each member belongs to a layer (0 davul + kös, 1 zurna, 2 boru, 3 zil). Out of the layer
+  // count a member stands at the roadside (sx, sz, sr); the mehterbaşı (lead) always marches.
+  const KIND_LAYER = { kos: 0, davul: 0, zurna: 1, boru: 2, cevgen: 3 };
+  const rr = mulberry32(7);
+  rows.forEach((kinds, r) => kinds.forEach((kind, c) => {
+    const x = (c - 2.5) * 1.35, side = c < 3 ? -1 : 1;
+    BAND.push({ kind, x, z: -15.2 - r * 1.7, row: r, lead: false, coat: (c + r) % 2 ? 0xA4161A : 0x1B4332,
+      layer: KIND_LAYER[kind], sx: side * (3.9 + rr() * 0.5) + (c % 3 - 1) * 0.12 * side, sz: -15.2 - r * 1.7 + (c % 3 - 1) * 0.7 + (rr() - 0.5) * 0.5,
+      sr: side * (1.2 + rr() * 0.8), inF: 1, ph: rr() * 6.28 });
+  }));
+  BAND.push({ kind: 'cevgen', x: 0, z: -13.4, row: -1, lead: true, coat: 0xF1E3C6, layer: 0, sx: 0, sz: -13.4, sr: 0, inF: 1, ph: 0 });
+  const cnt = {};
+  for (const m of BAND) { m.ki = cnt[m.kind] || 0; cnt[m.kind] = m.ki + 1; }
+  const N = BAND.length;
+  C.body = inst(new THREE.BoxGeometry(0.46, 0.9, 0.28), lamb(0xffffff), N);
+  C.head = inst(new THREE.SphereGeometry(0.16, 10, 8), lamb(0xd8a57c), N);
+  C.fez = inst(new THREE.CylinderGeometry(0.13, 0.16, 0.22, 8), lamb(0xb3261e), N);
+  C.davul = inst(new THREE.CylinderGeometry(0.26, 0.26, 0.36, 10), lamb(0x9b5a2b), cnt.davul);
+  C.kos = inst(new THREE.CylinderGeometry(0.42, 0.42, 0.36, 12), lamb(0xd4af37), cnt.kos);
+  C.zurna = inst(new THREE.CylinderGeometry(0.03, 0.07, 0.7, 6), lamb(0xe0b84a), cnt.zurna);
+  // boru (natural horn): a long brass tube with a wide bell, procedural (the CC0 instrument set has none)
+  C.boru = inst(new THREE.CylinderGeometry(0.03, 0.17, 1.0, 10, 1, true), new THREE.MeshLambertMaterial({ color: 0xffffff, flatShading: true, side: THREE.DoubleSide }), cnt.boru);
+  C.staff = inst(new THREE.CylinderGeometry(0.035, 0.035, 2.1, 6), lamb(0x5a3a1a), cnt.cevgen);
+  C.ring = inst(new THREE.CylinderGeometry(0.16, 0.16, 0.05, 10), lamb(0xD4AF37), cnt.cevgen);   // the zil (cymbal) flashes on lane-3 hits
+  C.stick = inst(new THREE.CylinderGeometry(0.02, 0.028, 0.5, 5), lamb(0x5a3a1a), cnt.davul, false);   // drum sticks
+  // sash: procedural fallback; models/band_figure.glb replaces the geometry when it loads
+  C.sash = inst(new THREE.CylinderGeometry(0.225, 0.225, 0.1, 8).scale(1, 1, 0.66), lamb(0xffffff), N, false);
+  BAND.forEach((m, i) => {
+    paint(C.body, i, m.coat);
+    paint(C.head, i, 0xd8a57c);
+    paint(C.fez, i, m.lead ? 0xD4AF37 : 0xF1E3C6);
+    paint(C.sash, i, m.lead ? 0xF1E3C6 : 0xD4AF37);
+    if (m.kind === 'davul') { paint(C.davul, m.ki, 0x9b5a2b); paint(C.stick, m.ki, 0x5a3a1a); }
+    if (m.kind === 'kos') paint(C.kos, m.ki, 0xD4AF37);
+    if (m.kind === 'zurna') paint(C.zurna, m.ki, 0xE0B84A);
+    if (m.kind === 'boru') paint(C.boru, m.ki, 0xE8C25A);
+    if (m.kind === 'cevgen') { paint(C.staff, m.ki, 0x5a3a1a); paint(C.ring, m.ki, 0xD4AF37); }
+  });
+  const BAND_PARTS = ['body', 'head', 'fez', 'sash', 'davul', 'kos', 'zurna', 'boru', 'staff', 'ring', 'stick'];
+  for (const k of BAND_PARTS) C[k].instanceColor.needsUpdate = true;
+  // bring the band closer to the camera: scale every band mesh about its centre (z = -15), so the rows
+  // keep their place on the avenue and the note highway in front is not covered
+  for (const k of BAND_PARTS) {
+    C[k].scale.setScalar(BAND_SCALE);
+    C[k].position.set(0, 0, -BAND_Z * (1 - BAND_SCALE));
+  }
+}
+
+function buildNotes() {
+  C.notes = new THREE.InstancedMesh(new THREE.BoxGeometry(0.82, 0.14, 0.36), lamb(0xffffff), 720);
+  C.notes.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  C.notes.count = 0;
+  C.holds = new THREE.InstancedMesh(new THREE.BoxGeometry(0.42, 0.08, 1), lamb(0xffffff), 180);
+  C.holds.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  C.holds.count = 0;
+  C.glow = new THREE.InstancedMesh(new THREE.BoxGeometry(0.94, 0.03, 1.2), lamb(0xffffff), 4);
+  C.glow.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  for (let l = 0; l < 4; l++) put(C.glow, l, LANE_X[l], 0.1, HIT_Z - 0.3);
+  C.glow.instanceMatrix.needsUpdate = true;
+  C.hit = new THREE.Mesh(new THREE.BoxGeometry(4.3, 0.07, 0.12), new THREE.MeshLambertMaterial({ color: 0xD4AF37, emissive: 0x3a2600 }));
+  C.hit.position.set(0, 0.13, HIT_Z);
+  scene.add(C.notes, C.holds, C.glow, C.hit);
+}
+
+function buildFx() {
+  PTS.tex = softTexture();
+  const half = lowQ() ? 0.5 : 1;
+  PTS.petal = makePts(Math.round(220 * half), 0.42);
+  PTS.spark = makeSparkPool(MAX_SPARKS, 0.24);
+}
+
+function buildThree() {
+  const canvas = $('#gl');
+  R = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+  R.setPixelRatio(Math.min(window.devicePixelRatio || 1, lowQ() ? 1 : 1.5));
+  if (window.Arena) Arena.perf.attach(R, { max: Math.min(window.devicePixelRatio || 1, lowQ() ? 1 : 1.5) }); // arena-kit: dynamic pixel ratio, same cap
+  R.shadowMap.enabled = !lowQ();
+  R.shadowMap.type = THREE.PCFShadowMap;
+  scene = new THREE.Scene();
+  TMP.c = new THREE.Color(); TMP.dusk = new THREE.Color(0xd9864a); TMP.night = new THREE.Color(0x0b132b);
+  TMP.m = new THREE.Matrix4(); TMP.p = new THREE.Vector3(); TMP.s = new THREE.Vector3(); TMP.q = new THREE.Quaternion(); TMP.e = new THREE.Euler(); TMP.col = new THREE.Color();
+  scene.background = new THREE.Color().copy(TMP.dusk);
+  scene.fog = new THREE.Fog(TMP.dusk.getHex(), 30, 80);
+  cam = new THREE.PerspectiveCamera(50, 1, 0.1, 200);
+  cam.position.set(0, 6.2, 13);
+  cam.lookAt(0, 0.4, -4);
+  hemi = new THREE.HemisphereLight(0xfff0d0, 0x1b4332, 0.95);   // warm sky, green garden bounce
+  sun = new THREE.DirectionalLight(0xffd9a0, 1.2);
+  sun.position.set(-7, 14, 8);
+  sun.target.position.set(0, 0, -8);
+  sun.castShadow = !lowQ();
+  sun.shadow.mapSize.set(1024, 1024);
+  const sc = sun.shadow.camera;
+  sc.left = -14; sc.right = 14; sc.top = 12; sc.bottom = -14; sc.near = 2; sc.far = 60;
+  sc.updateProjectionMatrix();
+  sun.shadow.bias = -0.0008;
+  scene.add(hemi, sun, sun.target);
+  buildFx();
+  buildWorld();
+  buildBanners();
+  buildTrees();
+  buildTorches();
+  buildCrowd();
+  buildBand();
+  buildNotes();
+  resize();
+}
+
+function resize() {
+  if (!R) return;
+  const w = window.innerWidth, h = window.innerHeight;
+  R.setSize(w, h, false);
+  cam.aspect = w / h;
+  const fovHalf = Math.atan(Math.max(6.5, 5.6 / cam.aspect) / 14);
+  cam.fov = Math.min(85, Math.max(45, THREE.MathUtils.radToDeg(fovHalf * 2)));
+  cam.updateProjectionMatrix();
+}
+
+// ----- optional CC0 assets: loaded after the first frame; the procedural world stays until they arrive -----
+const ASSET_ON = !FLAG.noassets;
+function geoOf(gltf, name) {
+  let geo = null;
+  gltf.scene.traverse((o) => { if (!geo && o.isMesh && o.name === name) geo = o.geometry; });
+  if (!geo) throw new Error('missing mesh ' + name);
+  return geo;
+}
+async function loadAssets() {
+  if (!ASSET_ON) return;
+  try {
+    const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+    const gl = new GLTFLoader();
+    const [fig, ins] = await Promise.all([gl.loadAsync('assets/models/band_figure.glb'), gl.loadAsync('assets/models/band_instruments.glb')]);
+    // collect every geometry first so a missing part never leaves the band half-swapped
+    const geos = [
+      [C.body, geoOf(fig, 'body')], [C.head, geoOf(fig, 'head')], [C.fez, geoOf(fig, 'hat')], [C.sash, geoOf(fig, 'sash')],
+      [C.davul, geoOf(ins, 'davul')], [C.kos, geoOf(ins, 'kos')], [C.zurna, geoOf(ins, 'zurna')],
+      [C.staff, geoOf(ins, 'cevgen_staff')], [C.ring, geoOf(ins, 'cevgen_ring')],
+    ];
+    for (const [mesh, geo] of geos) { mesh.geometry.dispose(); mesh.geometry = geo; }
+    G.assets.band = true;
+  } catch (e) { /* keep the procedural band */ }
+}
+async function loadCobble() {
+  if (!ASSET_ON) return;
+  try {
+    const tex = await new THREE.TextureLoader().loadAsync('assets/textures/cobble.jpg');
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(3, 18);
+    tex.anisotropy = 4;
+    const geo = new THREE.PlaneGeometry(12, 72);
+    geo.rotateX(-Math.PI / 2);
+    const mesh = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: tex, color: 0xd8c7a0 }));
+    mesh.position.set(0, 0.03, -14);   // covers the purple avenue slab (x -6..6, z -50..22), under the red carpet
+    mesh.receiveShadow = !lowQ();
+    scene.add(mesh);
+    G.assets.cobble = true;
+  } catch (e) { /* keep the flat avenue */ }
+}
+// dusk HDRI as image-based light; High tier only (Low keeps the plain hemisphere light)
+async function loadSky() {
+  if (!ASSET_ON || lowQ()) return;
+  try {
+    const { RGBELoader } = await import('three/addons/loaders/RGBELoader.js');
+    const hdr = await new RGBELoader().loadAsync('assets/sky/dusk.hdr');
+    const pm = new THREE.PMREMGenerator(R);
+    scene.environment = pm.fromEquirectangular(hdr).texture;
+    hdr.dispose(); pm.dispose();
+    G.assets.sky = true;
+  } catch (e) { /* keep the hemisphere light only */ }
+}
+async function fetchSamples() {
+  if (!ASSET_ON) return;
+  for (const k of Object.keys(SAMPLE_FILES)) {
+    try { const r = await fetch(SAMPLE_FILES[k]); if (r.ok) SAMPLE_BYTES[k] = await r.arrayBuffer(); } catch (e) { /* offline or file:// */ }
+  }
+  if (AU.ctx) decodeSamples(AU.ctx);
+}
+function onUiClick(e) {
+  if (!AU.ctx || !e.target.closest || !e.target.closest('button, .card')) return;
+  if (!playSample('click', 0.9) && AU.sfx) sndClick(AU.ctx.currentTime + 0.001, false);
+}
+
+// per-frame visuals
+function visualBeat() {
+  const playing = G.song && (G.screen === 'play' || G.screen === 'pause' || G.screen === 'results');
+  const bpm = playing ? G.song.bpm : (G.visSong ? G.visSong.bpm : 100);
+  const t = playing ? G.gt : G.idleT;
+  return { beat: t * bpm / 60, t };
+}
+function updateBand(beat, dt) {
+  const bob = Math.abs(Math.sin(beat * Math.PI));
+  const turn = Math.sin(beat * Math.PI / 3);
+  for (const k of FAM) G.instFlash[k] = Math.max(0, G.instFlash[k] - dt * 5);
+  // Dört Katman: in a song only the active layers march; in menus the whole band does
+  const inSong = G.song && (G.screen === 'play' || G.screen === 'pause' || G.screen === 'results');
+  const nLay = inSong ? G.layers : 4;
+  for (let i = 0; i < BAND.length; i++) {
+    const m = BAND[i];
+    const want = m.layer < nLay ? 1 : 0;
+    // joining is a quick march back in; falling out is a slower stumble to the roadside
+    m.inF += Math.sign(want - m.inF) * Math.min(Math.abs(want - m.inF), dt * (want ? 1.6 : 1.1));
+    const k = m.inF, e = k * k * (3 - 2 * k);   // smoothstep
+    const out = 1 - e;
+    const mx = m.x + (m.sx - m.x) * out, mz = m.z + (m.sz - m.z) * out;
+    const stumble = Math.sin(Math.PI * k) * 0.35 * (m.sx < 0 ? 1 : -1);   // a lean while changing place
+    const hop = bob * (m.lead ? 0.08 : 0.05) * e;
+    const sway = turn * 0.08 * (m.row % 2 ? 1 : -1) * e + m.sr * out + Math.sin(G.idleT * 0.7 + m.ph) * 0.15 * out;
+    const slump = 1 - 0.12 * out;   // out-of-step members droop
+    paint(C.body, i, out > 0.01 ? TMP.col.setHex(m.coat).multiplyScalar(1 - 0.55 * out).getHex() : m.coat);
+    put(C.body, i, mx, 0.45 * slump + hop, mz, 1, slump, 1, sway, 0);
+    put(C.head, i, mx + stumble * 0.25, (1.05 - 0.13 * out) + hop, mz, 1, 1, 1, sway);
+    // the mehterbaşı wears a taller börk; the sash sits at waist height (0.12 above the body centre)
+    put(C.fez, i, mx + stumble * 0.3, (1.27 - 0.13 * out) + hop + (m.lead ? 0.1 : 0), mz, 1, m.lead ? 1.45 : 1, 1, sway);
+    put(C.sash, i, mx, (0.57 - 0.07 * out) + hop, mz, 1, 1, 1, sway);
+    if (m.kind === 'boru') {
+      // the horn is raised to play while in formation and lowered (pointing down) when out
+      const blow = 0.25 + 0.1 * Math.sin(beat * Math.PI * 0.5 + m.ki);
+      put(C.boru, m.ki, mx + 0.05, (1.1 - 0.35 * out) + hop, mz + 0.55 - 0.2 * out, 1, 1, 1, sway, Math.PI / 2 + blow * e + 1.1 * out);
+      continue;
+    }
+    if (m.kind === 'davul') {
+      const f = G.instFlash.davul;
+      put(C.davul, m.ki, mx - 0.05, 0.6 + hop, mz + 0.22, 1 + f * 0.2, 1, 1 + f * 0.2, 0, Math.PI / 2);
+      // the drum arm: raised between the beats, striking the head on a davul note (f = 1 at the hit)
+      put(C.stick, m.ki, mx + 0.1, 0.9 + hop, mz + 0.42, 1, 1, 1, 0, -1.0 + 0.9 * f);
+    } else if (m.kind === 'kos') {
+      const f = G.instFlash.kos;
+      put(C.kos, m.ki, mx + 0.3, 0.55 + hop, mz + 0.2, 1 + f * 0.15, 1, 1 + f * 0.15, 0, Math.PI / 2);
+    } else if (m.kind === 'zurna') {
+      // the zurna sways more while the player holds a zurna note
+      const swing = (0.18 + 0.22 * (G.holds[2] ? 1 : 0)) * Math.sin(beat * Math.PI + m.row * 0.8) * e;
+      put(C.zurna, m.ki, mx, 1.05 - 0.3 * out + hop, mz + 0.42 - 0.15 * out, 1, 1, 1, swing, Math.PI / 2 + 1.0 * out);
+    } else {
+      const f = G.instFlash.cevgen * e;
+      put(C.staff, m.ki, mx + 0.42, 1.05 - 0.45 * out + hop, mz, 1, 1, 1);   // out of step: the staff is grounded
+      put(C.ring, m.ki, mx + 0.42, 1.9 - 0.45 * out + hop + f * 0.08, mz, 1 + f * 0.3, 1, 1 + f * 0.3, 0, Math.PI / 2);
+      // the zil (cymbal) flashes bright gold on every lane-3 hit
+      C.ring.setColorAt(m.ki, TMP.col.setHex(0xD4AF37).multiplyScalar(0.75 + 1.25 * f));
+    }
+  }
+  for (const k of ['body', 'head', 'fez', 'sash', 'davul', 'kos', 'zurna', 'boru', 'staff', 'ring', 'stick']) C[k].instanceMatrix.needsUpdate = true;
+  C.ring.instanceColor.needsUpdate = true;
+  C.body.instanceColor.needsUpdate = true;
+  for (let j = 0; j < CROWD.length; j++) {
+    const c = CROWD[j];
+    const jump = G.cheer * Math.max(0, Math.sin(beat * Math.PI * 2 + c.ph)) * 0.32;
+    put(C.cBody, j, c.x, c.h * 0.5 + jump, c.z, 1, c.h, 1);
+    put(C.cHead, j, c.x, c.h * 1.12 + jump, c.z);
+    // arms hang from the shoulders and lift a little with the cheer
+    const armY = c.h * 0.72 + jump + G.cheer * 0.12;
+    put(C.cArm, 2 * j, c.x - 0.22, armY, c.z);
+    put(C.cArm, 2 * j + 1, c.x + 0.22, armY, c.z);
+  }
+  C.cBody.instanceMatrix.needsUpdate = true;
+  C.cHead.instanceMatrix.needsUpdate = true;
+  C.cArm.instanceMatrix.needsUpdate = true;
+}
+function updateNotes() {
+  const gt = G.gt;
+  const N = G.notes;
+  const spd = noteSpeed();
+  const look = (HIT_Z - SPAWN_Z) / spd + 0.25;
+  let vi = G.vis;
+  while (vi < N.length && (N[vi].t + (N[vi].dur || 0)) < gt - 0.45) vi++;
+  G.vis = vi;
+  let nc = 0, hc = 0;
+  for (let i = vi; i < N.length; i++) {
+    const n = N[i];
+    if (n.t > gt + look) break;
+    if (n.state === 2) continue;
+    const zh = n.state === 1 ? HIT_Z : Math.min(HIT_Z, HIT_Z - (n.t - gt) * spd);
+    if (n.dur > 0) {
+      const zt = HIT_Z - (n.t + n.dur - gt) * spd;
+      const len = zh - zt;
+      if (len > 0.05 && hc < 180) {
+        put(C.holds, hc, LANE_X[n.lane], 0.2, (zh + zt) / 2, 1, 1, len);
+        TMP.col.setHex(LANE_HEX[n.lane]);
+        C.holds.setColorAt(hc, TMP.col);
+        hc++;
+      }
+    }
+    if (nc < 720 && zh > SPAWN_Z - 0.5) {
+      put(C.notes, nc, LANE_X[n.lane], 0.2, zh);
+      TMP.col.setHex(LANE_HEX[n.lane]);
+      C.notes.setColorAt(nc, TMP.col);
+      nc++;
+    }
+  }
+  C.notes.count = nc;
+  C.holds.count = hc;
+  C.notes.instanceMatrix.needsUpdate = true;
+  C.holds.instanceMatrix.needsUpdate = true;
+  if (C.notes.instanceColor) C.notes.instanceColor.needsUpdate = true;
+  if (C.holds.instanceColor) C.holds.instanceColor.needsUpdate = true;
+  for (let l = 0; l < 4; l++) {
+    const f = Math.max(0, G.flash[l]);
+    G.flash[l] = Math.max(0, G.flash[l] - 0.05);
+    TMP.col.setHex(LANE_HEX[l]).multiplyScalar(0.18 + f * 0.9);
+    C.glow.setColorAt(l, TMP.col);
+  }
+  C.glow.instanceColor.needsUpdate = true;
+}
+function updateSky(dt, target) {
+  G.dark += (target - G.dark) * Math.min(1, dt * 1.5);
+  TMP.c.lerpColors(TMP.dusk, TMP.night, G.dark);
+  scene.background.copy(TMP.c);
+  scene.fog.color.copy(TMP.c);
+  // the sun and the hemisphere light swell on every beat (BEAT_PULSE is 0..1, set each frame)
+  sun.intensity = 1.25 - 0.6 * G.dark + 0.22 * BEAT_PULSE * (1 - G.dark * 0.5);
+  hemi.intensity = 0.95 - 0.45 * G.dark + 0.08 * BEAT_PULSE;
+  if (G.assets.sky) scene.environmentIntensity = 0.55 - 0.4 * G.dark;   // the HDRI fades with the dusk, like the sun
+  C.flameMat.emissiveIntensity = 0.25 + 1.4 * G.dark + 0.6 * BEAT_PULSE;
+  C.glowMat.opacity = 0.05 + 0.35 * G.dark;
+}
+function updateWorld(dt, t, beat) {
+  for (let i = 0; i < C.torchN; i++) {
+    const [x, z] = C.torchPos[i];
+    const s = 0.9 + 0.15 * Math.sin(t * 9 + i * 1.7);
+    put(C.flames, i, x, 3.55, z, s, s * 1.2, s);
+    put(C.glows, i, x, 3.5, z, 1 + 0.1 * Math.sin(t * 5 + i), 1, 1 + 0.1 * Math.sin(t * 5 + i));
+  }
+  C.flames.instanceMatrix.needsUpdate = true;
+  C.glows.instanceMatrix.needsUpdate = true;
+  for (const b of BANNERS) {
+    const p = b.mesh.geometry.attributes.position;
+    for (let i = 0; i < p.count; i++) {
+      const x = b.base[i * 3], y = b.base[i * 3 + 1];
+      p.setXYZ(i, x, y, Math.sin(x * 4 + t * 3 + b.ph) * 0.12 + Math.sin(y * 2 + t * 2) * 0.04);
+    }
+    p.needsUpdate = true;
+  }
+  // the gilded hit line glows on every beat and flares when a note lands on it
+  const hitGlow = 0.12 + 0.5 * BEAT_PULSE + 0.6 * Math.max(G.flash[0], G.flash[1], G.flash[2], G.flash[3]);
+  C.hit.material.emissive.setRGB(0.22 * hitGlow + 0.1, 0.16 * hitGlow + 0.06, 0.02 * hitGlow);
+  tickPool(PTS.petal, dt, 1.4);
+  tickPool(PTS.spark, dt, 6);
+}
+
+function visualDark() {
+  if (G.screen === 'title') return 0.25;
+  if (G.screen === 'select' || G.screen === 'settings' || G.screen === 'calib') return 0.35;
+  if (G.screen === 'results') return 0.9;
+  if (!G.song) return 0.25;
+  return 0.05 + 0.85 * Math.min(1, Math.max(0, G.gt) / G.song.end);
+}
+
+// ----- UI wiring ------------------------------------------------------------
+function applyI18n() {
+  document.documentElement.lang = LANG;
+  if (window.Arena) Arena.lang(LANG);
+  for (const el of $$('[data-i18n]')) {
+    const k = el.dataset.i18n;
+    if (I18N[LANG][k] !== undefined) el.textContent = T(k);
+  }
+  for (const el of $$('[data-i18n-aria]')) el.setAttribute('aria-label', T(el.dataset.i18nAria));
+  for (const el of $$('[data-i18n-title]')) el.setAttribute('title', T(el.dataset.i18nTitle));
+  setText($('#b-lang-h'), LANG === 'tr' ? 'TR' : 'EN');
+  setText($('#b-title-lang'), LANG === 'tr' ? 'TR / EN' : 'EN / TR');
+  if (!G.ready) setText($('#loading'), T('loading'));
+  buildSongCards();
+  refreshDiffButtons();
+  refreshSettings();
+  refreshBest();
+  refreshKeys();
+  if (G.screen === 'play' || G.screen === 'pause') refreshHud();
+}
+function setLang(l) {
+  LANG = l;
+  S.lang = l;
+  saveSettings();
+  applyI18n();
+}
+function bestOf(idx, diff) {
+  const k = `${idx}-${diff}`;
+  if (diff === 'easy') return loadBestEasy()[k] || loadBest()[k];
+  return loadBest()[k];
+}
+function refreshBest() {
+  if (window.Arena) { const d = Arena.daily(); setText($('#title-daily'), T('daily') + ': ' + (d.done ? T('dailyDone') + ' · ' : '') + T('dailyLine').replace('{s}', d.streak).replace('{b}', d.best)); }
+  const b = bestOf(G.sel, G.diff);
+  const el = $('#title-best');
+  if (el) {
+    if (b) {
+      el.innerHTML = `<span class="best-ribbon"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6 6 1-4.5 4.5 1 6.5-5.5-3.5L6.5 20l1-6.5L3 9l6-1z"/></svg> ${T('best')}: <b>${fmt(b.score)}</b> · <span class="ribbon-grade">${b.grade}</span></span>`;
+    } else {
+      el.textContent = '';
+    }
+  }
+}
+const USUL_DOTS = {
+  duyek: '● ○ ● ● ○',
+  sofyan: '● ○ ● ○',
+  semai: '● ○ ○ ● ○',
+  nevbet: '● ● ● ●',
+  devr: '● ○ ● ○ ●',
+  zafer: '● ● ○ ● ●',
+};
+function buildSongCards() {
+  const list = $('#song-list');
+  list.innerHTML = '';
+  SONGS.forEach((s, i) => {
+    const card = document.createElement('div');
+    card.className = 'card' + (i === G.sel ? ' sel' : '');
+    card.setAttribute('role', 'button');
+    card.tabIndex = 0;
+    const b = bestOf(i, G.diff);
+    const dots = USUL_DOTS[s.usul] || '● ● ●';
+    card.innerHTML = `
+      <div class="card-spine"></div>
+      <div class="card-main">
+        <div class="card-top">
+          <b class="card-title">${s.name[LANG]}</b>
+          <span class="card-bpm">${s.bpm} ${T('bpm')}</span>
+        </div>
+        <div class="card-desc">${s.desc[LANG]}</div>
+        <div class="card-usul"><span class="usul-dots">${dots}</span><span class="usul-name">${s.usul}</span></div>
+        <div class="tail">
+          <div class="best-pill">
+            <span class="best-lbl">${T('best')}:</span>
+            <b class="best-val">${b ? fmt(b.score) : T('none')}</b>
+            ${b ? `<span class="grade-tag grade-${b.grade}">${b.grade}</span>` : ''}
+          </div>
+          <button class="tiny preview-btn" data-prev="${i}" aria-label="${T('preview')}">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2l10 6-10 6z"/></svg>
+          </button>
+        </div>
+      </div>`;
+    const select = () => { G.sel = i; buildSongCards(); visualSelectBpm(); refreshBest(); };
+    card.addEventListener('click', (e) => {
+      const pv = e.target.closest('[data-prev]');
+      if (pv) { previewSong(i); return; }
+      select();
+    });
+    card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(); } });
+    list.appendChild(card);
+  });
+}
+function visualSelectBpm() { G.visSong = SONGS[G.sel]; }
+function refreshDiffButtons() {
+  for (const b of $$('#diffs button')) { b.classList.toggle('on', b.dataset.diff === G.diff); b.setAttribute('aria-checked', String(b.dataset.diff === G.diff)); }
+  const nf = $('#s-nofail'); if (nf) nf.checked = !!S.noFail;
+}
+function refreshSettings() {
+  $('#s-master').value = S.master;
+  $('#s-music').value = S.music;
+  $('#s-sfx').value = S.sfx;
+  const spdEl = $('#s-speed');
+  if (spdEl) spdEl.value = String(S.speed ?? 1.0);
+  const spdVal = $('#s-speed-val');
+  if (spdVal) spdVal.textContent = Number(S.speed ?? 1.0).toFixed(1) + '×';
+  for (const b of $$('[data-lang]')) b.classList.toggle('on', b.dataset.lang === LANG);
+  for (const b of $$('[data-q]')) b.classList.toggle('on', b.dataset.q === S.quality);
+  refreshPracticeHud();
+}
+// practice toggles (header + settings) and the song-select checkbox share S.noFail
+function refreshPracticeHud() {
+  for (const b of $$('[data-prac]')) b.classList.toggle('on', (b.dataset.prac === '1') === !!S.noFail);
+  const btn = $('#b-practice-h');
+  if (btn) btn.classList.toggle('on', !!S.noFail);
+  const nf = $('#s-nofail'); if (nf) nf.checked = !!S.noFail;
+}
+function refreshKeys() {
+  for (const b of $$('.keys button[data-lane]')) {
+    const l = Number(b.dataset.lane);
+    const keyName = G.rebind === l ? '…' : S.keys[l].toUpperCase();
+    const lbl = b.querySelector('.key-label');
+    if (lbl) setText(lbl, keyName); else setText(b, keyName);
+  }
+  for (const b of $$('#touch .tz')) {
+    const l = Number(b.dataset.lane);
+    const keyName = S.keys[l].toUpperCase();
+    const lbl = b.querySelector('.key-label');
+    if (lbl) setText(lbl, keyName); else setText(b, keyName);
+    b.setAttribute('aria-label', `${T('laneTouch')} ${l + 1} (${keyName})`);
+  }
+  // how-to line: the bound keys (not a fixed "D F J K"); touch screens get a text without keys
+  const h1 = $('[data-i18n="howto1"]');
+  if (h1) setText(h1, PHONE ? T('howto1Touch') : T('howto1').replace('D F J K', S.keys.map((k) => k.toUpperCase()).join(' ')));
+}
+function openSettings() {
+  G.returnTo = G.screen === 'pause' ? 'pause' : 'title';
+  show('settings');
+  refreshSettings();
+}
+function closeSettings() {
+  G.rebind = -1;
+  setText($('#rebind-msg'), '');
+  refreshKeys();
+  if (G.returnTo === 'pause') show('pause'); else { show('title'); refreshBest(); }
+}
+
+function wireUI() {
+  document.addEventListener('click', onUiClick, true);
+  $('#b-play').addEventListener('click', async () => { await readyAudio(); buildSongCards(); show('select'); refreshDiffButtons(); });
+  $('#b-title-set').addEventListener('click', openSettings);
+  $('#b-pause-set').addEventListener('click', openSettings);
+  $('#b-title-cal').addEventListener('click', () => { show('calib'); setText($('#cal-msg'), ''); setText($('#cal-res'), ''); });
+  $('#b-title-lang').addEventListener('click', () => setLang(LANG === 'tr' ? 'en' : 'tr'));
+  $('#b-lang-h').addEventListener('click', () => setLang(LANG === 'tr' ? 'en' : 'tr'));
+  $('#b-sound').addEventListener('click', toggleSound);
+  $('#b-sel-back').addEventListener('click', () => { stopAll(); show('title'); refreshBest(); });
+  $('#b-sel-start').addEventListener('click', async () => {
+    await readyAudio();
+    startSong(G.sel, G.diff, {});
+  });
+  for (const b of $$('#diffs button')) b.addEventListener('click', () => { G.diff = S.diff = b.dataset.diff; saveSettings(); refreshDiffButtons(); buildSongCards(); refreshBest(); });
+  $('#s-nofail').addEventListener('change', (e) => { S.noFail = e.target.checked; saveSettings(); refreshPracticeHud(); });
+  $('#b-set-back').addEventListener('click', closeSettings);
+  $('#s-master').addEventListener('input', (e) => { S.master = Number(e.target.value); applyVolumes(); saveSettings(); });
+  $('#s-music').addEventListener('input', (e) => { S.music = Number(e.target.value); applyVolumes(); saveSettings(); });
+  $('#s-sfx').addEventListener('input', (e) => { S.sfx = Number(e.target.value); applyVolumes(); saveSettings(); });
+  const spdIn = $('#s-speed');
+  if (spdIn) spdIn.addEventListener('input', (e) => {
+    const val = Math.max(0.7, Math.min(1.5, Math.round(Number(e.target.value) * 100) / 100));
+    S.speed = S.noteSpeed = val;
+    saveSettings();
+    const lbl = $('#s-speed-val');
+    if (lbl) lbl.textContent = val.toFixed(1) + '×';
+  });
+  for (const b of $$('[data-lang]')) b.addEventListener('click', () => setLang(b.dataset.lang));
+  // shadows and pixel ratio are read once at start, so the toast says the change waits for a reload
+  for (const b of $$('[data-q]')) b.addEventListener('click', () => { S.quality = b.dataset.q; saveSettings(); refreshSettings(); toast(T('qualitySet').replace('{q}', T(S.quality))); });
+  for (const b of $$('[data-prac]')) b.addEventListener('click', () => { S.noFail = b.dataset.prac === '1'; saveSettings(); refreshSettings(); toast(T('practice') + ': ' + T(S.noFail ? 'on' : 'off')); });
+  $('#b-practice-h').addEventListener('click', () => { S.noFail = !S.noFail; saveSettings(); refreshSettings(); toast(T('practice') + ': ' + T(S.noFail ? 'on' : 'off')); });
+  $('#b-fs').addEventListener('click', toggleFullscreen);
+  for (const b of $$('.keys button[data-lane]')) b.addEventListener('click', () => { G.rebind = Number(b.dataset.lane); setText($('#rebind-msg'), T('pressKey')); refreshKeys(); });
+  $('#b-cal-start').addEventListener('click', calibStart);
+  $('#b-cal-tap').addEventListener('click', () => calibTap());
+  $('#b-cal-reset').addEventListener('click', () => { S.calib = 0; saveSettings(); setText($('#cal-res'), T('resetDone')); });
+  $('#b-cal-back').addEventListener('click', () => { CAL.on = false; stopAll(); show('title'); refreshBest(); });
+  $('#b-pause').addEventListener('click', pauseGame);
+  $('#b-resume').addEventListener('click', resumeGame);
+  $('#b-restart').addEventListener('click', async () => { await readyAudio(); startSong(G.idx, G.diff, { auto: G.auto, bot: G.bot, song: G.idx < 0 ? G.song : undefined }); });
+  $('#b-main').addEventListener('click', goTitle);
+  $('#b-main2').addEventListener('click', goTitle);
+  $('#b-again').addEventListener('click', async () => { await readyAudio(); startSong(G.idx, G.diff, { song: G.idx < 0 ? G.song : undefined }); });
+  $('#b-easy').addEventListener('click', async () => {
+    if (G.idx < 0) return;
+    G.diff = S.diff = 'easy'; saveSettings(); refreshDiffButtons();
+    await readyAudio(); startSong(G.idx, 'easy', {});
+  });
+  // arena-kit: daily challenge, accessibility panel (from Settings: a corner button would sit on the zil lane),
+  // share and another game on the results scroll
+  $('#b-daily').addEventListener('click', async () => { if (!window.Arena) return; await readyAudio(); startSong(-1, 'normal', { song: dailySong(Arena.daily()) }); });
+  $('#b-a11y').addEventListener('click', () => { if (window.Arena) Arena.openSettings(); });
+  $('#b-share').addEventListener('click', () => {
+    const r = G.result; if (!r || !window.Arena) return;
+    Arena.share({ title: 'Mehter · ' + (r.defeat ? T('defeat') : T('cleared')), url: './index.html',
+      lines: [T('shareLine').replace('{song}', r.name).replace('{diff}', T(G.diff)).replace('{grade}', r.grade).replace('{score}', fmt(r.score))]
+        .concat(r.streak ? [T('daily') + ' · ' + T('dailyLine').replace('{s}', r.streak.streak).replace('{b}', r.streak.best)] : []) });
+  });
+  $('#b-other').addEventListener('click', () => { if (!window.Arena) return; const g = Arena.games.filter((x) => x !== 'mehter'); window.open('https://furkiozknn.github.io/' + g[(Date.now() / 60000 | 0) % g.length] + '/', '_blank', 'noopener'); });
+  for (const z of $$('#touch .tz')) {
+    const lane = Number(z.dataset.lane);
+    z.addEventListener('pointerdown', (e) => { e.preventDefault(); laneDown(lane); });
+    z.addEventListener('pointerup', () => laneUp(lane));
+    z.addEventListener('pointercancel', () => laneUp(lane));
+    z.addEventListener('pointerleave', (e) => { if (e.buttons === 0) laneUp(lane); });
+  }
+  window.addEventListener('keydown', onKey);
+  window.addEventListener('keyup', (e) => {
+    const k = e.key.toLowerCase();
+    const l = S.keys.indexOf(k);
+    if (l >= 0) laneUp(l);
+  });
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && G.screen === 'play') { pauseGame(); toast(T('tabHidden')); }
+  });
+  window.addEventListener('error', (e) => { G.errors.push(String(e.message)); });
+  window.addEventListener('unhandledrejection', (e) => { G.errors.push('promise: ' + String(e.reason)); });
+}
+function toggleSound() {
+  S.sfxOn = !S.sfxOn; S.musicOn = S.sfxOn;
+  applyVolumes(); saveSettings();
+  $('#b-sound').classList.toggle('on', S.sfxOn);
+}
+function toggleFullscreen() {
+  try {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else document.documentElement.requestFullscreen();
+  } catch (e) { toast(T('fsErr'), 'bad'); }
+}
+function onKey(e) {
+  if (e.repeat) return;
+  const k = e.key.toLowerCase();
+  if (G.rebind >= 0) {
+    if (k === 'escape') { G.rebind = -1; setText($('#rebind-msg'), ''); refreshKeys(); return; }
+    const other = S.keys.indexOf(k);
+    if (other >= 0) S.keys[other] = S.keys[G.rebind];
+    S.keys[G.rebind] = k;
+    G.rebind = -1; saveSettings(); refreshKeys();
+    setText($('#rebind-msg'), T('rebindDone'));
+    e.preventDefault();
+    return;
+  }
+  // a key bound to a lane is a lane key everywhere: M / X / L / P shortcuts are skipped for it
+  // (Esc cannot be bound, so pause always stays on Esc)
+  const laneKey = S.keys.includes(k);
+  if (k === 'm' && !laneKey) { S.musicOn = !S.musicOn; applyVolumes(); saveSettings(); return; }
+  if (k === 'x' && !laneKey) { S.sfxOn = !S.sfxOn; applyVolumes(); saveSettings(); return; }
+  if (k === 'l' && !laneKey) { setLang(LANG === 'tr' ? 'en' : 'tr'); return; }
+  if ((k === 'p' && !laneKey) || k === 'escape') {
+    if (G.screen === 'play') pauseGame();
+    else if (G.screen === 'pause') resumeGame();
+    else if (G.screen === 'settings' && G.returnTo === 'pause') closeSettings();
+    return;
+  }
+  if (G.screen === 'calib' && (k === ' ' || S.keys.includes(k))) { e.preventDefault(); calibTap(); return; }
+  const l = S.keys.indexOf(k);
+  if (l >= 0 && G.screen === 'play' && !G.paused) { e.preventDefault(); laneDown(l); }
+}
+function pollPads() {
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  const prev = pollPads.prev || (pollPads.prev = [[false, false, false, false], [false, false, false, false]]);
+  for (let p = 0; p < 2; p++) {
+    const gp = pads[p];
+    if (!gp) continue;
+    for (let b = 0; b < 4; b++) {
+      const now = !!(gp.buttons[b] && gp.buttons[b].pressed);
+      if (now && !prev[p][b]) laneDown(b);
+      if (!now && prev[p][b]) laneUp(b);
+      prev[p][b] = now;
+    }
+  }
+}
+
+// ----- main loop -------------------------------------------------------------
+let last = performance.now(), fpsT = performance.now(), fpsN = 0;
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (!G.ready) return;
+  fpsN++;
+  if (now - fpsT >= 1000) { G.fps = Math.round(fpsN * 1000 / (now - fpsT)); fpsN = 0; fpsT = now; }
+  G.idleT += G.paused ? 0 : dt;
+  tickGame(dt);
+  pollPads();
+  calibTick();
+  updateVisuals(dt);
+  R.render(scene, cam);
+  G.frames++;
+  if (G.screen === 'play' || G.screen === 'pause') refreshHud();
+  if (FLAG.debug || Q.has('debug')) updateDebug();
+}
+function updateVisuals(dt) {
+  const vb = visualBeat();
+  BEAT_PULSE = calm() ? 0 : Math.pow(1 - (vb.beat - Math.floor(vb.beat)), 3);   // 1 on the beat, decays to 0 before the next; reduce motion: no light pulse
+  updateSky(dt, visualDark());
+  updateBand(vb.beat, dt);
+  G.cheer += ((G.combo >= 10 ? Math.min(1, G.combo / 40) : 0.15) - G.cheer) * Math.min(1, dt * 2);
+  updateNotes();
+  updateWorld(dt, vb.t, vb.beat);
+  if (G.screen !== 'play' && G.screen !== 'pause' && G.screen !== 'results') {
+    for (const k of Object.keys(G.instFlash)) G.instFlash[k] = 0;
+  }
+  if (G.screen === 'title' || G.screen === 'select') {
+    cam.position.x = Math.sin(G.idleT * 0.12) * 1.6;
+    cam.lookAt(0, 0.4, -4);
+  } else {
+    cam.position.x = 0;
+    cam.lookAt(0, 0.4, -4);
+  }
+}
+function updateDebug() {
+  const d = $('#dbg');
+  d.classList.remove('hidden');
+  const info = R ? R.info : { render: { calls: 0, triangles: 0 } };
+  d.textContent = [
+    `fps ${G.fps}  draw calls ${info.render.calls}  triangles ${info.render.triangles}`,
+    `screen ${G.screen}  clock ${G.clock}  gt ${G.gt.toFixed(2)}  spd ${noteSpeedMult()}x  lang ${LANG}`,
+    `score ${G.score|0}  combo ${G.combo}  spirit ${G.spirit.toFixed(1)}  judged ${G.judged}`,
+    `layers ${G.layers} ×${lmult()}  streak ${G.lstreak}/${LAYER_STEP}  slip ${G.slip.toFixed(2)}/${SLIP_MAX}`,
+    `perfect ${G.cnt.perfect} good ${G.cnt.good} miss ${G.cnt.miss} break ${G.cnt.brk} hist ${G.hist.length} r-hist ${$('#r-hist') ? $('#r-hist').children.length : -1}`,
+    `errors ${G.errors.length}${G.errors.length ? ': ' + G.errors.slice(-3).join(' | ') : ''}`,  ].join('\n');
+}
+
+// ----- virtual-time fast-forward (self test) --------------------------------
+function simulate(sec) {
+  if (!G.ready) return 0;
+  const steps = Math.round(sec * 60);
+  let done = 0;
+  for (let i = 0; i < steps; i++) {
+    if (G.screen !== 'play' && !(G.screen === 'results' && G.auto && !G.autoDone)) break;
+    tickGame(1 / 60);
+    done++;
+    if (G.screen === 'results' && !G.auto) break;
+    if (G.autoDone && G.screen === 'results') break;
+  }
+  if (G.screen === 'play') refreshHud();
+  return done;
+}
+function state() {
+  return {
+    screen: G.screen, lang: LANG, clock: G.clock, song: G.song ? G.song.idx : null, diff: G.diff,
+    gt: +G.gt.toFixed(3), score: Math.round(G.score), combo: G.combo, maxCombo: G.maxCombo,
+    spirit: +G.spirit.toFixed(2), layers: G.layers, layerMult: lmult(), lstreak: G.lstreak, slip: +G.slip.toFixed(3), maxLayers: G.maxLayers, layerLog: G.layerLog.slice(), counts: { ...G.cnt }, judged: G.judged, notes: G.notes.length,
+    auto: G.auto, autoDone: G.autoDone, result: G.result ? { grade: G.result.grade, defeat: G.result.defeat, score: G.result.score, acc: +G.result.acc.toFixed(3) } : null,
+    errors: G.errors.slice(), fps: G.fps, drawCalls: R ? R.info.render.calls : 0, triangles: R ? R.info.render.triangles : 0,
+    calib: S.calib, keys: S.keys.slice(), quality: lowQ() ? 'low' : 'high', speed: noteSpeedMult(), noteSpeed: noteSpeedMult(), assets: { ...G.assets },
+  };
+}
+window.mehter = Object.assign(G, {
+  state,
+  sim: simulate,
+  songs: SONGS.map((s) => ({ idx: s.idx, bpm: s.bpm, notes: s.full.length, end: +s.end.toFixed(1) })),
+  particles: PTS,
+  get speed() { return noteSpeedMult(); },
+  setSpeed(v) {
+    const val = Math.max(0.7, Math.min(1.5, Math.round(Number(v) * 100) / 100));
+    S.speed = S.noteSpeed = val;
+    saveSettings();
+    refreshSettings();
+    return val;
+  },
+});
+window.mehterSim = (sec) => simulate(sec);
+
+// ----- boot -----------------------------------------------------------------
+wireUI();
+applyI18n();
+show('title');
+if (Q.get('screen') === 'settings') openSettings();
+(async () => {
+  try {
+    THREE = await import('three');
+  } catch (e) {
+    setText($('#loading'), T('loadFail'));
+    G.errors.push('three import failed');
+    return;
+  }
+  buildThree();
+  G.ready = true;
+  // assets arrive after the first frame; each one swaps in place when it is ready
+  loadAssets();
+  loadCobble();
+  loadSky();
+  fetchSamples();
+  $('#b-play').disabled = false;
+  $('#b-daily').disabled = !window.Arena;
+  setText($('#loading'), T('loaded'));
+  setTimeout(() => { const el = $('#loading'); if (el.textContent === T('loaded')) el.textContent = ''; }, 1200);
+  if (FLAG.debug) updateDebug();
+  refreshBest();
+  const sim = Q.get('sim');
+  const song = Math.max(0, Math.min(SONGS.length - 1, Number(Q.get('song') || 0)));
+  if (sim !== null || FLAG.auto) {
+    await readyAudio();
+    startSong(song, 'normal', { auto: FLAG.auto, bot: FLAG.auto, clock: sim !== null ? 'virtual' : undefined });
+    if (sim !== null) simulate(Number(sim));
+    refreshHud();
+    if (FLAG.debug) updateDebug();
+  }
+  if (Q.get('screen') === 'pause') pauseGame();
+  if (Q.get('screen') === 'results' && G.result) showResults();
+  if (Q.get('screen') === 'select') { show('select'); buildSongCards(); refreshDiffButtons(); }
+  if (Q.get('screen') === 'calib') { show('calib'); }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

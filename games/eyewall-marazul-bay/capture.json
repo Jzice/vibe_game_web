@@ -1,0 +1,36 @@
+{
+  "url": "https://anton-abyzov.github.io/fortnite-3js/",
+  "final_url": "https://anton-abyzov.github.io/fortnite-3js/fable/",
+  "slug": "eyewall-marazul-bay",
+  "title": "EYEWALL: Marazul Bay",
+  "description": "EYEWALL: Marazul Bay. Parachute into a sun-soaked coastal city, drive, sail and outlast the hurricane. An original browser battle royale.",
+  "captured_at": "2026-11-16T16:46:54.809455+00:00",
+  "assets": {
+    "https://anton-abyzov.github.io/fortnite-3js/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 313,
+      "status": 200
+    },
+    "https://anton-abyzov.github.io/fortnite-3js/fable/": {
+      "path": "fable/index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 2271,
+      "status": 200
+    },
+    "https://anton-abyzov.github.io/fortnite-3js/fable/assets/index-CL6v6ZMy.css": {
+      "path": "fable/assets/index-CL6v6ZMy.css",
+      "content_type": "text/css; charset=utf-8",
+      "size": 30231,
+      "status": 200
+    },
+    "https://anton-abyzov.github.io/fortnite-3js/fable/assets/config-HOpE_oFZ.js": {
+      "path": "fable/assets/config-HOpE_oFZ.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 246873,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

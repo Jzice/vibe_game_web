@@ -1,0 +1,60 @@
+{
+  "url": "https://structuralvacancy.com/play",
+  "final_url": "https://structuralvacancy.com/play",
+  "slug": "price-the-deal",
+  "title": "Price the Deal — Structural Vacancy",
+  "description": "One composite industrial deal a day. Read the site sketch and tear sheet, land the price per square foot in five bids, then see real trades from that market.",
+  "captured_at": "2026-11-16T16:54:23.365462+00:00",
+  "assets": {
+    "https://structuralvacancy.com/play": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 61593,
+      "status": 200
+    },
+    "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap": {
+      "path": "_remote/fonts.googleapis.com/css2__q_family_IBM_Plex_Mono_wght_400_500_family_IBM_Plex_Sans_wght_400_500_600_family_Instrument_Serif_ital_0_1_display_swap",
+      "content_type": "text/css; charset=utf-8",
+      "size": 13778,
+      "status": 200
+    },
+    "https://static.cloudflareinsights.com/beacon.min.js": {
+      "path": "_remote/static.cloudflareinsights.com/beacon.min.js",
+      "content_type": "text/javascript;charset=UTF-8",
+      "size": 31853,
+      "status": 200
+    },
+    "https://structuralvacancy.com/api/e": {
+      "path": "site/api/e",
+      "content_type": "application/json",
+      "size": 11,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/ibmplexmono/v23/-F63fjptAgt5VM-kVkqdyU8n1i8q1w.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/ibmplexmono/v23/-F63fjptAgt5VM-kVkqdyU8n1i8q1w.woff2",
+      "content_type": "font/woff2",
+      "size": 14648,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/ibmplexsans/v23/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxeKYY.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/ibmplexsans/v23/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxeKYY.woff2",
+      "content_type": "font/woff2",
+      "size": 45712,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-6zUTjg.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-6zUTjg.woff2",
+      "content_type": "font/woff2",
+      "size": 21032,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/instrumentserif/v5/jizHRFtNs2ka5fXjeivQ4LroWlx-6zAjjH7M.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/instrumentserif/v5/jizHRFtNs2ka5fXjeivQ4LroWlx-6zAjjH7M.woff2",
+      "content_type": "font/woff2",
+      "size": 22128,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

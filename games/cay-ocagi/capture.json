@@ -1,0 +1,41 @@
+{
+  "url": "https://furkiozknn.github.io/cay-ocagi",
+  "final_url": "https://furkiozknn.github.io/cay-ocagi/",
+  "slug": "cay-ocagi",
+  "title": "Çay Ocağı",
+  "description": "A low-poly 3D tea house time-management game. Brew, serve, collect tips.",
+  "captured_at": "2026-11-16T17:24:49.013601+00:00",
+  "assets": {
+    "https://furkiozknn.github.io/cay-ocagi/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 308117,
+      "status": 200
+    },
+    "https://gc.zgo.at/count.js": {
+      "path": "_remote/gc.zgo.at/count.js",
+      "content_type": "application/javascript",
+      "size": 9213,
+      "status": 200
+    },
+    "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap": {
+      "path": "_remote/fonts.googleapis.com/css2__q_family_Playfair_Display_ital_wght_0_600_0_700_0_800_0_900_1_600_1_700_family_Plus_Jakarta_Sans_wght_500_600_700_800_display_swap",
+      "content_type": "text/css; charset=utf-8",
+      "size": 16544,
+      "status": 200
+    },
+    "https://furkiozknn.goatcounter.com/count?p=%2Fcay-ocagi%2F&t=%C3%87ay%20Oca%C4%9F%C4%B1&s=1280&b=153&rnd=2km6p": {
+      "path": "_remote/furkiozknn.goatcounter.com/count__q_p_2Fcay-ocagi_2F_t_C3_87ay_20Oca_C4_9F_C4_B1_s_1280_b_153_rnd_2km6p",
+      "content_type": "image/gif",
+      "size": 43,
+      "status": 200
+    }
+  },
+  "failures": [
+    {
+      "url": "https://furkiozknn.github.io/cay-ocagi",
+      "error": "Response.body: Response body is unavailable for redirect responses"
+    }
+  ],
+  "attempt": 1
+}

@@ -1,0 +1,132 @@
+{
+  "url": "https://zuzu.usdts.de/?character=dawn",
+  "final_url": "https://zuzu.usdts.de/?character=dawn",
+  "slug": "zuzu",
+  "title": "ZUZU · 庭院日和",
+  "description": "",
+  "captured_at": "2026-11-16T17:28:13.051732+00:00",
+  "assets": {
+    "https://zuzu.usdts.de/?character=dawn": {
+      "path": "index__q_character_dawn.html",
+      "content_type": "text/html",
+      "size": 21083,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/resources-7luPzMSz.css": {
+      "path": "assets/resources-7luPzMSz.css",
+      "content_type": "text/css",
+      "size": 2116,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/manifest.json": {
+      "path": "assets/game/manifest.json",
+      "content_type": "application/json",
+      "size": 9876,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/main-Bb0hRk5f.css": {
+      "path": "assets/main-Bb0hRk5f.css",
+      "content_type": "text/css",
+      "size": 44028,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/characters/mudkip/mudkip.glb": {
+      "path": "assets/game/characters/mudkip/mudkip.glb",
+      "content_type": "model/gltf-binary",
+      "size": 1294388,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/main-CdY03CDi.js": {
+      "path": "assets/main-CdY03CDi.js",
+      "content_type": "text/javascript",
+      "size": 945742,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/environments/garden.glb": {
+      "path": "assets/game/environments/garden.glb",
+      "content_type": "model/gltf-binary",
+      "size": 2601896,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/characters/mudkip/animations.json": {
+      "path": "assets/game/characters/mudkip/animations.json",
+      "content_type": "application/json",
+      "size": 7543,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/levels/garden.json": {
+      "path": "assets/game/levels/garden.json",
+      "content_type": "application/json",
+      "size": 6395,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/levels/garden-fruit.json": {
+      "path": "assets/game/levels/garden-fruit.json",
+      "content_type": "application/json",
+      "size": 894,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/props/berry.glb": {
+      "path": "assets/game/props/berry.glb",
+      "content_type": "model/gltf-binary",
+      "size": 32464,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/ui/mudkip-avatar-user-v1.png": {
+      "path": "assets/ui/mudkip-avatar-user-v1.png",
+      "content_type": "image/png",
+      "size": 672640,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/props/target-normal.glb": {
+      "path": "assets/game/props/target-normal.glb",
+      "content_type": "model/gltf-binary",
+      "size": 196424,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/props/target-moving.glb": {
+      "path": "assets/game/props/target-moving.glb",
+      "content_type": "model/gltf-binary",
+      "size": 224324,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/props/target-heavy.glb": {
+      "path": "assets/game/props/target-heavy.glb",
+      "content_type": "model/gltf-binary",
+      "size": 233264,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/fx/textures/cartoon-splash-v14.png": {
+      "path": "assets/game/fx/textures/cartoon-splash-v14.png",
+      "content_type": "image/png",
+      "size": 699601,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/fx/textures/cartoon-splash-v14.json": {
+      "path": "assets/game/fx/textures/cartoon-splash-v14.json",
+      "content_type": "application/json",
+      "size": 695,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/characters/dawn/animations.json": {
+      "path": "assets/game/characters/dawn/animations.json",
+      "content_type": "application/json",
+      "size": 1054,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/ui/dawn-avatar.png": {
+      "path": "assets/ui/dawn-avatar.png",
+      "content_type": "image/png",
+      "size": 219347,
+      "status": 200
+    },
+    "https://zuzu.usdts.de/assets/game/characters/dawn/dawn.glb": {
+      "path": "assets/game/characters/dawn/dawn.glb",
+      "content_type": "model/gltf-binary",
+      "size": 2259072,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

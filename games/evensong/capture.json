@@ -1,0 +1,1308 @@
+{
+  "url": "https://evensong-phi.vercel.app/",
+  "final_url": "https://evensong-phi.vercel.app/",
+  "slug": "evensong",
+  "title": "Evensong",
+  "description": "One duel in a drowned cathedral. A souls-like demo that plays in the browser.",
+  "captured_at": "2026-11-16T16:46:28.554385+00:00",
+  "assets": {
+    "https://evensong-phi.vercel.app/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 3302,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/main.js": {
+      "path": "src/main.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 1401,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/game.js": {
+      "path": "src/game.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 13862,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/core/events.js": {
+      "path": "src/core/events.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 721,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/core/loop.js": {
+      "path": "src/core/loop.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 1594,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/chars/combat.js": {
+      "path": "src/chars/combat.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 21812,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/chars/player.js": {
+      "path": "src/chars/player.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 76625,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/audio/audio.js": {
+      "path": "src/audio/audio.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 46603,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/core/assets.js": {
+      "path": "src/core/assets.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 2223,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/ui/ui.js": {
+      "path": "src/ui/ui.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 21682,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/cam/cine.js": {
+      "path": "src/cam/cine.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 9331,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/core/math.js": {
+      "path": "src/core/math.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 2139,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/cam/camera.js": {
+      "path": "src/cam/camera.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 32518,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/chars/boss.js": {
+      "path": "src/chars/boss.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 85862,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/world/candles.js": {
+      "path": "src/world/candles.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 60542,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/water.js": {
+      "path": "src/gfx/water.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 26989,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/vendor/three/three.module.js": {
+      "path": "vendor/three/three.module.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 662772,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/world/arena.js": {
+      "path": "src/world/arena.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 35620,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/renderer.js": {
+      "path": "src/gfx/renderer.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 19526,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/core/input.js": {
+      "path": "src/core/input.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 33280,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/vfx.js": {
+      "path": "src/gfx/vfx.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 66363,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/chars/character.js": {
+      "path": "src/chars/character.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 26156,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/core/rules.js": {
+      "path": "src/core/rules.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 2233,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/chars/motiondata.js": {
+      "path": "src/chars/motiondata.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 1549,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/core/constants.js": {
+      "path": "src/core/constants.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 542,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/audio/impulse.js": {
+      "path": "src/audio/impulse.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 5136,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/chars/wardrobe.js": {
+      "path": "src/chars/wardrobe.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 52382,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/audio/sounds.js": {
+      "path": "src/audio/sounds.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 15506,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/audio/manifest.js": {
+      "path": "src/audio/manifest.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 23546,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/chars/clipdata.js": {
+      "path": "src/chars/clipdata.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 101171,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/ui/logo.js": {
+      "path": "src/ui/logo.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 2857,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/ui/style.js": {
+      "path": "src/ui/style.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 46416,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/ui/devhold.js": {
+      "path": "src/ui/devhold.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 3083,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/cine/rig.js": {
+      "path": "src/cine/rig.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 8522,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/cine/stage.js": {
+      "path": "src/cine/stage.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 30388,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/ui/glyphs.js": {
+      "path": "src/ui/glyphs.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 10300,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/cine/rescue.js": {
+      "path": "src/cine/rescue.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 15013,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/cine/rescue_props.js": {
+      "path": "src/cine/rescue_props.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 25089,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/ui/touch.js": {
+      "path": "src/ui/touch.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 34994,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/ui/menus.js": {
+      "path": "src/ui/menus.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 22236,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/cine/ending.js": {
+      "path": "src/cine/ending.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 63044,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/cine/intro.js": {
+      "path": "src/cine/intro.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 48916,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/cine/title.js": {
+      "path": "src/cine/title.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 2809,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/cine/phase2.js": {
+      "path": "src/cine/phase2.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 14361,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/ui/hud.js": {
+      "path": "src/ui/hud.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 10720,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/cine/ease.js": {
+      "path": "src/cine/ease.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 5767,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/vendor/three/addons/loaders/GLTFLoader.js": {
+      "path": "vendor/three/addons/loaders/GLTFLoader.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 117570,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/chars/boss_fx.js": {
+      "path": "src/chars/boss_fx.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 22684,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/chars/boss_moves.js": {
+      "path": "src/chars/boss_moves.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 26433,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/materials.js": {
+      "path": "src/gfx/materials.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 29382,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/water_surface.js": {
+      "path": "src/gfx/water_surface.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 9767,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/water_mirror.js": {
+      "path": "src/gfx/water_mirror.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 8765,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/world/materials.js": {
+      "path": "src/world/materials.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 16107,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/world/layout.js": {
+      "path": "src/world/layout.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 5924,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/world/build.js": {
+      "path": "src/world/build.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 11961,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/env.js": {
+      "path": "src/gfx/env.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 15178,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/shaders/chunks.js": {
+      "path": "src/gfx/shaders/chunks.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 17156,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/water_ripples.js": {
+      "path": "src/gfx/water_ripples.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 10805,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/water_candles.js": {
+      "path": "src/gfx/water_candles.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 27909,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/post.js": {
+      "path": "src/gfx/post.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 21002,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/lights.js": {
+      "path": "src/gfx/lights.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 12062,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/fx_common.js": {
+      "path": "src/gfx/fx_common.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 13744,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/vendor/three/three.core.js": {
+      "path": "vendor/three/three.core.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 1458113,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/fx_splash.js": {
+      "path": "src/gfx/fx_splash.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 8372,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/particles.js": {
+      "path": "src/gfx/particles.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 16727,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/vendor/three/addons/utils/SkeletonUtils.js": {
+      "path": "vendor/three/addons/utils/SkeletonUtils.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 11535,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/trails.js": {
+      "path": "src/gfx/trails.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 14213,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/fx_shock.js": {
+      "path": "src/gfx/fx_shock.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 7431,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/chars/animgraph.js": {
+      "path": "src/chars/animgraph.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 125384,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/chars/weapons.js": {
+      "path": "src/chars/weapons.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 59132,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/fx_body.js": {
+      "path": "src/gfx/fx_body.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 17773,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/fx_air.js": {
+      "path": "src/gfx/fx_air.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 25650,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/chars/wings.js": {
+      "path": "src/chars/wings.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 35747,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/chars/cloth.js": {
+      "path": "src/chars/cloth.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 90764,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/cine/cues.js": {
+      "path": "src/cine/cues.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 2287,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/shaders/sky.js": {
+      "path": "src/gfx/shaders/sky.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 10832,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/vendor/three/addons/geometries/RoundedBoxGeometry.js": {
+      "path": "vendor/three/addons/geometries/RoundedBoxGeometry.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 6470,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/cine/timeline.js": {
+      "path": "src/cine/timeline.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 5080,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/src/gfx/shaders/post.js": {
+      "path": "src/gfx/shaders/post.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 31190,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/vendor/three/addons/utils/BufferGeometryUtils.js": {
+      "path": "vendor/three/addons/utils/BufferGeometryUtils.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 37712,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/block_4.ogg": {
+      "path": "assets/audio/sfx/block_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 5825,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/boss_step_1.ogg": {
+      "path": "assets/audio/sfx/boss_step_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 16491,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/block_1.ogg": {
+      "path": "assets/audio/sfx/block_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 4838,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/bell_1.ogg": {
+      "path": "assets/audio/sfx/bell_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 119090,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/block_3.ogg": {
+      "path": "assets/audio/sfx/block_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 3504,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hit_armor_6.ogg": {
+      "path": "assets/audio/sfx/hit_armor_6.ogg",
+      "content_type": "audio/ogg",
+      "size": 3390,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/candle_hiss_4.ogg": {
+      "path": "assets/audio/sfx/candle_hiss_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 2342,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/boss_swing_2.ogg": {
+      "path": "assets/audio/sfx/boss_swing_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 9884,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/candle_hiss_2.ogg": {
+      "path": "assets/audio/sfx/candle_hiss_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 2732,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/drip_1.ogg": {
+      "path": "assets/audio/sfx/drip_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 2205,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/candles_out_1.ogg": {
+      "path": "assets/audio/sfx/candles_out_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 59281,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/boss_swing_3.ogg": {
+      "path": "assets/audio/sfx/boss_swing_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 8934,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/drip_3.ogg": {
+      "path": "assets/audio/sfx/drip_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 2428,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/clash_1.ogg": {
+      "path": "assets/audio/sfx/clash_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 3852,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/guard_break_1.ogg": {
+      "path": "assets/audio/sfx/guard_break_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 11319,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/boss_step_2.ogg": {
+      "path": "assets/audio/sfx/boss_step_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 19280,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/boss_step_3.ogg": {
+      "path": "assets/audio/sfx/boss_step_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 19219,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/candles_snuff_1.ogg": {
+      "path": "assets/audio/sfx/candles_snuff_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 16821,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/boss_swing_1.ogg": {
+      "path": "assets/audio/sfx/boss_swing_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 9834,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/clash_4.ogg": {
+      "path": "assets/audio/sfx/clash_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 4065,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/pipes_ring_1.ogg": {
+      "path": "assets/audio/sfx/pipes_ring_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 13511,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/candle_hiss_3.ogg": {
+      "path": "assets/audio/sfx/candle_hiss_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 2705,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/boss_step_4.ogg": {
+      "path": "assets/audio/sfx/boss_step_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 19406,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/ui/logo.svg": {
+      "path": "assets/ui/logo.svg",
+      "content_type": "image/svg+xml",
+      "size": 14826,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_run_4.ogg": {
+      "path": "assets/audio/sfx/step_run_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 5996,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_walk_1.ogg": {
+      "path": "assets/audio/sfx/step_walk_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 5711,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/drip_5.ogg": {
+      "path": "assets/audio/sfx/drip_5.ogg",
+      "content_type": "audio/ogg",
+      "size": 2710,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/stagger_2.ogg": {
+      "path": "assets/audio/sfx/stagger_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 13158,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/spot_off_1.ogg": {
+      "path": "assets/audio/sfx/spot_off_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 6328,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hymn_fly_1.ogg": {
+      "path": "assets/audio/sfx/hymn_fly_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 5953,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/roll_2.ogg": {
+      "path": "assets/audio/sfx/roll_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 15859,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_run_5.ogg": {
+      "path": "assets/audio/sfx/step_run_5.ogg",
+      "content_type": "audio/ogg",
+      "size": 6562,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/pipes_ring_4.ogg": {
+      "path": "assets/audio/sfx/pipes_ring_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 14588,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/rescue_heal_1.ogg": {
+      "path": "assets/audio/sfx/rescue_heal_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 26098,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/roll_3.ogg": {
+      "path": "assets/audio/sfx/roll_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 15581,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hymn_fly_4.ogg": {
+      "path": "assets/audio/sfx/hymn_fly_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 5820,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/boss_swing_4.ogg": {
+      "path": "assets/audio/sfx/boss_swing_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 9588,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/slam_2.ogg": {
+      "path": "assets/audio/sfx/slam_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 27821,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/stagger_1.ogg": {
+      "path": "assets/audio/sfx/stagger_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 15589,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/drip_8.ogg": {
+      "path": "assets/audio/sfx/drip_8.ogg",
+      "content_type": "audio/ogg",
+      "size": 2535,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hymn_fly_2.ogg": {
+      "path": "assets/audio/sfx/hymn_fly_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 5451,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_run_6.ogg": {
+      "path": "assets/audio/sfx/step_run_6.ogg",
+      "content_type": "audio/ogg",
+      "size": 6801,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/roll_1.ogg": {
+      "path": "assets/audio/sfx/roll_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 15706,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hit_armor_3.ogg": {
+      "path": "assets/audio/sfx/hit_armor_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 4731,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/slam_1.ogg": {
+      "path": "assets/audio/sfx/slam_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 30444,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hit_armor_heavy_1.ogg": {
+      "path": "assets/audio/sfx/hit_armor_heavy_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 5302,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_slow_1.ogg": {
+      "path": "assets/audio/sfx/step_slow_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 9289,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_run_1.ogg": {
+      "path": "assets/audio/sfx/step_run_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 5530,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/candles_relight_1.ogg": {
+      "path": "assets/audio/sfx/candles_relight_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 57385,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hymn_cast_1.ogg": {
+      "path": "assets/audio/sfx/hymn_cast_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 29824,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/clash_3.ogg": {
+      "path": "assets/audio/sfx/clash_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 4184,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/pipes_1.ogg": {
+      "path": "assets/audio/sfx/pipes_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 54062,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hurt_2.ogg": {
+      "path": "assets/audio/sfx/hurt_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 6807,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_run_2.ogg": {
+      "path": "assets/audio/sfx/step_run_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 5768,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hit_armor_2.ogg": {
+      "path": "assets/audio/sfx/hit_armor_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 4411,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hymn_fly_3.ogg": {
+      "path": "assets/audio/sfx/hymn_fly_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 6251,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/pipes_ring_3.ogg": {
+      "path": "assets/audio/sfx/pipes_ring_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 14338,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/boss_step_5.ogg": {
+      "path": "assets/audio/sfx/boss_step_5.ogg",
+      "content_type": "audio/ogg",
+      "size": 19032,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/drip_2.ogg": {
+      "path": "assets/audio/sfx/drip_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 2428,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/pipes_2.ogg": {
+      "path": "assets/audio/sfx/pipes_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 55022,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hurt_4.ogg": {
+      "path": "assets/audio/sfx/hurt_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 5621,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/guard_break_2.ogg": {
+      "path": "assets/audio/sfx/guard_break_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 14095,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hurt_1.ogg": {
+      "path": "assets/audio/sfx/hurt_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 5752,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/candles_snuff_2.ogg": {
+      "path": "assets/audio/sfx/candles_snuff_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 13816,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hit_armor_heavy_2.ogg": {
+      "path": "assets/audio/sfx/hit_armor_heavy_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 5301,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_slow_2.ogg": {
+      "path": "assets/audio/sfx/step_slow_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 9060,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hit_armor_1.ogg": {
+      "path": "assets/audio/sfx/hit_armor_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 4355,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/drip_4.ogg": {
+      "path": "assets/audio/sfx/drip_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 2358,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/spot_on_1.ogg": {
+      "path": "assets/audio/sfx/spot_on_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 7331,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/slam_3.ogg": {
+      "path": "assets/audio/sfx/slam_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 30959,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hurt_3.ogg": {
+      "path": "assets/audio/sfx/hurt_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 7200,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/drip_7.ogg": {
+      "path": "assets/audio/sfx/drip_7.ogg",
+      "content_type": "audio/ogg",
+      "size": 2873,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_run_3.ogg": {
+      "path": "assets/audio/sfx/step_run_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 5892,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hit_armor_4.ogg": {
+      "path": "assets/audio/sfx/hit_armor_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 4257,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/candle_hiss_1.ogg": {
+      "path": "assets/audio/sfx/candle_hiss_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 2712,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/bed_nave_1.ogg": {
+      "path": "assets/audio/sfx/bed_nave_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 274552,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hit_armor_5.ogg": {
+      "path": "assets/audio/sfx/hit_armor_5.ogg",
+      "content_type": "audio/ogg",
+      "size": 4284,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/models/arena/east.glb": {
+      "path": "assets/models/arena/east.glb",
+      "content_type": "model/gltf-binary",
+      "size": 1077840,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/candles_snuff_3.ogg": {
+      "path": "assets/audio/sfx/candles_snuff_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 17554,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hymn_cast_3.ogg": {
+      "path": "assets/audio/sfx/hymn_cast_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 29594,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/pipes_ring_2.ogg": {
+      "path": "assets/audio/sfx/pipes_ring_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 13757,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/pipes_3.ogg": {
+      "path": "assets/audio/sfx/pipes_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 51711,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/models/arena/west.glb": {
+      "path": "assets/models/arena/west.glb",
+      "content_type": "model/gltf-binary",
+      "size": 1555052,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/flask_1.ogg": {
+      "path": "assets/audio/sfx/flask_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 18442,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_slow_4.ogg": {
+      "path": "assets/audio/sfx/step_slow_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 9168,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_slow_3.ogg": {
+      "path": "assets/audio/sfx/step_slow_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 9090,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_walk_2.ogg": {
+      "path": "assets/audio/sfx/step_walk_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 5845,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/models/arena/props.glb": {
+      "path": "assets/models/arena/props.glb",
+      "content_type": "model/gltf-binary",
+      "size": 2008136,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/drip_6.ogg": {
+      "path": "assets/audio/sfx/drip_6.ogg",
+      "content_type": "audio/ogg",
+      "size": 3272,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/clash_2.ogg": {
+      "path": "assets/audio/sfx/clash_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 3429,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hit_armor_heavy_3.ogg": {
+      "path": "assets/audio/sfx/hit_armor_heavy_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 6249,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/models/arena/organ.glb": {
+      "path": "assets/models/arena/organ.glb",
+      "content_type": "model/gltf-binary",
+      "size": 2912540,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/models/arena/bay.glb": {
+      "path": "assets/models/arena/bay.glb",
+      "content_type": "model/gltf-binary",
+      "size": 1471164,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/block_2.ogg": {
+      "path": "assets/audio/sfx/block_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 4153,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/hymn_cast_2.ogg": {
+      "path": "assets/audio/sfx/hymn_cast_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 32883,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/models/arena/statues.glb": {
+      "path": "assets/models/arena/statues.glb",
+      "content_type": "model/gltf-binary",
+      "size": 1418980,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/ui_move_1.ogg": {
+      "path": "assets/audio/sfx/ui_move_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 1958,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/ui_move_2.ogg": {
+      "path": "assets/audio/sfx/ui_move_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 1927,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/sword_draw_1.ogg": {
+      "path": "assets/audio/sfx/sword_draw_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 11222,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/voice/cantor_phase.ogg": {
+      "path": "assets/audio/voice/cantor_phase.ogg",
+      "content_type": "audio/ogg",
+      "size": 66026,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/swing_light_4.ogg": {
+      "path": "assets/audio/sfx/swing_light_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 5065,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/voice/voice_fries.ogg": {
+      "path": "assets/audio/voice/voice_fries.ogg",
+      "content_type": "audio/ogg",
+      "size": 74417,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/music/death.ogg": {
+      "path": "assets/audio/music/death.ogg",
+      "content_type": "audio/ogg",
+      "size": 176836,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/tide_2.ogg": {
+      "path": "assets/audio/sfx/tide_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 35437,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/ui_back_1.ogg": {
+      "path": "assets/audio/sfx/ui_back_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 2466,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/sword_draw_2.ogg": {
+      "path": "assets/audio/sfx/sword_draw_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 12602,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/tide_1.ogg": {
+      "path": "assets/audio/sfx/tide_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 37361,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/swing_heavy_1.ogg": {
+      "path": "assets/audio/sfx/swing_heavy_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 6426,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/swing_light_2.ogg": {
+      "path": "assets/audio/sfx/swing_light_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 5323,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/swing_light_1.ogg": {
+      "path": "assets/audio/sfx/swing_light_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 5148,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/ui_select_1.ogg": {
+      "path": "assets/audio/sfx/ui_select_1.ogg",
+      "content_type": "audio/ogg",
+      "size": 2566,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/voice/voice_save.ogg": {
+      "path": "assets/audio/voice/voice_save.ogg",
+      "content_type": "audio/ogg",
+      "size": 70044,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/ui_move_3.ogg": {
+      "path": "assets/audio/sfx/ui_move_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 1993,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/swing_heavy_3.ogg": {
+      "path": "assets/audio/sfx/swing_heavy_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 7363,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/models/props/pipe.glb": {
+      "path": "assets/models/props/pipe.glb",
+      "content_type": "model/gltf-binary",
+      "size": 41108,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/voice/cantor_intro.ogg": {
+      "path": "assets/audio/voice/cantor_intro.ogg",
+      "content_type": "audio/ogg",
+      "size": 90312,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/music/music.json": {
+      "path": "assets/audio/music/music.json",
+      "content_type": "application/json; charset=utf-8",
+      "size": 3432,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/models/props/greatsword.glb": {
+      "path": "assets/models/props/greatsword.glb",
+      "content_type": "model/gltf-binary",
+      "size": 411676,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/music/turn.ogg": {
+      "path": "assets/audio/music/turn.ogg",
+      "content_type": "audio/ogg",
+      "size": 369136,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/models/knight.motion.glb": {
+      "path": "assets/models/knight.motion.glb",
+      "content_type": "model/gltf-binary",
+      "size": 152592,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/swing_light_3.ogg": {
+      "path": "assets/audio/sfx/swing_light_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 5069,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_walk_4.ogg": {
+      "path": "assets/audio/sfx/step_walk_4.ogg",
+      "content_type": "audio/ogg",
+      "size": 6343,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_walk_3.ogg": {
+      "path": "assets/audio/sfx/step_walk_3.ogg",
+      "content_type": "audio/ogg",
+      "size": 6207,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_walk_5.ogg": {
+      "path": "assets/audio/sfx/step_walk_5.ogg",
+      "content_type": "audio/ogg",
+      "size": 5935,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/fonts/libre-caslon-text-400.woff2": {
+      "path": "assets/fonts/libre-caslon-text-400.woff2",
+      "content_type": "font/woff2",
+      "size": 16984,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/models/props/longsword.glb": {
+      "path": "assets/models/props/longsword.glb",
+      "content_type": "model/gltf-binary",
+      "size": 156128,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/step_walk_6.ogg": {
+      "path": "assets/audio/sfx/step_walk_6.ogg",
+      "content_type": "audio/ogg",
+      "size": 5897,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/music/ending.ogg": {
+      "path": "assets/audio/music/ending.ogg",
+      "content_type": "audio/ogg",
+      "size": 771935,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/sfx/swing_heavy_2.ogg": {
+      "path": "assets/audio/sfx/swing_heavy_2.ogg",
+      "content_type": "audio/ogg",
+      "size": 6739,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/models/props/flask.glb": {
+      "path": "assets/models/props/flask.glb",
+      "content_type": "model/gltf-binary",
+      "size": 77412,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/music/intro.ogg": {
+      "path": "assets/audio/music/intro.ogg",
+      "content_type": "audio/ogg",
+      "size": 1291375,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/fonts/libre-caslon-text-400-italic.woff2": {
+      "path": "assets/fonts/libre-caslon-text-400-italic.woff2",
+      "content_type": "font/woff2",
+      "size": 19576,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/models/props/shield.glb": {
+      "path": "assets/models/props/shield.glb",
+      "content_type": "model/gltf-binary",
+      "size": 164332,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/audio/voice/cantor_end.ogg": {
+      "path": "assets/audio/voice/cantor_end.ogg",
+      "content_type": "audio/ogg",
+      "size": 59795,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/models/props/lantern.glb": {
+      "path": "assets/models/props/lantern.glb",
+      "content_type": "model/gltf-binary",
+      "size": 130104,
+      "status": 200
+    },
+    "https://evensong-phi.vercel.app/assets/fonts/ysabeau-office-400-700.woff2": {
+      "path": "assets/fonts/ysabeau-office-400-700.woff2",
+      "content_type": "font/woff2",
+      "size": 38480,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

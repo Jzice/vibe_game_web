@@ -1,0 +1,30 @@
+{
+  "url": "https://wanfa-xiantu.pages.dev/",
+  "final_url": "https://wanfa-xiantu.pages.dev/",
+  "slug": "wanfa-xiantu",
+  "title": "Myriad Dao · Cultivation Roguelite",
+  "description": "A cultivation roguelite: arrange techniques in your meridians, let the Five Elements empower each other, and pick your own moment to face the Heavenly Tribulation.",
+  "captured_at": "2026-11-16T16:34:08.414993+00:00",
+  "assets": {
+    "https://wanfa-xiantu.pages.dev/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 7285253,
+      "status": 200
+    },
+    "https://wanfa-xiantu.pages.dev/fonts/WanfaKai.woff2": {
+      "path": "fonts/WanfaKai.woff2",
+      "content_type": "font/woff2",
+      "size": 260244,
+      "status": 200
+    },
+    "https://wanfa-xiantu.pages.dev/fonts/WanfaSans.woff2": {
+      "path": "fonts/WanfaSans.woff2",
+      "content_type": "font/woff2",
+      "size": 474608,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

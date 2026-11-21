@@ -1,0 +1,162 @@
+{
+  "url": "https://tennis.sixfingerpunch.com/",
+  "final_url": "https://tennis.sixfingerpunch.com/",
+  "slug": "tennis",
+  "title": "Tennis",
+  "description": "I asked Fable 5.2, the world's most advanced AI, to make a game. You won't BELIEVE what happened next! (Pong. Honestly, that's all it did.)",
+  "captured_at": "2026-11-16T16:55:09.898352+00:00",
+  "assets": {
+    "https://tennis.sixfingerpunch.com/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 4903,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/game.css": {
+      "path": "game.css",
+      "content_type": "text/css; charset=utf-8",
+      "size": 399,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/shell.css": {
+      "path": "shell.css",
+      "content_type": "text/css; charset=utf-8",
+      "size": 9437,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/sfp.svg": {
+      "path": "sfp.svg",
+      "content_type": "image/svg+xml",
+      "size": 26922,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/wordmark.svg": {
+      "path": "wordmark.svg",
+      "content_type": "image/svg+xml",
+      "size": 5220,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/main.js": {
+      "path": "main.js",
+      "content_type": "text/javascript; charset=utf-8",
+      "size": 9350,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/record.js": {
+      "path": "record.js",
+      "content_type": "text/javascript; charset=utf-8",
+      "size": 7850,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/shell.js": {
+      "path": "shell.js",
+      "content_type": "text/javascript; charset=utf-8",
+      "size": 4021,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/js/audio.js": {
+      "path": "js/audio.js",
+      "content_type": "text/javascript; charset=utf-8",
+      "size": 11495,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/js/render.js": {
+      "path": "js/render.js",
+      "content_type": "text/javascript; charset=utf-8",
+      "size": 19058,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/js/show.js": {
+      "path": "js/show.js",
+      "content_type": "text/javascript; charset=utf-8",
+      "size": 51110,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/js/gl.js": {
+      "path": "js/gl.js",
+      "content_type": "text/javascript; charset=utf-8",
+      "size": 3093,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/js/shaders.js": {
+      "path": "js/shaders.js",
+      "content_type": "text/javascript; charset=utf-8",
+      "size": 18542,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/js/m4.js": {
+      "path": "js/m4.js",
+      "content_type": "text/javascript; charset=utf-8",
+      "size": 4283,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/js/court.js": {
+      "path": "js/court.js",
+      "content_type": "text/javascript; charset=utf-8",
+      "size": 8391,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/js/desk.js": {
+      "path": "js/desk.js",
+      "content_type": "text/javascript; charset=utf-8",
+      "size": 14098,
+      "status": 200
+    },
+    "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;700&display=swap": {
+      "path": "_remote/fonts.googleapis.com/css2__q_family_Chakra_Petch_wght_400_500_700_display_swap",
+      "content_type": "text/css; charset=utf-8",
+      "size": 4787,
+      "status": 200
+    },
+    "https://cdn.usefathom.com/script.js": {
+      "path": "_remote/cdn.usefathom.com/script.js",
+      "content_type": "application/javascript",
+      "size": 6981,
+      "status": 200
+    },
+    "https://cdn.usefathom.com/?h=https%3A%2F%2Ftennis.sixfingerpunch.com&p=%2F&r=&sid=KJMGTPJG&qs=%7B%7D&cid=3666585": {
+      "path": "_remote/cdn.usefathom.com/__q_h_https_3A_2F_2Ftennis.sixfingerpunch.com_p_2F_r_sid_KJMGTPJG_qs_7B_7D_cid_3666585",
+      "content_type": "image/gif",
+      "size": 43,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/media/audio/say-punch.mp3": {
+      "path": "media/audio/say-punch.mp3",
+      "content_type": "audio/mpeg",
+      "size": 49363,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/media/audio/shing.mp3": {
+      "path": "media/audio/shing.mp3",
+      "content_type": "audio/mpeg",
+      "size": 37032,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/media/audio/whoosh.mp3": {
+      "path": "media/audio/whoosh.mp3",
+      "content_type": "audio/mpeg",
+      "size": 37032,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/media/audio/smash.mp3": {
+      "path": "media/audio/smash.mp3",
+      "content_type": "audio/mpeg",
+      "size": 73394,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/media/audio/boom.mp3": {
+      "path": "media/audio/boom.mp3",
+      "content_type": "audio/mpeg",
+      "size": 73394,
+      "status": 200
+    },
+    "https://tennis.sixfingerpunch.com/media/audio/hits.mp3": {
+      "path": "media/audio/hits.mp3",
+      "content_type": "audio/mpeg",
+      "size": 193767,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

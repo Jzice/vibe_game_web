@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Vincent contre les marmottes ninja</title>
+<meta name="description" content="Vincent contre les marmottes ninja : un jeu de tir à la première personne bon enfant. Défendez le temple contre des marmottes ninja adorables avec 15 armes-jouets, sur téléphone ou sur ordinateur.">
+<meta name="theme-color" content="#0a0607">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Marmottes Ninja">
+<meta name="application-name" content="Marmottes Ninja">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="../marmottes/manifest.webmanifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="../marmottes/icons/icon-192.png">
+<link rel="apple-touch-icon" href="../marmottes/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="../marmottes/fonts/fonts.css">
+<link rel="preconnect" href="https://fonts.gstatic.com/" >
+<link rel="stylesheet" href="../marmottes/fonts/fonts.css">
+<link rel="stylesheet" href="../marmottes/style.css">
+<script>var _SiteOneUrlDepth = 2;</script></head>
+<body>
+<canvas id="c"></canvas>
+
+<!-- Interface en jeu : volontairement minimale -->
+<div id="hud" class="hidden">
+  <div id="hurt"></div>
+  <div id="scope"><div class="lens"></div></div>
+  <div id="crosshair"><i class="t"></i><i class="b"></i><i class="l"></i><i class="r"></i><b></b></div>
+  <div id="hitmarker"><i></i><i></i><i></i><i></i></div>
+  <div id="dmg"></div>
+  <!-- téléphone : chevrons rouges vers les marmottes hors champ (remplacent le radar) -->
+  <div id="edges"></div>
+
+  <div id="top">
+    <div id="status"><b id="wave">PRÊT ?</b><span id="remain"></span></div>
+    <div id="score">0</div>
+    <div id="health"><div class="bar"><div id="health-fill"></div></div></div>
+  </div>
+  <div id="boss" class="hidden"><div id="boss-name">SHOGUN MARMOTTE</div><div class="bar"><div id="boss-fill"></div></div></div>
+
+  <canvas id="radar" width="120" height="120"></canvas>
+  <div id="weapon"><span id="wicon">🎨</span><span id="ammo-mag">40</span><span id="ammo-res">/ 240</span></div>
+  <div id="wbar"></div>
+  <div id="wname"></div>
+  <div id="toast"></div>
+  <div id="banner"><div id="banner-title"></div><div id="banner-sub"></div></div>
+
+  <!-- Commandes tactiles : un stick, un bouton de tir, un bouton d'arme, un saut -->
+  <div id="touch">
+    <div id="stick"><div id="knob"></div></div>
+    <div class="tbtn" id="t-fire" data-act="fire" role="button" aria-label="Tirer">TIR</div>
+    <div class="tbtn" id="t-weapon" data-act="weapon" role="button" aria-label="Arme suivante, appui long : arsenal"><span id="tw-icon">🎨</span><span id="tw-ammo">40</span></div>
+    <div class="tbtn" id="t-jump" data-act="jump" role="button" aria-label="Sauter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l7.5 7.5-2 2L12 7.5 6.5 13l-2-2z"/><path d="M12 11l7.5 7.5-2 2L12 15l-5.5 5.5-2-2z"/></svg></div>
+    <div class="tbtn small" id="t-pause" data-act="pause" role="button" aria-label="Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/></svg></div>
+    <div class="tbtn small" id="t-rotate" data-act="rotate" role="button" aria-label="Basculer entre portrait et paysage"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9.5" width="8.5" height="12" rx="1.7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.5 4.8H14a5.2 5.2 0 0 1 5.2 5.2v4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M15.8 11.6l3.4 3.4 3.4-3.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+
+<!-- Chargement -->
+<div id="loading" class="screen show">
+  <div class="title-wrap">
+    <div class="kicker">VINCENT CONTRE LES</div>
+    <h1 aria-label="Vincent contre les marmottes ninja">MARMOTTES <span>NINJA</span></h1>
+    <div class="loadbar"><div id="loadfill"></div></div>
+    <div id="loadtext">Préparation du largage…</div>
+  </div>
+</div>
+
+<!-- Menu principal -->
+<div id="menu" class="screen">
+  <div class="menu-col">
+    <div class="menu-head">
+      <div class="kicker">VINCENT CONTRE LES</div>
+      <h1 aria-label="Vincent contre les marmottes ninja">MARMOTTES <span>NINJA</span></h1>
+      <p class="tagline">Elles sont adorables. Elles veulent dominer le monde. Vous avez des grenouilles, des bonbons et une boule disco.</p>
+    </div>
+    <div class="menu-btns">
+      <button class="btn primary" id="btn-play">▶ JOUER</button>
+      <button class="btn" id="btn-arsenal">🧸 L'ARSENAL</button>
+      <button class="btn" id="btn-options">⚙ OPTIONS</button>
+      <button class="btn" id="btn-controls">🎮 COMMANDES</button>
+      <div id="best"></div>
+    </div>
+    <a class="promo" href="https://vincentflibustier.com/" target="_blank" rel="noopener">
+      <span class="promo-by">UN JEU DE VINCENT FLIBUSTIER</span>
+      <span class="promo-line">Formations et conférences sur l'intelligence artificielle</span>
+      <span class="promo-link">vincentflibustier.com ↗</span>
+    </a>
+  </div>
+  <div class="footnote">Graphismes, sons et musique générés par le code. Aucune marmotte n'a été maltraitée.</div>
+</div>
+
+<!-- Briefing -->
+<div id="briefing" class="screen">
+  <div class="brief-box">
+    <div class="tag">VOTRE MISSION</div>
+    <div id="brief-text"></div>
+    <button class="btn primary" id="btn-deploy">▶ C'EST PARTI</button>
+  </div>
+</div>
+
+<!-- Pause -->
+<div id="pause" class="screen">
+  <div class="menu-col center">
+    <h2>PAUSE</h2>
+    <button class="btn primary" id="btn-resume">▶ REPRENDRE</button>
+    <button class="btn" id="btn-p-arsenal">🧸 CHOISIR UNE ARME</button>
+    <button class="btn" id="btn-p-options">⚙ OPTIONS</button>
+    <button class="btn" id="btn-restart">↻ RECOMMENCER</button>
+    <button class="btn" id="btn-quit">⏏ MENU PRINCIPAL</button>
+    <a class="credit" href="https://vincentflibustier.com/" target="_blank" rel="noopener">Un jeu de Vincent Flibustier · <span class="nw">vincentflibustier.com ↗</span></a>
+  </div>
+</div>
+
+<!-- Arsenal -->
+<div id="armory" class="screen">
+  <div class="panel wide">
+    <h2>L'ARSENAL</h2>
+    <p class="sub" id="armory-sub">Quinze armes-jouets. Touchez pour équiper.</p>
+    <div id="armory-grid"></div>
+    <button class="btn" id="btn-armory-close">FERMER</button>
+  </div>
+</div>
+
+<!-- Options -->
+<div id="options" class="screen">
+  <div class="panel">
+    <h2>OPTIONS</h2>
+    <div class="scroll opts">
+    <label>Sensibilité de la visée <input type="range" id="opt-sens" min="0.3" max="2.5" step="0.05" value="1"></label>
+    <label class="check mobile-only"><input type="checkbox" id="opt-autofire" checked> <span>Tir automatique quand une marmotte est dans le viseur</span></label>
+    <label>Volume général <input type="range" id="opt-vol" min="0" max="1" step="0.02" value="0.8"></label>
+    <label>Musique <input type="range" id="opt-music" min="0" max="1" step="0.02" value="0.6"></label>
+    <label>Voix de Vincent <input type="range" id="opt-voice" min="0" max="1" step="0.02" value="1"></label>
+    <label>Qualité graphique
+      <select id="opt-quality">
+        <option value="low">Basse</option>
+        <option value="medium">Moyenne</option>
+        <option value="high">Haute</option>
+        <option value="ultra">Ultra</option>
+      </select>
+    </label>
+    <label class="check"><input type="checkbox" id="opt-adapt" checked> <span>Résolution dynamique (garde le jeu fluide)</span></label>
+    <p class="sub">Changer la qualité recharge le jeu quelques secondes.</p>
+    </div>
+    <button class="btn primary" id="btn-options-close">VALIDER</button>
+  </div>
+</div>
+
+<!-- Commandes -->
+<div id="controls" class="screen">
+  <div class="panel">
+    <h2>COMMANDES</h2>
+    <div class="scroll">
+    <div class="keys desktop-only">
+      <div><kbd id="k-move">Z Q S D</kbd><span>Se déplacer</span></div>
+      <div><kbd>Souris</kbd><span>Viser</span></div>
+      <div><kbd>Clic gauche</kbd><span>Tirer</span></div>
+      <div><kbd>Clic droit</kbd><span>Viser avec précision</span></div>
+      <div><kbd>Molette</kbd> <kbd id="k-cycle">A / E</kbd><span>Changer d'arme</span></div>
+      <div><kbd>1 … 0</kbd><span>Armes 1 à 10</span></div>
+      <div><kbd>Tab</kbd><span>Ouvrir l'arsenal</span></div>
+      <div><kbd>Espace</kbd> <kbd>Maj</kbd> <kbd>C</kbd><span>Sauter, courir, s'accroupir</span></div>
+      <div><kbd>R</kbd><span>Recharger (automatique sinon)</span></div>
+      <div><kbd>Échap</kbd><span>Pause</span></div>
+    </div>
+    <div class="keys touch-scheme mobile-only">
+      <div><i class="ico stick"></i><span><b>Stick, pouce gauche</b>Se déplacer. Poussé à fond vers l'avant : courir.</span></div>
+      <div><i class="ico drag">👆</i><span><b>Glisser sur l'écran</b>Regarder autour de soi.</span></div>
+      <div><i class="ico aim">＋</i><span><b>Viseur sur une marmotte</b>Le tir part tout seul.</span></div>
+      <div><i class="ico fire">TIR</i><span><b>Bouton TIR</b>Tirer soi-même. On peut glisser le pouce pour viser.</span></div>
+      <div><i class="ico">🎨</i><span><b>Bouton d'arme</b>Un appui : arme suivante. Appui long : tout l'arsenal.</span></div>
+      <div><i class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l7.5 7.5-2 2L12 7.5 6.5 13l-2-2z"/><path d="M12 11l7.5 7.5-2 2L12 15l-5.5 5.5-2-2z"/></svg></i><span><b>Saut</b>Au-dessus du bouton TIR. En haut de l'écran : pause, et bascule portrait / paysage.</span></div>
+    </div>
+    <p class="sub">Astuce : tirez sur la grande cloche de bronze pour étourdir les marmottes alentour.</p>
+    </div>
+    <button class="btn primary" id="btn-controls-close">COMPRIS</button>
+  </div>
+</div>
+
+<!-- Fin de partie -->
+<div id="over" class="screen">
+  <div class="panel">
+    <div class="scroll">
+      <div class="tag" id="over-tag">VINCENT CONTRE LES MARMOTTES NINJA</div>
+      <h2 id="over-title">MISSION ÉCHOUÉE</h2>
+      <p class="sub" id="over-sub"></p>
+      <div id="over-stats"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn primary" id="btn-again">↻ REJOUER</button>
+      <button class="btn" id="btn-continue">∞ CONTINUER SANS FIN</button>
+      <button class="btn" id="btn-over-menu">⏏ MENU PRINCIPAL</button>
+    </div>
+    <a class="credit" href="https://vincentflibustier.com/" target="_blank" rel="noopener">Un jeu de Vincent Flibustier · <span class="nw">vincentflibustier.com ↗</span></a>
+  </div>
+</div>
+
+<div id="fatal" class="screen"><div class="panel"><h2>OUPS</h2><p class="sub" id="fatal-text"></p></div></div>
+<script src="../marmottes/dist/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{
+  "url": "https://ulpidiia-bubble.pages.dev",
+  "final_url": "https://ulpidiia-bubble.pages.dev/",
+  "slug": "bubble-fish-battle",
+  "title": "Bubble Fish Battle",
+  "description": "",
+  "captured_at": "2026-11-16T16:40:36.683832+00:00",
+  "assets": {
+    "https://ulpidiia-bubble.pages.dev/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 33447,
+      "status": 200
+    },
+    "https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap": {
+      "path": "_remote/fonts.googleapis.com/css2__q_family_Press_Start_2P_display_swap",
+      "content_type": "text/css; charset=utf-8",
+      "size": 1860,
+      "status": 200
+    },
+    "https://ulpidiia-bubble.pages.dev/ulpianusbubble.png": {
+      "path": "ulpianusbubble.png",
+      "content_type": "image/png",
+      "size": 3760,
+      "status": 200
+    },
+    "https://ulpidiia-bubble.pages.dev/gladiiabubble.png": {
+      "path": "gladiiabubble.png",
+      "content_type": "image/png",
+      "size": 2081,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/pressstart2p/v16/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/pressstart2p/v16/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2",
+      "content_type": "font/woff2",
+      "size": 12512,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

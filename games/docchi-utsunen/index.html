@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ja">
+  <head><script>
+(function(){try{
+  var fake={register:function(){return Promise.resolve({addEventListener:function(){},update:function(){return Promise.resolve()}})},
+    getRegistration:function(){return Promise.resolve()},getRegistrations:function(){return Promise.resolve([])},
+    addEventListener:function(){},controller:null};
+  Object.defineProperty(navigator,'serviceWorker',{configurable:true,value:fake});
+}catch(e){}})();
+</script>
+    <meta charset="utf-8" />
+    <!-- 外部からの読み込みと通信を禁じる。静的ホスティングではヘッダーを付けられないので meta で指定する -->
+    
+    <meta name="referrer" content="no-referrer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#05070f" />
+    <!-- 暗い画面のページだと伝える（ブラウザの枠やスクロールバーを、暗い色で描かせる） -->
+    <meta name="color-scheme" content="dark" />
+    <meta name="description" content="未読通知、迷惑メール、締切、リボ払い。押し寄せる現代人のストレスを撃て。左右に動いて、撃てるのは正面だけ。SNS の広告動画風シューティング。" />
+    <!-- リンクを貼ったときに出る題名・説明・画像。画像はゲームの画面を撮って並べたもの（public/ogp.jpg） -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="どっち撃つねん" />
+    <meta property="og:title" content="どっち撃つねん" />
+    <meta property="og:description" content="未読通知、迷惑メール、締切、リボ払い。押し寄せる現代人のストレスを撃て。左右に動いて、撃てるのは正面だけ。SNS の広告動画風シューティング。" />
+    <meta property="og:url" content="./index.html" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:image" content="./index.htmlogp.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="./index.html" />
+    <title>どっち撃つねん</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23ff3b30'/%3E%3Ctext x='16' y='22' font-size='16' font-weight='900' text-anchor='middle' fill='%23fff' font-family='sans-serif'%3E99%3C/text%3E%3C/svg%3E" />
+    <script type="module" crossorigin src="./assets/index-DLVDr0de.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-xXq2NqO-.css">
+  </head>
+  <body>
+    <!-- 余白に敷く、ゲームの画面をぼかした背景（飾り） -->
+    <canvas id="backdrop" aria-hidden="true"></canvas>
+    <canvas id="game" aria-label="どっち撃つねん"></canvas>
+    <noscript>このゲームを遊ぶには JavaScript を有効にしてください。</noscript>
+  </body>
+</html>

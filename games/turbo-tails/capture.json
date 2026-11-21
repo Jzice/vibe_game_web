@@ -1,0 +1,29 @@
+{
+  "url": "https://turbo-tails.vercel.app/",
+  "final_url": "https://turbo-tails.vercel.app/",
+  "slug": "turbo-tails",
+  "title": "Turbo Tails",
+  "description": "",
+  "captured_at": "2026-11-16T17:00:39.335030+00:00",
+  "assets": {
+    "https://turbo-tails.vercel.app/music/title.5c9d3d01.mp3": {
+      "path": "music/title.5c9d3d01.mp3",
+      "content_type": "audio/mpeg",
+      "size": 831313,
+      "status": 200
+    },
+    "https://turbo-tails.vercel.app/music/beach.fbd5056a.mp3": {
+      "path": "music/beach.fbd5056a.mp3",
+      "content_type": "audio/mpeg",
+      "size": 2188888,
+      "status": 200
+    }
+  },
+  "failures": [
+    {
+      "url": "https://turbo-tails.vercel.app/",
+      "error": "Response.body: Protocol error (Network.getResponseBody): Request content was evicted from inspector cache\nResponse body is not available for a response that was navigated away from. Read response.body"
+    }
+  ],
+  "attempt": 1
+}

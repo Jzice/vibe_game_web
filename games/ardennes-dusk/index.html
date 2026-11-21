@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head><script>
+(function(){try{
+  var fake={register:function(){return Promise.resolve({addEventListener:function(){},update:function(){return Promise.resolve()}})},
+    getRegistration:function(){return Promise.resolve()},getRegistrations:function(){return Promise.resolve([])},
+    addEventListener:function(){},controller:null};
+  Object.defineProperty(navigator,'serviceWorker',{configurable:true,value:fake});
+}catch(e){}})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ardennes Dusk</title>
+<link rel="stylesheet" href="./_remote/fonts.googleapis.com/css2__q_family_Barlow_Condensed_wght_500_600_700_family_IBM_Plex_Mono_wght_400_500_display_swap">
+<link rel="stylesheet" href="./style.css">
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.js" } }</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="load">Building the town…</div>
+
+<div id="hud" hidden>
+  <div id="cross"><svg viewBox="0 0 120 120" aria-hidden="true"><circle id="ring-bg" cx="60" cy="60" r="34"/><circle id="ring" cx="60" cy="60" r="34"/><path d="M60 8v20M60 92v20M8 60h20M92 60h20"/><circle cx="60" cy="60" r="1.6" class="dot"/></svg></div>
+  <div id="gunmark"></div>
+  <div id="note" role="status" aria-live="polite"></div>
+  <div id="objective"><span class="label">Tigers destroyed</span><span id="pips"><i></i><i></i><i></i></span></div>
+  <div id="status">
+    <div class="row"><span class="label">Hull</span><span class="bar"><b id="hull"></b></span><span id="hullv" class="num">100</span></div>
+    <div class="row"><span class="label">Gun</span><span id="gun" class="val">Loaded</span></div>
+    <div class="row" id="trackrow" hidden><span class="label">Track</span><span id="track" class="val warn">Repairing</span></div>
+  </div>
+  <div id="mapbox"><canvas id="map" aria-label="Map of the streets around you"></canvas><span id="maptag"><kbd>Tab</kbd>town</span></div>
+  <canvas id="bigmap" aria-label="Map of the whole town"></canvas>
+  <div id="keys">W A S D drive · mouse aims · click fires · right button zooms · hold Tab for the town map · M sound · P pause</div>
+  <div id="touch" hidden>
+    <div id="stick"><i></i></div>
+    <button id="tfire" type="button">Fire</button>
+    <button id="tzoom" type="button">Zoom</button>
+  </div>
+</div>
+
+<div id="menu" class="overlay" hidden>
+  <div class="card">
+    <p class="kicker">Stavelot, Belgium · night of 18 December 1944</p>
+    <h1>Ardennes Dusk</h1>
+    <p class="lead">King Tigers are closing on the town by every road, in the rain, at night, and they will not stop coming. You have one Sherman and the streets to hide in. How many can you knock out before they get you? Every wall, lamp and tree can be shot away, and anything left without support comes down.</p>
+    <ul class="how">
+      <li><b>Drive</b> W A S D</li><li><b>Aim</b> mouse</li><li><b>Fire</b> left button or space</li><li><b>Zoom</b> right button or shift</li>
+    </ul>
+    <p class="tip">One clean hit kills, theirs or yours. Hit square on and close, your gun goes through; hit at a slant and the shell skids off. The side and rear are thin, the front is thick: aim low on it. Hits that do not get through still add up.</p>
+    <div class="actions"><button id="start" type="button" class="primary">Start engine</button><button id="quality" type="button">Quality: high</button></div>
+  </div>
+  <aside id="lobby" hidden>
+    <label class="callsign"><span>Enter your name</span><input id="callsign" type="text" maxlength="16" autocomplete="off" spellcheck="false" aria-describedby="namehint"></label>
+    <p id="namehint" aria-live="polite"></p>
+    <div class="boardhead"><h2>Top crews</h2><div class="tabs"><button type="button" data-tab="top" class="on">All time</button><button type="button" data-tab="today">Today</button></div></div>
+    <div class="boardcols"><span>Name</span><span>Tigers</span><span>Time</span></div>
+    <ol id="board"></ol>
+    <p id="boardnote"></p>
+  </aside>
+</div>
+<div id="end" class="overlay" hidden>
+  <div class="card">
+    <p class="kicker" id="endkicker"></p>
+    <h1 id="endtitle"></h1>
+    <dl id="endstats"></dl>
+    <p id="endrank" class="endrank" aria-live="polite"></p>
+    <div class="actions"><button id="again" type="button" class="primary">Fight again</button></div>
+  </div>
+</div>
+<div id="pause" class="overlay" hidden><div class="card"><h1>Paused</h1><div class="actions"><button id="resume" type="button" class="primary">Resume</button></div></div></div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

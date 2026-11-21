@@ -1,0 +1,18 @@
+{
+  "url": "https://claude-opus-5-5-qqfeiche3d.pages.dev/",
+  "final_url": "https://claude-opus-5-5-qqfeiche3d.pages.dev/",
+  "slug": "feiche-3d",
+  "title": "飞车 3D · QQ飞车同人还原",
+  "description": "浏览器里的 3D 竞速：还原 QQ飞车的 11城、情迷爱琴海、法老金字塔、雪地大冒险，支持漂移集气、小喷、双喷、氮气、道具赛。",
+  "captured_at": "2026-11-16T17:25:48.448579+00:00",
+  "assets": {
+    "https://claude-opus-5-5-qqfeiche3d.pages.dev/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 717860,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

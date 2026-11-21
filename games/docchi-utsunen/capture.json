@@ -1,0 +1,35 @@
+{
+  "url": "https://ttk1.github.io/docchi-utsunen",
+  "final_url": "https://ttk1.github.io/docchi-utsunen/",
+  "slug": "docchi-utsunen",
+  "title": "どっち撃つねん",
+  "description": "未読通知、迷惑メール、締切、リボ払い。押し寄せる現代人のストレスを撃て。左右に動いて、撃てるのは正面だけ。SNS の広告動画風シューティング。",
+  "captured_at": "2026-11-16T17:03:23.338738+00:00",
+  "assets": {
+    "https://ttk1.github.io/docchi-utsunen/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 2998,
+      "status": 200
+    },
+    "https://ttk1.github.io/docchi-utsunen/assets/index-xXq2NqO-.css": {
+      "path": "assets/index-xXq2NqO-.css",
+      "content_type": "text/css; charset=utf-8",
+      "size": 2481,
+      "status": 200
+    },
+    "https://ttk1.github.io/docchi-utsunen/assets/index-DLVDr0de.js": {
+      "path": "assets/index-DLVDr0de.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 106298,
+      "status": 200
+    }
+  },
+  "failures": [
+    {
+      "url": "https://ttk1.github.io/docchi-utsunen",
+      "error": "Response.body: Response body is unavailable for redirect responses"
+    }
+  ],
+  "attempt": 1
+}

@@ -1,0 +1,33 @@
+{
+  "url": "https://deadwater-port-survival.ma1902056219.chatgpt.site",
+  "final_url": "https://deadwater-port-survival.ma1902056219.chatgpt.site/",
+  "slug": "deadwater-port-survival",
+  "title": "尸潮 · 撤离防线",
+  "description": "原版港区、室内仓库、九式突击步枪、原版双手和材质光照，结合丧尸防守与血效。支持键鼠、手柄和手机触屏。",
+  "captured_at": "2026-11-16T16:44:11.375819+00:00",
+  "assets": {
+    "https://deadwater-port-survival.ma1902056219.chatgpt.site/": {
+      "path": "index.html",
+      "content_type": "text/html",
+      "size": 1562973,
+      "status": 200
+    },
+    "https://deadwater-port-survival.ma1902056219.chatgpt.site/cdn-cgi/challenge-platform/h/b/scripts/jsd/f8df4d4a0cd6/main.js?ray=a5b7f4198b7e0d6a": {
+      "path": "cdn-cgi/challenge-platform/h/b/scripts/jsd/f8df4d4a0cd6/main.js__q_ray_a5b7f4198b7e0d6a",
+      "content_type": "application/javascript; charset=UTF-8",
+      "size": 41667,
+      "status": 200
+    }
+  },
+  "failures": [
+    {
+      "url": "https://deadwater-port-survival.ma1902056219.chatgpt.site/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5b7f4198b7e0d6a",
+      "error": "Response.body: Response body is unavailable for redirect responses"
+    },
+    {
+      "url": "https://deadwater-port-survival.ma1902056219.chatgpt.site/cdn-cgi/challenge-platform/h/b/jsd/oneshot/f8df4d4a0cd6/0.29623672751621166:1794845433:bCiUCn2j0en_YPS2dPOhVaFtZDxbVRAqjDXxMI8sUrs/a5b7f4198b7e0d6a",
+      "error": "[WinError 123] 文件名、目录名或卷标语法不正确。: 'D:\\\\code\\\\vibe\\\\vibe_games\\\\cache\\\\raw\\\\deadwater-port-survival\\\\cdn-cgi\\\\challenge-platform\\\\h\\\\b\\\\jsd\\\\oneshot\\\\f8df4d4a0cd6\\\\0.29623672751621166:1794845433:bCiUCn2"
+    }
+  ],
+  "attempt": 1
+}

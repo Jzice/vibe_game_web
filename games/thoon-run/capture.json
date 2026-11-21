@@ -1,0 +1,81 @@
+{
+  "url": "https://idnn.tv/play/thoon-run",
+  "final_url": "https://idnn.tv/.well-known/sgcaptcha/?r=%2Fplay%2Fthoon-run&y=ipr:80.174.118.99:1794849995.467",
+  "slug": "thoon-run",
+  "title": "Robot Challenge Screen",
+  "description": "",
+  "captured_at": "2026-11-16T17:27:20.040293+00:00",
+  "assets": {
+    "https://idnn.tv/play/thoon-run": {
+      "path": "index.html",
+      "content_type": "text/html",
+      "size": 184,
+      "status": 202
+    },
+    "https://idnn.tv/.well-known/sgcaptcha/?r=%2Fplay%2Fthoon-run&y=ipr:80.174.118.99:1794849995.467": {
+      "path": "site/.well-known/sgcaptcha/__q_r_2Fplay_2Fthoon-run_y_ipr_80.174.118.99_1794849995.467",
+      "content_type": "text/html",
+      "size": 11843,
+      "status": 200
+    },
+    "https://captcha.mysitearea.com/loader.svg": {
+      "path": "_remote/captcha.mysitearea.com/loader.svg",
+      "content_type": "image/svg+xml",
+      "size": 846,
+      "status": 200
+    },
+    "https://captcha.mysitearea.com/robot-suspicion.svg": {
+      "path": "_remote/captcha.mysitearea.com/robot-suspicion.svg",
+      "content_type": "image/svg+xml",
+      "size": 5388,
+      "status": 200
+    },
+    "https://idnn.tv/cdn-cgi/styles/main.css": {
+      "path": "site/cdn-cgi/styles/main.css",
+      "content_type": "text/css",
+      "size": 8013,
+      "status": 200
+    },
+    "https://idnn.tv/cdn-cgi/images/cf-icon-cloud.png": {
+      "path": "site/cdn-cgi/images/cf-icon-cloud.png",
+      "content_type": "image/png",
+      "size": 1484,
+      "status": 200
+    },
+    "https://idnn.tv/cdn-cgi/images/cf-icon-error.png": {
+      "path": "site/cdn-cgi/images/cf-icon-error.png",
+      "content_type": "image/png",
+      "size": 854,
+      "status": 200
+    },
+    "https://idnn.tv/cdn-cgi/images/cf-icon-ok.png": {
+      "path": "site/cdn-cgi/images/cf-icon-ok.png",
+      "content_type": "image/png",
+      "size": 946,
+      "status": 200
+    },
+    "https://idnn.tv/cdn-cgi/images/cf-icon-server.png": {
+      "path": "site/cdn-cgi/images/cf-icon-server.png",
+      "content_type": "image/png",
+      "size": 1384,
+      "status": 200
+    },
+    "https://idnn.tv/cdn-cgi/images/cf-icon-browser.png": {
+      "path": "site/cdn-cgi/images/cf-icon-browser.png",
+      "content_type": "image/png",
+      "size": 484,
+      "status": 200
+    }
+  },
+  "failures": [
+    {
+      "url": "https://idnn.tv/play/thoon-run",
+      "status": 520
+    },
+    {
+      "url": "https://idnn.tv/.well-known/sgcaptcha/?r=%2Fplay%2Fthoon-run&sol=MjE6MTc5NDg0OTk5Njo0Y2VkZmYyZToxYmUwYWU3MGQyZDE1Y2IxNWNmMWQ2ZGUxNDBlYmMzMDhkNzUyMmI5NjBhODUxNGQxOGU4NGE2ZmQ0Zjc1ZWJhOqjIpw%3D%3D&s=455:143156",
+      "error": "Response.body: Protocol error (Network.getResponseBody): No resource with given identifier found\nResponse body is not available for a response that was navigated away from. Read response.body() before"
+    }
+  ],
+  "attempt": 1
+}

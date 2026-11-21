@@ -1,0 +1,42 @@
+{
+  "url": "https://tick-tock-bonk.blanchardk.workers.dev",
+  "final_url": "https://tick-tock-bonk.blanchardk.workers.dev/",
+  "slug": "tick-tock-bonk",
+  "title": "Tick Tock Bonk",
+  "description": "",
+  "captured_at": "2026-11-16T16:56:53.057845+00:00",
+  "assets": {
+    "https://tick-tock-bonk.blanchardk.workers.dev/": {
+      "path": "index.html",
+      "content_type": "text/html",
+      "size": 2240,
+      "status": 200
+    },
+    "https://tick-tock-bonk.blanchardk.workers.dev/assets/main-BmsdiM9o.css": {
+      "path": "assets/main-BmsdiM9o.css",
+      "content_type": "text/css",
+      "size": 33153,
+      "status": 200
+    },
+    "https://tick-tock-bonk.blanchardk.workers.dev/assets/main-Bvdl2Agn.js": {
+      "path": "assets/main-Bvdl2Agn.js",
+      "content_type": "text/javascript",
+      "size": 829501,
+      "status": 200
+    },
+    "https://tick-tock-bonk.blanchardk.workers.dev/assets/nunito-latin-wght-normal-BzFMHfZw.woff2": {
+      "path": "assets/nunito-latin-wght-normal-BzFMHfZw.woff2",
+      "content_type": "font/woff2",
+      "size": 39128,
+      "status": 200
+    },
+    "https://tick-tock-bonk.blanchardk.workers.dev/assets/lilita-one-latin-400-normal-87r-Z-Re.woff2": {
+      "path": "assets/lilita-one-latin-400-normal-87r-Z-Re.woff2",
+      "content_type": "font/woff2",
+      "size": 10672,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

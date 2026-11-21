@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head><script>
+(function(){try{
+  var fake={register:function(){return Promise.resolve({addEventListener:function(){},update:function(){return Promise.resolve()}})},
+    getRegistration:function(){return Promise.resolve()},getRegistrations:function(){return Promise.resolve([])},
+    addEventListener:function(){},controller:null};
+  Object.defineProperty(navigator,'serviceWorker',{configurable:true,value:fake});
+}catch(e){}})();
+</script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <title>Antiques Fraudshow</title>
+    <meta name="description" content="Buy junk at a yard sale. Doctor it in the garage. Lie about it to the appraiser on television. A fun, stupid game, played completely straight." />
+    <meta name="theme-color" content="#0b0d12" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Fraudshow" />
+    <link rel="icon" href="./favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <!-- Link previews. Scrapers need absolute addresses: set VITE_SITE_URL in .env (the public address of this folder,
+         with a trailing slash) and rebuild. Unset, these stay relative, which some scrapers accept and some do not. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Antiques Fraudshow" />
+    <meta property="og:title" content="Antiques Fraudshow" />
+    <meta property="og:description" content="Buy it. Doctor it. Lie about it on television." />
+    <meta property="og:url" content="./index.html" />
+    <meta property="og:image" content="./index.htmlog.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="The Antiques Fraudshow title card over the show's set: an appraiser and a nervous guest at a table with a painting." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Antiques Fraudshow" />
+    <meta name="twitter:description" content="Buy it. Doctor it. Lie about it on television." />
+    <meta name="twitter:image" content="./index.htmlog.jpg" />
+    <script type="module" crossorigin src="./assets/index-hIcQxfxE.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/assets-Dbso2Oon.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-CG784Efq.css">
+  </head>
+  <body>
+    <!-- up before any script has arrived, so the first second is never a blank page; removed when the title can be used -->
+    <div id="boot"><div><div class="bars"></div><b>Please stand by</b><span><i></i>warming up the cameras</span></div></div>
+    <script>
+      // if start-up dies or never arrives, say why on the first card instead of standing by for ever
+      (function () {
+        var say = function (t) { var b = document.querySelector('#boot span'); if (b) b.textContent = t; };
+        window.addEventListener('error', function (e) { if (document.getElementById('boot')) say('fault: ' + (e.message || (e.target && (e.target.src || e.target.href)) || 'unknown')); }, true);
+        window.addEventListener('unhandledrejection', function (e) { if (document.getElementById('boot')) say('fault: ' + ((e.reason && e.reason.message) || e.reason)); });
+        setTimeout(function () { if (document.getElementById('boot') && !window.__bootStage) say('the programme has not arrived. check the connection, or try another browser'); }, 15000);
+      })();
+    </script>
+    <style>html,body{background:#07090d;height:100%;margin:0}#boot{z-index:50;color:#f4ecd8;text-align:center;background:radial-gradient(at 50% 45%,#141a26,#07090d 75%);justify-content:center;align-items:center;font-family:Georgia,Times New Roman,serif;display:flex;position:fixed;inset:0}#boot .bars{opacity:.85;background:linear-gradient(90deg,#c8c8c8 0 14.28%,#c8c833 0 28.57%,#33c8c8 0 42.85%,#33c833 0 57.14%,#c833c8 0 71.42%,#c83333 0 85.71%,#3333c8 0);width:min(46vw,80vh);height:5vh;margin:0 auto 3.6vh}#boot b{letter-spacing:.1em;text-transform:uppercase;font-size:clamp(22px,6vh,9vw);display:block}#boot span{letter-spacing:.2em;text-transform:uppercase;color:#b9ad8c;align-items:center;gap:.8em;margin-top:3vh;font:12px/1 Courier New,monospace;display:inline-flex}#boot i{background:#c8322a;border-radius:50%;width:1em;height:1em;animation:1s steps(2,end) infinite boot-tally;box-shadow:0 0 .8em #c8322a}@keyframes boot-tally{50%{opacity:.25}}</style>
+    <div id="app"></div>
+  </body>
+</html>

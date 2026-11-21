@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head><script>
+(function(){try{
+  var fake={register:function(){return Promise.resolve({addEventListener:function(){},update:function(){return Promise.resolve()}})},
+    getRegistration:function(){return Promise.resolve()},getRegistrations:function(){return Promise.resolve([])},
+    addEventListener:function(){},controller:null};
+  Object.defineProperty(navigator,'serviceWorker',{configurable:true,value:fake});
+}catch(e){}})();
+</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffd9c2" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./favicon.svg" />
+    <title>Tick Tock Bonk</title>
+    <style>html,body{overscroll-behavior:none;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;background:#ffd9c2;height:100%;margin:0;overflow:hidden}body{position:fixed;inset:0}#c{width:100vw;height:100vh;touch-action:none;outline:none;height:100dvh;display:block;position:fixed;inset:0}img{-webkit-user-drag:none;-webkit-touch-callout:none}#boot{z-index:100;color:#2b2140;background:radial-gradient(circle at 50% 40%,#ffe7d6,#ffc7a8);flex-direction:column;justify-content:center;align-items:center;gap:18px;font:700 18px/1 system-ui,sans-serif;transition:opacity .26s;display:flex;position:fixed;inset:0}#boot.done{opacity:0;pointer-events:none}#boot .key{width:54px;height:54px;animation:1.1s cubic-bezier(.5,0,.4,1) infinite spin}@keyframes spin{to{transform:rotate(360deg)}}</style>
+    <script type="module" crossorigin src="./assets/main-Bvdl2Agn.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/main-BmsdiM9o.css">
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <div id="ui"></div>
+    <div id="boot" role="status" aria-live="polite">
+      <svg class="key" viewBox="0 0 48 48" aria-hidden="true"><g fill="#ffc83a" stroke="#2b2140" stroke-width="3" stroke-linejoin="round"><path d="M24 24C14 25 3 21 3 13 3 4 14 3 20 9c3 3 4 8 4 15zM24 24c10 1 21-3 21-11 0-9-11-10-17-4-3 3-4 8-4 15z"/><path d="M24 24v20M24 44h9M24 36h7" fill="none"/></g></svg>
+      <span>Winding up...</span>
+    </div>
+  </body>
+</html>

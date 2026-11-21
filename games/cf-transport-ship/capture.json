@@ -1,0 +1,18 @@
+{
+  "url": "https://claude-opus-5-5-cf-transport-ship.pages.dev/",
+  "final_url": "https://claude-opus-5-5-cf-transport-ship.pages.dev/",
+  "slug": "cf-transport-ship",
+  "title": "运输船 · 穿越火线 3D",
+  "description": "穿越火线经典地图「运输船」网页 3D 复刻：团队竞技，潜伏者 vs 保卫者，机器人对战。",
+  "captured_at": "2026-11-16T17:25:20.982755+00:00",
+  "assets": {
+    "https://claude-opus-5-5-cf-transport-ship.pages.dev/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 861782,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

@@ -1,0 +1,48 @@
+{
+  "url": "https://fable-rover.vercel.app/",
+  "final_url": "https://fable-rover.vercel.app/",
+  "slug": "er-6-terrain-explorer",
+  "title": "ER-6 Terrain Explorer — a rover that drives itself across Mars",
+  "description": "An interactive engineering sheet: a six-wheel rocker-bogie rover with working suspension, a route planner, a scout rotorcraft, solar wings and a fission reactor, driving itself over Mars in your browser.",
+  "captured_at": "2026-11-16T16:45:41.946662+00:00",
+  "assets": {
+    "https://fable-rover.vercel.app/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 27393,
+      "status": 200
+    },
+    "https://fable-rover.vercel.app/assets/index-7r2T8rcX.css": {
+      "path": "assets/index-7r2T8rcX.css",
+      "content_type": "text/css; charset=utf-8",
+      "size": 22482,
+      "status": 200
+    },
+    "https://fable-rover.vercel.app/assets/ibm-plex-mono-latin-600-normal-BgSNZQsw.woff2": {
+      "path": "assets/ibm-plex-mono-latin-600-normal-BgSNZQsw.woff2",
+      "content_type": "font/woff2",
+      "size": 15620,
+      "status": 200
+    },
+    "https://fable-rover.vercel.app/assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2": {
+      "path": "assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2",
+      "content_type": "font/woff2",
+      "size": 14708,
+      "status": 200
+    },
+    "https://fable-rover.vercel.app/assets/index-IUeVgBPd.js": {
+      "path": "assets/index-IUeVgBPd.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 800616,
+      "status": 200
+    },
+    "https://fable-rover.vercel.app/assets/ibm-plex-mono-latin-500-normal-DSY6xOcd.woff2": {
+      "path": "assets/ibm-plex-mono-latin-500-normal-DSY6xOcd.woff2",
+      "content_type": "font/woff2",
+      "size": 14888,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

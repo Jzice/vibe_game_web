@@ -1,0 +1,2147 @@
+{
+  "url": "https://ardennes-dusk.vercel.app/",
+  "final_url": "https://ardennes-dusk.vercel.app/",
+  "slug": "ardennes-dusk",
+  "title": "Ardennes Dusk",
+  "description": "",
+  "captured_at": "2026-11-16T16:39:29.753753+00:00",
+  "assets": {
+    "https://ardennes-dusk.vercel.app/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 4203,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/main.js": {
+      "path": "src/main.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 28601,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/style.css": {
+      "path": "style.css",
+      "content_type": "text/css; charset=utf-8",
+      "size": 13454,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/props.js": {
+      "path": "src/props.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 13231,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/audio.js": {
+      "path": "src/audio.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 14765,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/materials.js": {
+      "path": "src/materials.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 17553,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/render.js": {
+      "path": "src/render.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 7875,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/tankModels.js": {
+      "path": "src/tankModels.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 27005,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/town.js": {
+      "path": "src/town.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 29554,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/ai.js": {
+      "path": "src/ai.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 15828,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/hud.js": {
+      "path": "src/hud.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 21985,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/lobby.js": {
+      "path": "src/lobby.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 6750,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/world.js": {
+      "path": "src/world.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 13152,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/terrain.js": {
+      "path": "src/terrain.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 32382,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/radio.js": {
+      "path": "src/radio.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 33098,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/vendor/three.module.js": {
+      "path": "vendor/three.module.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 603113,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/fx.js": {
+      "path": "src/fx.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 19143,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/roads.js": {
+      "path": "src/roads.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 4589,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/tank.js": {
+      "path": "src/tank.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 40782,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/builder.js": {
+      "path": "src/builder.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 7157,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/structure.js": {
+      "path": "src/structure.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 19069,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/glsl.js": {
+      "path": "src/glsl.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 3166,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/post.js": {
+      "path": "src/post.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 6893,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/radio_lines.js": {
+      "path": "src/radio_lines.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 21597,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/src/debris.js": {
+      "path": "src/debris.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 21295,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/vendor/three.core.js": {
+      "path": "vendor/three.core.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 1403455,
+      "status": 200
+    },
+    "https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap": {
+      "path": "_remote/fonts.googleapis.com/css2__q_family_Barlow_Condensed_wght_500_600_700_family_IBM_Plex_Mono_wght_400_500_display_swap",
+      "content_type": "text/css; charset=utf-8",
+      "size": 8502,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/ibmplexmono/v23/-F6qfjptAgt5VM-kVkqdyU8n3twJwlBFgg.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/ibmplexmono/v23/-F6qfjptAgt5VM-kVkqdyU8n3twJwlBFgg.woff2",
+      "content_type": "font/woff2",
+      "size": 14904,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2z3bWuQ.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2z3bWuQ.woff2",
+      "content_type": "font/woff2",
+      "size": 22444,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lwz3bWuQ.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lwz3bWuQ.woff2",
+      "content_type": "font/woff2",
+      "size": 21424,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873z3bWuQ.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873z3bWuQ.woff2",
+      "content_type": "font/woff2",
+      "size": 22308,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/ibmplexmono/v23/-F63fjptAgt5VM-kVkqdyU8n1i8q1w.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/ibmplexmono/v23/-F63fjptAgt5VM-kVkqdyU8n1i8q1w.woff2",
+      "content_type": "font/woff2",
+      "size": 14648,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/fire_loop.mp3": {
+      "path": "sfx/fire_loop.mp3",
+      "content_type": "audio/mpeg",
+      "size": 97010,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/explosion_building.mp3": {
+      "path": "sfx/explosion_building.mp3",
+      "content_type": "audio/mpeg",
+      "size": 65245,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/timber_crack.mp3": {
+      "path": "sfx/timber_crack.mp3",
+      "content_type": "audio/mpeg",
+      "size": 33062,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/cannon_player.mp3": {
+      "path": "sfx/cannon_player.mp3",
+      "content_type": "audio/mpeg",
+      "size": 48945,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/engine_loop.mp3": {
+      "path": "sfx/engine_loop.mp3",
+      "content_type": "audio/mpeg",
+      "size": 97010,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/wind_loop.mp3": {
+      "path": "sfx/wind_loop.mp3",
+      "content_type": "audio/mpeg",
+      "size": 160958,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/ricochet.mp3": {
+      "path": "sfx/ricochet.mp3",
+      "content_type": "audio/mpeg",
+      "size": 33062,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/collapse.mp3": {
+      "path": "sfx/collapse.mp3",
+      "content_type": "audio/mpeg",
+      "size": 107877,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/cookoff.mp3": {
+      "path": "sfx/cookoff.mp3",
+      "content_type": "audio/mpeg",
+      "size": 48945,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_range_close.mp3": {
+      "path": "sfx/radio/cmd_range_close.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11329,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_clock_2.mp3": {
+      "path": "sfx/radio/cmd_clock_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11016,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_another_1.mp3": {
+      "path": "sfx/radio/cmd_another_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11643,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_wsq.mp3": {
+      "path": "sfx/radio/cmd_at_wsq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 14778,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_tiger_3.mp3": {
+      "path": "sfx/radio/cmd_tiger_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 20107,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_bridge.mp3": {
+      "path": "sfx/radio/cmd_at_bridge.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9449,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_wroad.mp3": {
+      "path": "sfx/radio/cmd_at_wroad.mp3",
+      "content_type": "audio/mpeg",
+      "size": 14464,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/rubble_small.mp3": {
+      "path": "sfx/rubble_small.mp3",
+      "content_type": "audio/mpeg",
+      "size": 48945,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_nroad.mp3": {
+      "path": "sfx/radio/cmd_at_nroad.mp3",
+      "content_type": "audio/mpeg",
+      "size": 15091,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_ebridge.mp3": {
+      "path": "sfx/radio/cmd_at_ebridge.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11643,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_sense_short.mp3": {
+      "path": "sfx/radio/cmd_sense_short.mp3",
+      "content_type": "audio/mpeg",
+      "size": 17912,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_more_right.mp3": {
+      "path": "sfx/radio/cmd_more_right.mp3",
+      "content_type": "audio/mpeg",
+      "size": 13524,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_steady_1.mp3": {
+      "path": "sfx/radio/cmd_steady_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 19166,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/rain_loop.mp3": {
+      "path": "sfx/rain_loop.mp3",
+      "content_type": "audio/mpeg",
+      "size": 160958,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/track_break.mp3": {
+      "path": "sfx/track_break.mp3",
+      "content_type": "audio/mpeg",
+      "size": 33062,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_tiger_2.mp3": {
+      "path": "sfx/radio/cmd_tiger_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 14778,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_eroad.mp3": {
+      "path": "sfx/radio/cmd_at_eroad.mp3",
+      "content_type": "audio/mpeg",
+      "size": 13524,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_nsq.mp3": {
+      "path": "sfx/radio/cmd_at_nsq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 17599,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_se.mp3": {
+      "path": "sfx/radio/cmd_at_se.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11643,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_near_2.mp3": {
+      "path": "sfx/radio/cmd_near_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 23555,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_square.mp3": {
+      "path": "sfx/radio/cmdnet_at_square.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9762,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/gun_fill_1.mp3": {
+      "path": "sfx/radio/gun_fill_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 14151,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_sw.mp3": {
+      "path": "sfx/radio/cmd_at_sw.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11329,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_held_2.mp3": {
+      "path": "sfx/radio/cmd_held_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 22614,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_se.mp3": {
+      "path": "sfx/radio/cmdnet_at_se.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10076,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_call_us.mp3": {
+      "path": "sfx/radio/six_call_us.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12270,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_ric_2.mp3": {
+      "path": "sfx/radio/cmd_ric_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 21674,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_square.mp3": {
+      "path": "sfx/radio/cmd_at_square.mp3",
+      "content_type": "audio/mpeg",
+      "size": 13210,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_clock_8.mp3": {
+      "path": "sfx/radio/cmd_clock_8.mp3",
+      "content_type": "audio/mpeg",
+      "size": 8508,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/tiger_engine_loop.mp3": {
+      "path": "sfx/tiger_engine_loop.mp3",
+      "content_type": "audio/mpeg",
+      "size": 97010,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_hill.mp3": {
+      "path": "sfx/radio/cmd_at_hill.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10076,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/gun_otw_1.mp3": {
+      "path": "sfx/radio/gun_otw_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9762,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_tiger.mp3": {
+      "path": "sfx/radio/six_tiger.mp3",
+      "content_type": "audio/mpeg",
+      "size": 8195,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_sense_over.mp3": {
+      "path": "sfx/radio/cmd_sense_over.mp3",
+      "content_type": "audio/mpeg",
+      "size": 21047,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_call_all.mp3": {
+      "path": "sfx/radio/six_call_all.mp3",
+      "content_type": "audio/mpeg",
+      "size": 17285,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/drv_ok_2.mp3": {
+      "path": "sfx/radio/drv_ok_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 15091,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_eastq.mp3": {
+      "path": "sfx/radio/cmdnet_at_eastq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11956,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_river.mp3": {
+      "path": "sfx/radio/cmd_at_river.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11956,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_range_1.mp3": {
+      "path": "sfx/radio/cmd_range_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10703,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_bridge.mp3": {
+      "path": "sfx/radio/cmdnet_at_bridge.mp3",
+      "content_type": "audio/mpeg",
+      "size": 7568,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_laying_2.mp3": {
+      "path": "sfx/radio/cmd_laying_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 33272,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_square.mp3": {
+      "path": "sfx/radio/six_at_square.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11016,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_nroad.mp3": {
+      "path": "sfx/radio/cmdnet_at_nroad.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11329,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_nsq.mp3": {
+      "path": "sfx/radio/cmdnet_at_nsq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12583,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_more_left.mp3": {
+      "path": "sfx/radio/cmd_more_left.mp3",
+      "content_type": "audio/mpeg",
+      "size": 15405,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_clock_1.mp3": {
+      "path": "sfx/radio/cmd_clock_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9762,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_hill.mp3": {
+      "path": "sfx/radio/cmdnet_at_hill.mp3",
+      "content_type": "audio/mpeg",
+      "size": 7881,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_roger_2.mp3": {
+      "path": "sfx/radio/cmdnet_roger_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 14151,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/glass.mp3": {
+      "path": "sfx/glass.mp3",
+      "content_type": "audio/mpeg",
+      "size": 30137,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_range_2.mp3": {
+      "path": "sfx/radio/cmd_range_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 13837,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/gun_ident_1.mp3": {
+      "path": "sfx/radio/gun_ident_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9762,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_ssq.mp3": {
+      "path": "sfx/radio/cmdnet_at_ssq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11956,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/gun_fill_2.mp3": {
+      "path": "sfx/radio/gun_fill_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 25749,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_kill.mp3": {
+      "path": "sfx/radio/cmdnet_kill.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12583,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/load_loading.mp3": {
+      "path": "sfx/radio/load_loading.mp3",
+      "content_type": "audio/mpeg",
+      "size": 22614,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/load_up_4.mp3": {
+      "path": "sfx/radio/load_up_4.mp3",
+      "content_type": "audio/mpeg",
+      "size": 18853,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_range_4.mp3": {
+      "path": "sfx/radio/cmd_range_4.mp3",
+      "content_type": "audio/mpeg",
+      "size": 8822,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_ebridge.mp3": {
+      "path": "sfx/radio/cmdnet_at_ebridge.mp3",
+      "content_type": "audio/mpeg",
+      "size": 14151,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_another_2.mp3": {
+      "path": "sfx/radio/cmd_another_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9135,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_trav_left.mp3": {
+      "path": "sfx/radio/cmd_trav_left.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9449,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_urge_1.mp3": {
+      "path": "sfx/radio/cmd_urge_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 22614,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_flank_behind.mp3": {
+      "path": "sfx/radio/cmd_flank_behind.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11643,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_moving_right.mp3": {
+      "path": "sfx/radio/cmd_moving_right.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11329,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/drv_ok_1.mp3": {
+      "path": "sfx/radio/drv_ok_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 14151,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_pen_3.mp3": {
+      "path": "sfx/radio/cmd_pen_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 23555,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_westq.mp3": {
+      "path": "sfx/radio/cmdnet_at_westq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12583,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/load_up_3.mp3": {
+      "path": "sfx/radio/load_up_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 20734,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/cannon_tiger.mp3": {
+      "path": "sfx/cannon_tiger.mp3",
+      "content_type": "audio/mpeg",
+      "size": 65245,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_steady_3.mp3": {
+      "path": "sfx/radio/cmd_steady_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9449,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_wroad.mp3": {
+      "path": "sfx/radio/cmdnet_at_wroad.mp3",
+      "content_type": "audio/mpeg",
+      "size": 13837,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/drv_ok_3.mp3": {
+      "path": "sfx/radio/drv_ok_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10076,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/load_up_1.mp3": {
+      "path": "sfx/radio/load_up_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11016,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_cantsee.mp3": {
+      "path": "sfx/radio/cmd_cantsee.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10076,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/gun_ident_2.mp3": {
+      "path": "sfx/radio/gun_ident_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 7881,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_roger_1.mp3": {
+      "path": "sfx/radio/cmdnet_roger_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12583,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_urge_2.mp3": {
+      "path": "sfx/radio/cmd_urge_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 15091,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_lost_1.mp3": {
+      "path": "sfx/radio/cmd_lost_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10389,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/explosion_ground.mp3": {
+      "path": "sfx/explosion_ground.mp3",
+      "content_type": "audio/mpeg",
+      "size": 48945,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_pen_1.mp3": {
+      "path": "sfx/radio/cmd_pen_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 13524,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_near_1.mp3": {
+      "path": "sfx/radio/cmd_near_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 8508,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_another.mp3": {
+      "path": "sfx/radio/six_another.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11016,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_steady_2.mp3": {
+      "path": "sfx/radio/cmd_steady_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 25436,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_roger_3.mp3": {
+      "path": "sfx/radio/cmdnet_roger_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 18853,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_flank_left.mp3": {
+      "path": "sfx/radio/cmd_flank_left.mp3",
+      "content_type": "audio/mpeg",
+      "size": 15405,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_sense_left.mp3": {
+      "path": "sfx/radio/cmd_sense_left.mp3",
+      "content_type": "audio/mpeg",
+      "size": 20734,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_pen_2.mp3": {
+      "path": "sfx/radio/cmd_pen_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 19793,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/gun_otw_2.mp3": {
+      "path": "sfx/radio/gun_otw_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9135,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/gun_otw_3.mp3": {
+      "path": "sfx/radio/gun_otw_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10076,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_swing_right.mp3": {
+      "path": "sfx/radio/cmd_swing_right.mp3",
+      "content_type": "audio/mpeg",
+      "size": 19166,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_eroad.mp3": {
+      "path": "sfx/radio/cmdnet_at_eroad.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12270,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_track_1.mp3": {
+      "path": "sfx/radio/cmd_track_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 21047,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_order_2.mp3": {
+      "path": "sfx/radio/cmd_order_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 21047,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_eastq.mp3": {
+      "path": "sfx/radio/cmd_at_eastq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 15405,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_call.mp3": {
+      "path": "sfx/radio/cmdnet_call.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10389,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/hit_armor.mp3": {
+      "path": "sfx/hit_armor.mp3",
+      "content_type": "audio/mpeg",
+      "size": 33062,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_trav_right.mp3": {
+      "path": "sfx/radio/cmd_trav_right.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9762,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/gun_ident_3.mp3": {
+      "path": "sfx/radio/gun_ident_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9135,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_clock_11.mp3": {
+      "path": "sfx/radio/cmd_clock_11.mp3",
+      "content_type": "audio/mpeg",
+      "size": 13210,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_clock_10.mp3": {
+      "path": "sfx/radio/cmd_clock_10.mp3",
+      "content_type": "audio/mpeg",
+      "size": 8195,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_esq.mp3": {
+      "path": "sfx/radio/cmdnet_at_esq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 13210,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_range_5.mp3": {
+      "path": "sfx/radio/cmd_range_5.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10703,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_thanks.mp3": {
+      "path": "sfx/radio/cmdnet_thanks.mp3",
+      "content_type": "audio/mpeg",
+      "size": 14151,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_sense_right.mp3": {
+      "path": "sfx/radio/cmd_sense_right.mp3",
+      "content_type": "audio/mpeg",
+      "size": 23555,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_ford.mp3": {
+      "path": "sfx/radio/cmd_at_ford.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12270,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_trav_front.mp3": {
+      "path": "sfx/radio/cmd_trav_front.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10076,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_quay.mp3": {
+      "path": "sfx/radio/cmd_at_quay.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12270,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_ssq.mp3": {
+      "path": "sfx/radio/cmd_at_ssq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 15718,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/reload.mp3": {
+      "path": "sfx/reload.mp3",
+      "content_type": "audio/mpeg",
+      "size": 33062,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/turret_loop.mp3": {
+      "path": "sfx/turret_loop.mp3",
+      "content_type": "audio/mpeg",
+      "size": 65245,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_cover_1.mp3": {
+      "path": "sfx/radio/cmd_cover_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 19480,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/gun_cantsee.mp3": {
+      "path": "sfx/radio/gun_cantsee.mp3",
+      "content_type": "audio/mpeg",
+      "size": 23868,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_flank_right.mp3": {
+      "path": "sfx/radio/cmd_flank_right.mp3",
+      "content_type": "audio/mpeg",
+      "size": 19793,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_esq.mp3": {
+      "path": "sfx/radio/cmd_at_esq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 16972,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_lost_2.mp3": {
+      "path": "sfx/radio/cmd_lost_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10389,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/shell_flyby.mp3": {
+      "path": "sfx/shell_flyby.mp3",
+      "content_type": "audio/mpeg",
+      "size": 26793,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_river.mp3": {
+      "path": "sfx/radio/cmdnet_at_river.mp3",
+      "content_type": "audio/mpeg",
+      "size": 14151,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_at_westq.mp3": {
+      "path": "sfx/radio/cmd_at_westq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 15091,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_order_1.mp3": {
+      "path": "sfx/radio/cmd_order_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 26689,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_ric_1.mp3": {
+      "path": "sfx/radio/cmd_ric_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 23241,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_clock_6.mp3": {
+      "path": "sfx/radio/cmd_clock_6.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9135,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/parts_clang.mp3": {
+      "path": "sfx/parts_clang.mp3",
+      "content_type": "audio/mpeg",
+      "size": 33062,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_tiger_1.mp3": {
+      "path": "sfx/radio/cmd_tiger_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 6314,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_ford.mp3": {
+      "path": "sfx/radio/cmdnet_at_ford.mp3",
+      "content_type": "audio/mpeg",
+      "size": 8508,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_quay.mp3": {
+      "path": "sfx/radio/cmdnet_at_quay.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10389,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_laying_1.mp3": {
+      "path": "sfx/radio/cmd_laying_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 29511,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_cover_2.mp3": {
+      "path": "sfx/radio/cmd_cover_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 31078,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_swing_left.mp3": {
+      "path": "sfx/radio/cmd_swing_left.mp3",
+      "content_type": "audio/mpeg",
+      "size": 16031,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_clock_3.mp3": {
+      "path": "sfx/radio/cmd_clock_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10703,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_bridge.mp3": {
+      "path": "sfx/radio/six_at_bridge.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9449,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_clock_5.mp3": {
+      "path": "sfx/radio/cmd_clock_5.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10389,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_sw.mp3": {
+      "path": "sfx/radio/cmdnet_at_sw.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11329,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_over.mp3": {
+      "path": "sfx/radio/cmdnet_over.mp3",
+      "content_type": "audio/mpeg",
+      "size": 6000,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmdnet_at_wsq.mp3": {
+      "path": "sfx/radio/cmdnet_at_wsq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 15091,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_moving_left.mp3": {
+      "path": "sfx/radio/cmd_moving_left.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10389,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_fire_2.mp3": {
+      "path": "sfx/radio/cmd_fire_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 16031,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_clock_7.mp3": {
+      "path": "sfx/radio/cmd_clock_7.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10389,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/load_up_2.mp3": {
+      "path": "sfx/radio/load_up_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 8822,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_sense_house.mp3": {
+      "path": "sfx/radio/cmd_sense_house.mp3",
+      "content_type": "audio/mpeg",
+      "size": 27316,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_clock_12.mp3": {
+      "path": "sfx/radio/cmd_clock_12.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10076,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_track_2.mp3": {
+      "path": "sfx/radio/cmd_track_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 31078,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_held_1.mp3": {
+      "path": "sfx/radio/cmd_held_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 22928,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/tree_fall.mp3": {
+      "path": "sfx/tree_fall.mp3",
+      "content_type": "audio/mpeg",
+      "size": 48109,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_fire_1.mp3": {
+      "path": "sfx/radio/cmd_fire_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 7881,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/tracks_loop.mp3": {
+      "path": "sfx/tracks_loop.mp3",
+      "content_type": "audio/mpeg",
+      "size": 81128,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/wall_ram.mp3": {
+      "path": "sfx/wall_ram.mp3",
+      "content_type": "audio/mpeg",
+      "size": 48945,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_fire_3.mp3": {
+      "path": "sfx/radio/cmd_fire_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10076,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_clock_9.mp3": {
+      "path": "sfx/radio/cmd_clock_9.mp3",
+      "content_type": "audio/mpeg",
+      "size": 8822,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_clock_4.mp3": {
+      "path": "sfx/radio/cmd_clock_4.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9135,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/thunder.mp3": {
+      "path": "sfx/thunder.mp3",
+      "content_type": "audio/mpeg",
+      "size": 106623,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_range_3.mp3": {
+      "path": "sfx/radio/cmd_range_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9449,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/tank_explode.mp3": {
+      "path": "sfx/tank_explode.mp3",
+      "content_type": "audio/mpeg",
+      "size": 96592,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_westq.mp3": {
+      "path": "sfx/radio/six_at_westq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11643,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_ebridge.mp3": {
+      "path": "sfx/radio/six_at_ebridge.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12583,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_ford.mp3": {
+      "path": "sfx/radio/six_at_ford.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11643,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_quay.mp3": {
+      "path": "sfx/radio/six_at_quay.mp3",
+      "content_type": "audio/mpeg",
+      "size": 6941,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_sw.mp3": {
+      "path": "sfx/radio/six_at_sw.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11643,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_hill.mp3": {
+      "path": "sfx/radio/six_at_hill.mp3",
+      "content_type": "audio/mpeg",
+      "size": 6627,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_se.mp3": {
+      "path": "sfx/radio/six_at_se.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12270,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_good_2.mp3": {
+      "path": "sfx/radio/six_good_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 20420,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_out.mp3": {
+      "path": "sfx/radio/six_out.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11956,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_over.mp3": {
+      "path": "sfx/radio/six_over.mp3",
+      "content_type": "audio/mpeg",
+      "size": 6000,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_wsq.mp3": {
+      "path": "sfx/radio/six_at_wsq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11329,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_good_1.mp3": {
+      "path": "sfx/radio/six_good_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 18226,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_esq.mp3": {
+      "path": "sfx/radio/six_at_esq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10703,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_nsq.mp3": {
+      "path": "sfx/radio/six_at_nsq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11956,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_ssq.mp3": {
+      "path": "sfx/radio/six_at_ssq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11956,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_left_4.mp3": {
+      "path": "sfx/radio/six_left_4.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12583,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_won_1.mp3": {
+      "path": "sfx/radio/six_won_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 44244,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_start_1.mp3": {
+      "path": "sfx/radio/six_start_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 50513,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_rel_behind.mp3": {
+      "path": "sfx/radio/four_rel_behind.mp3",
+      "content_type": "audio/mpeg",
+      "size": 16972,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_call_us.mp3": {
+      "path": "sfx/radio/four_call_us.mp3",
+      "content_type": "audio/mpeg",
+      "size": 18853,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_call_six.mp3": {
+      "path": "sfx/radio/four_call_six.mp3",
+      "content_type": "audio/mpeg",
+      "size": 13524,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_idle_2.mp3": {
+      "path": "sfx/radio/six_idle_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 27943,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_lost_2.mp3": {
+      "path": "sfx/radio/four_lost_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 51140,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_sw.mp3": {
+      "path": "sfx/radio/four_at_sw.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11956,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_idle_2.mp3": {
+      "path": "sfx/radio/four_idle_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 35153,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_idle_1.mp3": {
+      "path": "sfx/radio/four_idle_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 42363,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_se.mp3": {
+      "path": "sfx/radio/four_at_se.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12897,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_nsq.mp3": {
+      "path": "sfx/radio/four_at_nsq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 13837,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_ebridge.mp3": {
+      "path": "sfx/radio/four_at_ebridge.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11643,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_hill.mp3": {
+      "path": "sfx/radio/four_at_hill.mp3",
+      "content_type": "audio/mpeg",
+      "size": 8822,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_bridge.mp3": {
+      "path": "sfx/radio/four_at_bridge.mp3",
+      "content_type": "audio/mpeg",
+      "size": 9762,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_eastq.mp3": {
+      "path": "sfx/radio/four_at_eastq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12270,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_river.mp3": {
+      "path": "sfx/radio/four_at_river.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12583,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_lost_1.mp3": {
+      "path": "sfx/radio/four_lost_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 48946,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_out.mp3": {
+      "path": "sfx/radio/four_out.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11016,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_square.mp3": {
+      "path": "sfx/radio/four_at_square.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10389,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_quay.mp3": {
+      "path": "sfx/radio/four_at_quay.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12583,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_ford.mp3": {
+      "path": "sfx/radio/four_at_ford.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11016,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_over.mp3": {
+      "path": "sfx/radio/four_over.mp3",
+      "content_type": "audio/mpeg",
+      "size": 5060,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/able_idle_1.mp3": {
+      "path": "sfx/radio/able_idle_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 37661,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/able_far_1.mp3": {
+      "path": "sfx/radio/able_far_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 33899,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_ric_low_1.mp3": {
+      "path": "sfx/radio/res_ric_low_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 34840,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_ric_front_2.mp3": {
+      "path": "sfx/radio/res_ric_front_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 25436,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_held_turret_1.mp3": {
+      "path": "sfx/radio/res_held_turret_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 27003,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_track_3.mp3": {
+      "path": "sfx/radio/cmd_track_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 34840,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_burn_side_1.mp3": {
+      "path": "sfx/radio/res_burn_side_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 40169,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_burn_rear_1.mp3": {
+      "path": "sfx/radio/res_burn_rear_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 38601,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/us_held_side_1.mp3": {
+      "path": "sfx/radio/us_held_side_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 35467,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/able_far_3.mp3": {
+      "path": "sfx/radio/able_far_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 22301,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_kill_turret_2.mp3": {
+      "path": "sfx/radio/res_kill_turret_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 26376,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_ric_front_1.mp3": {
+      "path": "sfx/radio/res_ric_front_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 28884,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_burn_low_1.mp3": {
+      "path": "sfx/radio/res_burn_low_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 40169,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_idle_4.mp3": {
+      "path": "sfx/radio/six_idle_4.mp3",
+      "content_type": "audio/mpeg",
+      "size": 45184,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_held_turret_2.mp3": {
+      "path": "sfx/radio/res_held_turret_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 38915,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/able_far_2.mp3": {
+      "path": "sfx/radio/able_far_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 33272,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_burn_front_1.mp3": {
+      "path": "sfx/radio/res_burn_front_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 38288,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_hurt_2.mp3": {
+      "path": "sfx/radio/res_hurt_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 29824,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_hurt_1.mp3": {
+      "path": "sfx/radio/res_hurt_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 41109,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/us_held_rear_1.mp3": {
+      "path": "sfx/radio/us_held_rear_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 29197,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/us_held_side_2.mp3": {
+      "path": "sfx/radio/us_held_side_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 22928,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/us_held_turret_1.mp3": {
+      "path": "sfx/radio/us_held_turret_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 20420,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/us_held_turret_2.mp3": {
+      "path": "sfx/radio/us_held_turret_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 20107,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/race_win_2.mp3": {
+      "path": "sfx/radio/race_win_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 28884,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_jam_1.mp3": {
+      "path": "sfx/radio/take_jam_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 68067,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/load_secs_2.mp3": {
+      "path": "sfx/radio/load_secs_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 27003,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_low_2.mp3": {
+      "path": "sfx/radio/take_low_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 48319,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/race_lose_1.mp3": {
+      "path": "sfx/radio/race_lose_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 25436,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_kill_2.mp3": {
+      "path": "sfx/radio/take_kill_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 49259,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_engine_2.mp3": {
+      "path": "sfx/radio/take_engine_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 73710,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_fireout_1.mp3": {
+      "path": "sfx/radio/take_fireout_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 44244,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_lost_1.mp3": {
+      "path": "sfx/radio/take_lost_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 51140,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_howlong_1.mp3": {
+      "path": "sfx/radio/cmd_howlong_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 16658,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_trackfix_1.mp3": {
+      "path": "sfx/radio/take_trackfix_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 33899,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_trackfix_2.mp3": {
+      "path": "sfx/radio/take_trackfix_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 60231,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/cmd_howlong_2.mp3": {
+      "path": "sfx/radio/cmd_howlong_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 8508,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_trackoff_2.mp3": {
+      "path": "sfx/radio/take_trackoff_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 48005,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/load_secs_3.mp3": {
+      "path": "sfx/radio/load_secs_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 16658,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_fireout_2.mp3": {
+      "path": "sfx/radio/take_fireout_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 48319,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_kill_1.mp3": {
+      "path": "sfx/radio/take_kill_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 53021,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_jam_2.mp3": {
+      "path": "sfx/radio/take_jam_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 77785,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_house_1.mp3": {
+      "path": "sfx/radio/take_house_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 42049,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_collapse_1.mp3": {
+      "path": "sfx/radio/take_collapse_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 48319,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_lost_2.mp3": {
+      "path": "sfx/radio/take_lost_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 47692,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_eastq.mp3": {
+      "path": "sfx/radio/six_at_eastq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 14464,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_river.mp3": {
+      "path": "sfx/radio/six_at_river.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11016,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_collapse_2.mp3": {
+      "path": "sfx/radio/take_collapse_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 24495,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_wall_1.mp3": {
+      "path": "sfx/radio/take_wall_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 50827,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_eroad.mp3": {
+      "path": "sfx/radio/six_at_eroad.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11643,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_wall_2.mp3": {
+      "path": "sfx/radio/take_wall_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 43303,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_wroad.mp3": {
+      "path": "sfx/radio/six_at_wroad.mp3",
+      "content_type": "audio/mpeg",
+      "size": 11956,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_ric_rear_2.mp3": {
+      "path": "sfx/radio/res_ric_rear_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 36094,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_rel_ahead.mp3": {
+      "path": "sfx/radio/four_rel_ahead.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12583,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_burn_turret_1.mp3": {
+      "path": "sfx/radio/res_burn_turret_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 30765,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_rel_left.mp3": {
+      "path": "sfx/radio/four_rel_left.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12897,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_held_side_2.mp3": {
+      "path": "sfx/radio/res_held_side_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 26063,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/crew_kill_3.mp3": {
+      "path": "sfx/radio/crew_kill_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12270,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_trackoff_1.mp3": {
+      "path": "sfx/radio/take_trackoff_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 81547,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/race_lose_2.mp3": {
+      "path": "sfx/radio/race_lose_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 25122,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_stuck_low_1.mp3": {
+      "path": "sfx/radio/res_stuck_low_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 36094,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/race_win_1.mp3": {
+      "path": "sfx/radio/race_win_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 26689,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_left_3.mp3": {
+      "path": "sfx/radio/six_left_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12270,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/us_held_rear_2.mp3": {
+      "path": "sfx/radio/us_held_rear_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 30451,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_kill_rear_2.mp3": {
+      "path": "sfx/radio/res_kill_rear_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 37661,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_ssq.mp3": {
+      "path": "sfx/radio/four_at_ssq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 13837,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_kill_front_1.mp3": {
+      "path": "sfx/radio/res_kill_front_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 34213,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_ric_turret_2.mp3": {
+      "path": "sfx/radio/res_ric_turret_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 21987,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_hit_2.mp3": {
+      "path": "sfx/radio/take_hit_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 38288,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_engine_1.mp3": {
+      "path": "sfx/radio/take_engine_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 61485,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_ric_side_2.mp3": {
+      "path": "sfx/radio/res_ric_side_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 27003,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_westq.mp3": {
+      "path": "sfx/radio/four_at_westq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12270,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_left_2.mp3": {
+      "path": "sfx/radio/six_left_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10389,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/crew_kill_2.mp3": {
+      "path": "sfx/radio/crew_kill_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 18539,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/crew_kill_1.mp3": {
+      "path": "sfx/radio/crew_kill_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 6314,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_stuck_front_1.mp3": {
+      "path": "sfx/radio/res_stuck_front_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 37974,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_held_front_2.mp3": {
+      "path": "sfx/radio/res_held_front_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 30138,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_rel_right.mp3": {
+      "path": "sfx/radio/four_rel_right.mp3",
+      "content_type": "audio/mpeg",
+      "size": 13210,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_kill_low_1.mp3": {
+      "path": "sfx/radio/res_kill_low_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 38915,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_kill_rear_1.mp3": {
+      "path": "sfx/radio/res_kill_rear_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 37661,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_held_front_1.mp3": {
+      "path": "sfx/radio/res_held_front_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 21987,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_held_rear_1.mp3": {
+      "path": "sfx/radio/res_held_rear_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 25749,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_ric_rear_1.mp3": {
+      "path": "sfx/radio/res_ric_rear_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 25122,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_kill_front_2.mp3": {
+      "path": "sfx/radio/res_kill_front_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 36407,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_glance_1.mp3": {
+      "path": "sfx/radio/take_glance_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 23868,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_burn_1.mp3": {
+      "path": "sfx/radio/four_burn_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 31705,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_glance_2.mp3": {
+      "path": "sfx/radio/take_glance_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 38601,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_idle_2.mp3": {
+      "path": "sfx/radio/take_idle_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 53961,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_hit_3.mp3": {
+      "path": "sfx/radio/take_hit_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 45811,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_idle_1.mp3": {
+      "path": "sfx/radio/take_idle_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 40169,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_idle_3.mp3": {
+      "path": "sfx/radio/take_idle_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 30138,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_idle_3.mp3": {
+      "path": "sfx/radio/six_idle_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 40796,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_wroad.mp3": {
+      "path": "sfx/radio/four_at_wroad.mp3",
+      "content_type": "audio/mpeg",
+      "size": 15718,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_ric_low_2.mp3": {
+      "path": "sfx/radio/res_ric_low_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 31391,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_idle_4.mp3": {
+      "path": "sfx/radio/take_idle_4.mp3",
+      "content_type": "audio/mpeg",
+      "size": 27316,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_at_nroad.mp3": {
+      "path": "sfx/radio/six_at_nroad.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12270,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_idle_5.mp3": {
+      "path": "sfx/radio/take_idle_5.mp3",
+      "content_type": "audio/mpeg",
+      "size": 48946,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_nroad.mp3": {
+      "path": "sfx/radio/four_at_nroad.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12897,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_ric_turret_1.mp3": {
+      "path": "sfx/radio/res_ric_turret_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 26376,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_held_rear_2.mp3": {
+      "path": "sfx/radio/res_held_rear_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 26689,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_wsq.mp3": {
+      "path": "sfx/radio/four_at_wsq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 13837,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_kill_low_2.mp3": {
+      "path": "sfx/radio/res_kill_low_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 54588,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_held_low_2.mp3": {
+      "path": "sfx/radio/res_held_low_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 30138,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_house_2.mp3": {
+      "path": "sfx/radio/take_house_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 41423,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_stuck_turret_1.mp3": {
+      "path": "sfx/radio/res_stuck_turret_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 36720,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_stuck_rear_1.mp3": {
+      "path": "sfx/radio/res_stuck_rear_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 33899,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_kill_turret_1.mp3": {
+      "path": "sfx/radio/res_kill_turret_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 36094,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/load_secs_1.mp3": {
+      "path": "sfx/radio/load_secs_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 21674,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_hit_1.mp3": {
+      "path": "sfx/radio/take_hit_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 57096,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_esq.mp3": {
+      "path": "sfx/radio/four_at_esq.mp3",
+      "content_type": "audio/mpeg",
+      "size": 15405,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_held_low_1.mp3": {
+      "path": "sfx/radio/res_held_low_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 26689,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/us_held_front_2.mp3": {
+      "path": "sfx/radio/us_held_front_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 25436,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_kill_side_1.mp3": {
+      "path": "sfx/radio/res_kill_side_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 41423,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/four_at_eroad.mp3": {
+      "path": "sfx/radio/four_at_eroad.mp3",
+      "content_type": "audio/mpeg",
+      "size": 10703,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_stuck_side_1.mp3": {
+      "path": "sfx/radio/res_stuck_side_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 38288,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_kill_side_2.mp3": {
+      "path": "sfx/radio/res_kill_side_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 38915,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_ric_side_1.mp3": {
+      "path": "sfx/radio/res_ric_side_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 40169,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_left_1.mp3": {
+      "path": "sfx/radio/six_left_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 12583,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/crew_kill_4.mp3": {
+      "path": "sfx/radio/crew_kill_4.mp3",
+      "content_type": "audio/mpeg",
+      "size": 30138,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_low_1.mp3": {
+      "path": "sfx/radio/take_low_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 50827,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_won_2.mp3": {
+      "path": "sfx/radio/six_won_2.mp3",
+      "content_type": "audio/mpeg",
+      "size": 49886,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/us_held_front_1.mp3": {
+      "path": "sfx/radio/us_held_front_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 21047,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/six_idle_1.mp3": {
+      "path": "sfx/radio/six_idle_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 23555,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/res_held_side_1.mp3": {
+      "path": "sfx/radio/res_held_side_1.mp3",
+      "content_type": "audio/mpeg",
+      "size": 37661,
+      "status": 200
+    },
+    "https://ardennes-dusk.vercel.app/sfx/radio/take_kill_3.mp3": {
+      "path": "sfx/radio/take_kill_3.mp3",
+      "content_type": "audio/mpeg",
+      "size": 68381,
+      "status": 200
+    }
+  },
+  "failures": [
+    {
+      "url": "https://ardennes-dusk.vercel.app/api/scores",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "attempt": 1
+}

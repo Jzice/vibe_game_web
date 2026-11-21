@@ -1,0 +1,204 @@
+{
+  "url": "https://dead-headway.vercel.app/",
+  "final_url": "https://dead-headway.vercel.app/",
+  "slug": "dead-headway",
+  "title": "Dead Headway: realistic subway raid shooter you play in your browser",
+  "description": "Dead Headway is a free realistic first-person shooter set in a flooded subway station at 2 AM. Explore the platform, service tunnels, train and mezzanine, restore power, take the recorder and get out alive. Plays in the browser on computer and phone, no download.",
+  "captured_at": "2026-11-16T16:43:12.398664+00:00",
+  "assets": {
+    "https://dead-headway.vercel.app/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 26776,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/font/overpass-latin-600-normal.woff2": {
+      "path": "assets/font/overpass-latin-600-normal.woff2",
+      "content_type": "font/woff2",
+      "size": 17536,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/font/overpass-latin-800-normal.woff2": {
+      "path": "assets/font/overpass-latin-800-normal.woff2",
+      "content_type": "font/woff2",
+      "size": 17572,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/font/overpass-latin-400-normal.woff2": {
+      "path": "assets/font/overpass-latin-400-normal.woff2",
+      "content_type": "font/woff2",
+      "size": 16976,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/game.js": {
+      "path": "game.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 1167109,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/security_camera_01/security_camera_01.gltf": {
+      "path": "assets/props/security_camera_01/security_camera_01.gltf",
+      "content_type": "model/gltf+json",
+      "size": 4380,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/wooden_military_crate/wooden_military_crate.gltf": {
+      "path": "assets/props/wooden_military_crate/wooden_military_crate.gltf",
+      "content_type": "model/gltf+json",
+      "size": 5550,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/cardboard_box_01/cardboard_box_01.gltf": {
+      "path": "assets/props/cardboard_box_01/cardboard_box_01.gltf",
+      "content_type": "model/gltf+json",
+      "size": 2820,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/metal_trash_can/metal_trash_can.gltf": {
+      "path": "assets/props/metal_trash_can/metal_trash_can.gltf",
+      "content_type": "model/gltf+json",
+      "size": 13557,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/ammo_box/ammo_box.gltf": {
+      "path": "assets/props/ammo_box/ammo_box.gltf",
+      "content_type": "model/gltf+json",
+      "size": 8004,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/power_box_01/power_box_01.gltf": {
+      "path": "assets/props/power_box_01/power_box_01.gltf",
+      "content_type": "model/gltf+json",
+      "size": 4152,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/old_military_crate/old_military_crate.gltf": {
+      "path": "assets/props/old_military_crate/old_military_crate.gltf",
+      "content_type": "model/gltf+json",
+      "size": 9302,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/utility_box_01/utility_box_01.gltf": {
+      "path": "assets/props/utility_box_01/utility_box_01.gltf",
+      "content_type": "model/gltf+json",
+      "size": 2693,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/concrete_road_barrier_02/concrete_road_barrier_02.gltf": {
+      "path": "assets/props/concrete_road_barrier_02/concrete_road_barrier_02.gltf",
+      "content_type": "model/gltf+json",
+      "size": 2830,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/Barrel_01/Barrel_01.gltf": {
+      "path": "assets/props/Barrel_01/Barrel_01.gltf",
+      "content_type": "model/gltf+json",
+      "size": 2732,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/concrete_road_barrier/concrete_road_barrier.gltf": {
+      "path": "assets/props/concrete_road_barrier/concrete_road_barrier.gltf",
+      "content_type": "model/gltf+json",
+      "size": 2787,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/industrial_wall_lamp/industrial_wall_lamp.gltf": {
+      "path": "assets/props/industrial_wall_lamp/industrial_wall_lamp.gltf",
+      "content_type": "model/gltf+json",
+      "size": 5180,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/fire_alarm/fire_alarm.gltf": {
+      "path": "assets/props/fire_alarm/fire_alarm.gltf",
+      "content_type": "model/gltf+json",
+      "size": 4010,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/portable_generator/portable_generator.gltf": {
+      "path": "assets/props/portable_generator/portable_generator.gltf",
+      "content_type": "model/gltf+json",
+      "size": 8679,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/WetFloorSign_01/WetFloorSign_01.gltf": {
+      "path": "assets/props/WetFloorSign_01/WetFloorSign_01.gltf",
+      "content_type": "model/gltf+json",
+      "size": 1768,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/trashbag/trashbag.gltf": {
+      "path": "assets/props/trashbag/trashbag.gltf",
+      "content_type": "model/gltf+json",
+      "size": 2662,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/modular_industrial_pipes_01/modular_industrial_pipes_01.gltf": {
+      "path": "assets/props/modular_industrial_pipes_01/modular_industrial_pipes_01.gltf",
+      "content_type": "model/gltf+json",
+      "size": 13620,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/rollershutter_door/rollershutter_door.gltf": {
+      "path": "assets/props/rollershutter_door/rollershutter_door.gltf",
+      "content_type": "model/gltf+json",
+      "size": 3490,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/cement_bag/cement_bag.gltf": {
+      "path": "assets/props/cement_bag/cement_bag.gltf",
+      "content_type": "model/gltf+json",
+      "size": 2680,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/service_pistol/service_pistol.gltf": {
+      "path": "assets/props/service_pistol/service_pistol.gltf",
+      "content_type": "model/gltf+json",
+      "size": 13755,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/metal_tool_chest/metal_tool_chest.gltf": {
+      "path": "assets/props/metal_tool_chest/metal_tool_chest.gltf",
+      "content_type": "model/gltf+json",
+      "size": 11053,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/models/ar5_lod.glb": {
+      "path": "assets/models/ar5_lod.glb",
+      "content_type": "model/gltf-binary",
+      "size": 112280,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/models/guard_anims.glb": {
+      "path": "assets/models/guard_anims.glb",
+      "content_type": "model/gltf-binary",
+      "size": 183404,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/metal_jerrycan/metal_jerrycan.gltf": {
+      "path": "assets/props/metal_jerrycan/metal_jerrycan.gltf",
+      "content_type": "model/gltf+json",
+      "size": 2711,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/plastic_crate_01/plastic_crate_01.gltf": {
+      "path": "assets/props/plastic_crate_01/plastic_crate_01.gltf",
+      "content_type": "model/gltf+json",
+      "size": 2739,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/barrel_03/barrel_03.gltf": {
+      "path": "assets/props/barrel_03/barrel_03.gltf",
+      "content_type": "model/gltf+json",
+      "size": 2659,
+      "status": 200
+    },
+    "https://dead-headway.vercel.app/assets/props/worn_metal_rack/worn_metal_rack.gltf": {
+      "path": "assets/props/worn_metal_rack/worn_metal_rack.gltf",
+      "content_type": "model/gltf+json",
+      "size": 2726,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

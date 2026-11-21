@@ -1,0 +1,99 @@
+{
+  "url": "https://goblinsurvivors.com",
+  "final_url": "https://goblinsurvivors.com/",
+  "slug": "goblin-survivors",
+  "title": "Goblin Survivors",
+  "description": "Outlast the night. A survivors game with heroes, gear, a town to unlock and a witch who plays cards.",
+  "captured_at": "2026-11-16T16:49:08.486015+00:00",
+  "assets": {
+    "https://goblinsurvivors.com/": {
+      "path": "index.html",
+      "content_type": "text/html",
+      "size": 9158,
+      "status": 200
+    },
+    "https://goblinsurvivors.com/loader-fire.webp": {
+      "path": "loader-fire.webp",
+      "content_type": "image/webp",
+      "size": 51590,
+      "status": 200
+    },
+    "https://goblinsurvivors.com/loader-bar.webp": {
+      "path": "loader-bar.webp",
+      "content_type": "image/webp",
+      "size": 70538,
+      "status": 200
+    },
+    "https://goblinsurvivors.com/fonts/cinzel.woff2": {
+      "path": "fonts/cinzel.woff2",
+      "content_type": "font/woff2",
+      "size": 25888,
+      "status": 200
+    },
+    "https://goblinsurvivors.com/skull.webp": {
+      "path": "skull.webp",
+      "content_type": "image/webp",
+      "size": 45532,
+      "status": 200
+    },
+    "https://goblinsurvivors.com/assets/index-CE8AWMUG.js": {
+      "path": "assets/index-CE8AWMUG.js",
+      "content_type": "text/javascript",
+      "size": 674229,
+      "status": 200
+    },
+    "https://goblinsurvivors.com/assets/sheet.worker-BIUGgDdp.js": {
+      "path": "assets/sheet.worker-BIUGgDdp.js",
+      "content_type": "text/javascript",
+      "size": 6060,
+      "status": 200
+    },
+    "https://goblinsurvivors.com/assets/diorama-DPXjJ0jo.js": {
+      "path": "assets/diorama-DPXjJ0jo.js",
+      "content_type": "text/javascript",
+      "size": 483240,
+      "status": 200
+    },
+    "https://goblinsurvivors.com/assets/kit-BK_2AntR.webp": {
+      "path": "assets/kit-BK_2AntR.webp",
+      "content_type": "image/webp",
+      "size": 638058,
+      "status": 200
+    },
+    "https://goblinsurvivors.com/assets/dirt-BgKO4lSh.webp": {
+      "path": "assets/dirt-BgKO4lSh.webp",
+      "content_type": "image/webp",
+      "size": 160076,
+      "status": 200
+    },
+    "https://goblinsurvivors.com/assets/grass-C1HlwlRB.webp": {
+      "path": "assets/grass-C1HlwlRB.webp",
+      "content_type": "image/webp",
+      "size": 294534,
+      "status": 200
+    }
+  },
+  "failures": [
+    {
+      "url": "https://goblinsurvivors.com/api/me",
+      "status": 401
+    },
+    {
+      "url": "https://goblinsurvivors.com/assets/online-2x-DJfn_6Ss.webp",
+      "error": "Response.body: Protocol error (Network.loadNetworkResource): Target not supported\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any"
+    },
+    {
+      "url": "https://goblinsurvivors.com/assets/leaves-D9VPOMnd.webp",
+      "error": "Response.body: Protocol error (Network.loadNetworkResource): Target not supported\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any"
+    },
+    {
+      "url": "https://goblinsurvivors.com/assets/ui-BvGySlX_.webp",
+      "error": "Response.body: Protocol error (Network.loadNetworkResource): Target not supported\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any"
+    },
+    {
+      "url": "https://goblinsurvivors.com/assets/items-BW1XoMD2.webp",
+      "error": "Response.body: Protocol error (Network.loadNetworkResource): Target not supported\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any"
+    }
+  ],
+  "attempt": 1
+}

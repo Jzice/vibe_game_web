@@ -1,0 +1,42 @@
+{
+  "url": "https://hardwooddraft.netlify.app",
+  "final_url": "https://hardwooddraft.netlify.app/",
+  "slug": "hardwood-draft",
+  "title": "Hardwood Draft",
+  "description": "",
+  "captured_at": "2026-11-16T16:50:56.706209+00:00",
+  "assets": {
+    "https://hardwooddraft.netlify.app/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=UTF-8",
+      "size": 4429633,
+      "status": 200
+    },
+    "https://hardwooddraft.netlify.app/.netlify/scripts/hud?variant=public": {
+      "path": ".netlify/scripts/hud__q_variant_public",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 35855,
+      "status": 200
+    },
+    "https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap": {
+      "path": "_remote/fonts.googleapis.com/css2__q_family_Oswald_wght_400_500_600_700_family_DM_Sans_opsz_wght_9..40_400_9..40_500_9..40_600_9..40_700_display_swap",
+      "content_type": "text/css; charset=utf-8",
+      "size": 11328,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/oswald/v57/TK3IWkUHHAIjg75cFRf3bXL8LICs1_Fv40pKlN4NNSeSASz7FmlWHYg.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/oswald/v57/TK3IWkUHHAIjg75cFRf3bXL8LICs1_Fv40pKlN4NNSeSASz7FmlWHYg.woff2",
+      "content_type": "font/woff2",
+      "size": 21472,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/dmsans/v17/rP2Hp2ywxg089UriCZOIHQ.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/dmsans/v17/rP2Hp2ywxg089UriCZOIHQ.woff2",
+      "content_type": "font/woff2",
+      "size": 62724,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

@@ -1,0 +1,54 @@
+{
+  "url": "https://goblin-hunter-game-2.netlify.app/",
+  "final_url": "https://goblin-hunter-game-2.netlify.app/",
+  "slug": "goblin-hunter-2",
+  "title": "Goblin Hunter",
+  "description": "",
+  "captured_at": "2026-11-16T16:48:40.891251+00:00",
+  "assets": {
+    "https://goblin-hunter-game-2.netlify.app/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=UTF-8",
+      "size": 299875,
+      "status": 200
+    },
+    "https://goblin-hunter-game-2.netlify.app/.netlify/scripts/hud?variant=public": {
+      "path": ".netlify/scripts/hud__q_variant_public",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 35855,
+      "status": 200
+    },
+    "https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;700;800;900&display=swap": {
+      "path": "_remote/fonts.googleapis.com/css2__q_family_Lilita_One_family_Nunito_wght_600_700_800_900_display_swap",
+      "content_type": "text/css; charset=utf-8",
+      "size": 8140,
+      "status": 200
+    },
+    "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js": {
+      "path": "_remote/cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 603445,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/nunito/v32/XRXV3I6Li01BKofINeaB.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/nunito/v32/XRXV3I6Li01BKofINeaB.woff2",
+      "content_type": "font/woff2",
+      "size": 39128,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/lilitaone/v17/i7dPIFZ9Zz-WBtRtedDbYEF8RQ.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/lilitaone/v17/i7dPIFZ9Zz-WBtRtedDbYEF8RQ.woff2",
+      "content_type": "font/woff2",
+      "size": 10672,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/lilitaone/v17/i7dPIFZ9Zz-WBtRtedDbYE98RWq7.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/lilitaone/v17/i7dPIFZ9Zz-WBtRtedDbYE98RWq7.woff2",
+      "content_type": "font/woff2",
+      "size": 1384,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

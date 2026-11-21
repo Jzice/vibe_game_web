@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+  <head><script>
+(function(){try{
+  var fake={register:function(){return Promise.resolve({addEventListener:function(){},update:function(){return Promise.resolve()}})},
+    getRegistration:function(){return Promise.resolve()},getRegistrations:function(){return Promise.resolve([])},
+    addEventListener:function(){},controller:null};
+  Object.defineProperty(navigator,'serviceWorker',{configurable:true,value:fake});
+}catch(e){}})();
+</script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#08090b" />
+    <meta name="application-name" content="REMATCH" />
+    <meta name="apple-mobile-web-app-title" content="REMATCH" />
+    <title>REMATCH · Simulate your real last 100 HYROX wall balls</title>
+    <!-- How a link to the game looks when shared (WhatsApp, Instagram DMs, iMessage, X, Slack, LinkedIn...).
+         Challenge links (/c/<code>) get their own tags and image from the server: server/share.mjs.
+         The image is public/share/og.jpg, drawn by tools/share/assets.mjs. URLs are absolute: apps require it. -->
+    <meta name="description" content="Find your HYROX result and replay your real last 100 wall balls in 3D, from the race clock you really had. Can you beat your own time? Free, by Roxstar. No result yet? Play the last 20 of a sub-60 race." />
+    <link rel="canonical" href="./index.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="REMATCH" />
+    <meta property="og:url" content="./index.html" />
+    <meta property="og:title" content="REMATCH · Simulate your real last 100 HYROX wall balls" />
+    <meta property="og:description" content="Find your HYROX result and replay your real last 100 wall balls in 3D, from the race clock you really had. Can you beat your own time? Free, by Roxstar." />
+    <meta property="og:image" content="./index.htmlshare/og.jpg" />
+    <meta property="og:image:secure_url" content="./index.htmlshare/og.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="REMATCH by Roxstar: simulate your real last 100 HYROX wall balls, in 3D." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="REMATCH · Simulate your real last 100 HYROX wall balls" />
+    <meta name="twitter:description" content="Find your HYROX result and replay your real last 100 wall balls in 3D, from the race clock you really had. Can you beat your own time? Free, by Roxstar." />
+    <meta name="twitter:image" content="./index.htmlshare/og.jpg" />
+    <link rel="icon" href="./_offline-stub.png" type="image/svg+xml" />
+    <link rel="icon" href="./_offline-stub.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="./_offline-stub.png" />
+    <link rel="manifest" href="./_offline-stub.json" />
+    <!-- The loading screen is styled here, not in the stylesheet: it must be right before any script or stylesheet
+         has arrived. Until the game says it is ready, it is all there is on the page: the lobby's markup, which
+         would otherwise show bare for a moment (its logos at full width), stays hidden under it. -->
+    <style>html,body{background:#060709;height:100%;margin:0}body:not(.ready)>:not(#boot){visibility:hidden}#boot{z-index:100;background:#060709;place-items:center;transition:opacity .5s;display:grid;position:fixed;inset:0}#boot.gone{opacity:0;pointer-events:none}#boot div{justify-items:center;gap:20px;display:grid}#boot svg{fill:none;stroke:#fffaee;stroke-width:1.25px;width:56px;height:56px;animation:6s linear infinite boot-turn}#boot b{letter-spacing:.34em;text-indent:.34em;text-transform:uppercase;color:#fffaee;font:700 12px/1 system-ui,-apple-system,Segoe UI,sans-serif}#boot i{background:#fffaee29;width:168px;height:2px;display:block;overflow:hidden}#boot i:after{content:"";background:#ffe100;width:38%;height:100%;animation:1.15s ease-in-out infinite boot-run;display:block}#boot.failed i{display:none}@keyframes boot-turn{to{transform:rotate(360deg)}}@keyframes boot-run{0%{transform:translate(-110%)}to{transform:translate(290%)}}</style>
+    <script type="module" crossorigin src="./assets/index-C1MhQ7YX.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-zUdtefhq.css">
+  </head>
+  <body>
+    <div id="boot" role="status" aria-live="polite">
+      <div>
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.2L18.8574 9.33473L25.4281 6.923L22.8983 13.1871L29.3333 15.9111L22.8983 18.6351L25.4281 24.8992L18.8574 22.4875L16 28.6222L13.1426 22.4875L6.57191 24.8992L9.1017 18.6351L2.66667 15.9111L9.1017 13.1871L6.57191 6.923L13.1426 9.33473L16 3.2Z" /></svg>
+        <b id="bootSay">Loading the venue</b>
+        <i></i>
+      </div>
+    </div>
+    <canvas id="c"></canvas>
+
+    <div id="bars"><i></i><i><span class="roxstar"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.2L18.8574 9.33473L25.4281 6.923L22.8983 13.1871L29.3333 15.9111L22.8983 18.6351L25.4281 24.8992L18.8574 22.4875L16 28.6222L13.1426 22.4875L6.57191 24.8992L9.1017 18.6351L2.66667 15.9111L9.1017 13.1871L6.57191 6.923L13.1426 9.33473L16 3.2Z" /></svg><b>Roxstar</b></span><em>Your last race. Your next plan.</em></i></div>
+
+    <div id="hud" class="hidden">
+      <div class="tl">
+        <div class="lbl">Race time</div>
+        <div id="timer">00:00.0</div>
+        <div class="sub" id="goal">Last race</div>
+        <div id="pace"></div>
+      </div>
+      <div class="tc">
+        <div id="reps"><b>000</b><span>/100</span></div>
+        <div id="streak"></div>
+      </div>
+      <div class="tr">
+        <div class="hr"><span id="heart">♥</span><b id="hr">172</b><small>BPM</small></div>
+        <div class="fbar"><i id="fatigue"></i></div>
+        <div class="lbl" id="flabel">Fatigue</div>
+      </div>
+      <div id="objective"></div>
+      <div id="squat"><div class="track"><i id="squatFill"></i><em></em></div><span>Depth</span></div>
+      <div id="power"><div id="pzone"></div><i id="pmark"></i><span>Click in the zone</span></div>
+      <div id="toast"></div>
+      <div id="prompt"></div>
+      <div class="bubble" id="b0"></div>
+      <div class="bubble" id="b1"></div>
+      <div id="caption"></div>
+      <div id="mute">M · sound</div>
+      <div id="bug"><span class="roxstar"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.2L18.8574 9.33473L25.4281 6.923L22.8983 13.1871L29.3333 15.9111L22.8983 18.6351L25.4281 24.8992L18.8574 22.4875L16 28.6222L13.1426 22.4875L6.57191 24.8992L9.1017 18.6351L2.66667 15.9111L9.1017 13.1871L6.57191 6.923L13.1426 9.33473L16 3.2Z" /></svg><b>Roxstar</b></span><em>Your last race. Your next plan.</em></div>
+    </div>
+
+    <div id="pause" class="hidden"><div><b>Paused</b><span>Click to continue</span></div></div>
+
+    <!-- The lobby, in two steps: pick one of the two challenges (and, for your own time, find your race), then
+         the card of what you are up against and Start. -->
+    <div id="menu" class="asking">
+      <div class="panel">
+        <!-- two blocks, so a short screen (a phone on its side) can set them side by side -->
+        <div class="p-head">
+        <div class="brandline"><span class="roxstar"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.2L18.8574 9.33473L25.4281 6.923L22.8983 13.1871L29.3333 15.9111L22.8983 18.6351L25.4281 24.8992L18.8574 22.4875L16 28.6222L13.1426 22.4875L6.57191 24.8992L9.1017 18.6351L2.66667 15.9111L9.1017 13.1871L6.57191 6.923L13.1426 9.33473L16 3.2Z" /></svg><b>Roxstar</b></span><i>presents</i></div>
+        <h1>RE<em>MATCH</em></h1>
+        <p class="lead ask">The HYROX you actually raced, replayed in 3D. Beat your real time.</p>
+        <p class="lead" id="mLead"></p>
+        <!-- arriving from a friend's challenge link (src/share.js) -->
+        <p id="rivalNote" class="hidden"></p>
+        </div>
+
+        <div class="p-body">
+        <div id="race">
+          <div id="raceAsk">
+            <!-- The point of the game first and loudest: your own race, found by name. Under it, smaller, the quick
+                 round for whoever has no HYROX result (yet). Both said in full before anything is pressed. -->
+            <div class="pick main">
+              <small>Your real HYROX result</small>
+              <b>Rematch your last HYROX race</b>
+              <span>We look up your official result by name. Replay the last 100 wall balls of the race you actually ran, from the race clock you really had. Can you beat your real finish time?</span>
+              <button id="askYes" type="button">Find my race <i>&rarr;</i></button>
+            </div>
+            <div class="pick other">
+              <b>No HYROX result? Quick play</b>
+              <span>The last 20 wall balls of a sub-60 race. No search, start at the ball.</span>
+              <button id="askNo" type="button">Play the last 20</button>
+            </div>
+            <button id="askBack" type="button" class="hidden">Back</button>
+          </div>
+          <div id="raceCard" class="hidden">
+            <div class="race-who"><span class="flag" id="raceFlag"></span><b id="raceName">Sub 60 challenge</b><button id="raceChange" type="button">Change</button></div>
+            <div id="raceMeta"></div>
+            <dl>
+              <div><dt id="raceTotalLabel">Time to beat</dt><dd id="raceTotal">1:00:00</dd></div>
+              <div class="hot"><dt id="raceInLabel">Race clock starts at</dt><dd id="raceIn">58:49</dd></div>
+            </dl>
+            <div id="raceCalc"></div>
+            <div id="raceFit"></div>
+          </div>
+          <form id="raceFind" class="hidden" novalidate>
+            <div class="race-head"><span>Find your HYROX result</span><button id="rfClose" type="button">Back</button></div>
+            <div class="race-row">
+              <input id="rfFirst" type="text" placeholder="First name" maxlength="60" autocomplete="given-name" spellcheck="false" />
+              <input id="rfLast" type="text" placeholder="Last name" maxlength="60" autocomplete="family-name" spellcheck="false" />
+              <button id="rfBtn" type="submit">Search</button>
+            </div>
+            <ol id="rfList"></ol>
+            <div class="race-foot"><span id="rfMsg"></span><span class="race-links"><button id="rfManual" type="button">Enter your times instead</button></span></div>
+          </form>
+          <form id="raceManual" class="hidden" novalidate>
+            <div class="race-head"><span>Enter your times</span><button id="rmClose" type="button">Back</button></div>
+            <div class="race-row">
+              <input id="rmTotal" type="text" placeholder="Finish time · 1:27:30" maxlength="8" autocomplete="off" spellcheck="false" inputmode="numeric" />
+              <input id="rmWB" type="text" placeholder="Wall balls split · 6:10" maxlength="6" autocomplete="off" spellcheck="false" inputmode="numeric" />
+              <button id="rmBtn" type="submit">Use these</button>
+            </div>
+            <div class="race-foot"><span id="rmMsg"></span></div>
+          </form>
+        </div>
+
+        <!-- step two: shown once the race to beat is settled -->
+        <div class="go">
+          <div class="opt" id="optDiv"><label>Division</label>
+            <div class="chips" data-opt="div"><button data-v="m" class="on">Men · 6 kg · 3.00 m</button><button data-v="w">Women · 4 kg · 2.70 m</button></div>
+          </div>
+          <div class="cta">
+            <button id="start" disabled>Loading…</button>
+            <div id="mBest"></div>
+          </div>
+          <p class="howto"><span><kbd>Space</kbd>squat and catch</span><span><kbd>Click</kbd>throw</span><span><kbd>Mouse</kbd>aim</span><span><kbd>R</kbd>rest</span></p>
+          <div class="minor">
+            <button id="demo" type="button" disabled>Watch demo</button>
+            <span class="chips mini" data-opt="quality"><i>Graphics</i><button data-v="ultra">Ultra</button><button data-v="balanced" class="on">Balanced</button><button data-v="light">Light</button></span>
+          </div>
+        </div>
+        </div>
+      </div>
+      <a class="presented" href="./_offline-stub.js" target="_blank" rel="noopener"><span class="roxstar"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.2L18.8574 9.33473L25.4281 6.923L22.8983 13.1871L29.3333 15.9111L22.8983 18.6351L25.4281 24.8992L18.8574 22.4875L16 28.6222L13.1426 22.4875L6.57191 24.8992L9.1017 18.6351L2.66667 15.9111L9.1017 13.1871L6.57191 6.923L13.1426 9.33473L16 3.2Z" /></svg><b>Roxstar</b></span><em>Your last race. Your next plan.</em><i>roxstar.app</i></a>
+    </div>
+
+    <!-- The result is up on the big screen in the hall; this bar under it carries your time and what next. -->
+    <div id="results" class="hidden">
+      <div class="rbar-time">
+        <div class="kicker" id="rVerdict">Finish line crossed</div>
+        <h2 id="rTime">00:00.0</h2>
+        <div id="rGap"></div>
+        <div id="rRival"></div>
+        <!-- under your time, since that is what it sends -->
+        <button id="shareBtn" type="button" class="share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3m0 0L7 8m5-5 5 5M5 12v8h14v-8" /></svg><span>Challenge a friend</span></button>
+      </div>
+      <!-- What to do next. After your own race: the report of it on Roxstar, the one loud thing on the bar. After
+           the sub 60 challenge there is a second way on, in the game: the same station against your own time. -->
+      <a class="rox-cta" id="rCta" href="./_offline-stub.js" target="_blank" rel="noopener">
+        <span class="roxstar"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.2L18.8574 9.33473L25.4281 6.923L22.8983 13.1871L29.3333 15.9111L22.8983 18.6351L25.4281 24.8992L18.8574 22.4875L16 28.6222L13.1426 22.4875L6.57191 24.8992L9.1017 18.6351L2.66667 15.9111L9.1017 13.1871L6.57191 6.923L13.1426 9.33473L16 3.2Z" /></svg><b>Roxstar</b></span>
+        <span class="rox-say"><strong>Want to get better at HYROX?</strong><em id="rCtaText">Download a free report based on your race</em></span>
+        <b>Get my report <i>&rarr;</i></b>
+      </a>
+      <div class="cta">
+        <button id="tryMine" class="hidden" type="button">Try it with your time <i>&rarr;</i></button>
+        <button id="again">Go again</button>
+        <button id="rSheetBtn" class="ghost" type="button">Splits</button>
+      </div>
+    </div>
+
+    <!-- the splits, laid out like the official HYROX results page: detail boxes on the left, the workout summary on the right -->
+    <div id="sheetWrap" class="hidden">
+      <div class="sheet">
+        <div class="sheet-col">
+          <div class="sheet-title">Individual's Details</div>
+          <section class="dbox">
+            <h3>Participant</h3>
+            <table><tbody>
+              <tr><th>Athlete</th><td id="rAthlete"></td></tr>
+              <tr><th>Race</th><td id="rRace"></td></tr>
+              <tr><th>Division</th><td id="rDivision"></td></tr>
+              <tr><th>Rematch</th><td id="rSetup"></td></tr>
+            </tbody></table>
+          </section>
+          <section class="dbox">
+            <h3>Overall Time</h3>
+            <table><tbody>
+              <tr class="total"><th>Overall Time</th><td id="rOverall"></td></tr>
+              <tr><th id="rWasLabel">Last race</th><td id="rWas"></td></tr>
+              <tr><th>Difference</th><td id="rDiff"></td></tr>
+            </tbody></table>
+          </section>
+          <section class="dbox">
+            <h3>Judging Decision</h3>
+            <table class="quad"><tbody>
+              <tr><th>Good reps</th><td id="rReps">100</td><th>No reps</th><td id="rNo">0</td></tr>
+              <tr><th>Best streak</th><td id="rBest">0</td><th>Breaks</th><td id="rBreaks">0</td></tr>
+            </tbody></table>
+          </section>
+          <a class="sheet-foot" href="./_offline-stub.js" target="_blank" rel="noopener"><span class="roxstar"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.2L18.8574 9.33473L25.4281 6.923L22.8983 13.1871L29.3333 15.9111L22.8983 18.6351L25.4281 24.8992L18.8574 22.4875L16 28.6222L13.1426 22.4875L6.57191 24.8992L9.1017 18.6351L2.66667 15.9111L9.1017 13.1871L6.57191 6.923L13.1426 9.33473L16 3.2Z" /></svg><b>Roxstar</b></span><em>Your last race. Your next plan.</em><i>roxstar.app</i></a>
+        </div>
+        <div class="sheet-col">
+          <div class="tabs" id="rTabs"><button type="button" class="on" data-tab="tabSplits">Workout summary</button><button type="button" data-tab="tabRank">Ranking</button><button type="button" id="rSheetClose">Close</button></div>
+          <section class="dbox" id="tabSplits">
+            <table class="splits">
+              <thead><tr><th>Split</th><th>Time</th><th id="rColWas">Last race</th></tr></thead>
+              <tbody id="rSplits"></tbody>
+            </table>
+            <p class="box-intro" id="rNote"></p>
+          </section>
+          <section class="dbox hidden" id="tabRank">
+            <div class="rank-head"><span>Ranking · <b id="rCat"></b></span></div>
+            <ol id="rList"></ol>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- Challenge a friend: the card they will see, your name on it if you like, and the ways to send it (src/share.js) -->
+    <div id="shareWrap" class="hidden" role="dialog" aria-modal="true" aria-labelledby="shTitle">
+      <div class="share-box">
+        <div class="share-head"><b id="shTitle">Challenge a friend</b><button id="shClose" type="button">Close</button></div>
+        <p id="shSay"></p>
+        <img id="shImg" alt="The card your friend will see" width="1200" height="630" />
+        <label class="share-name"><span>Your name on the card</span><input id="shName" type="text" maxlength="28" placeholder="Optional" autocomplete="given-name" spellcheck="false" /></label>
+        <div class="share-go">
+          <button id="shNative" type="button" class="main">Send link</button>
+          <button id="shWa" type="button">WhatsApp</button>
+          <button id="shCopy" type="button">Copy link</button>
+          <button id="shStory" type="button">Story image</button>
+        </div>
+        <div id="shMsg" aria-live="polite"></div>
+      </div>
+    </div>
+
+  </body>
+</html>

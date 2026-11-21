@@ -1,0 +1,102 @@
+{
+  "url": "https://pokeable.app/games/frostfall",
+  "final_url": "https://pokeable.app/games/frostfall",
+  "slug": "frostfall",
+  "title": "Frostfall · pokeable",
+  "description": "A first-person Nordic RPG: a frozen valley, a crypt, a giant and a dragon to kill.",
+  "captured_at": "2026-11-16T16:47:40.618347+00:00",
+  "assets": {
+    "https://pokeable.app/games/frostfall": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 44262,
+      "status": 200
+    },
+    "https://pokeable.app/_next/static/chunks/2uwtuf3agjumh.css": {
+      "path": "site/_next/static/chunks/2uwtuf3agjumh.css",
+      "content_type": "text/css",
+      "size": 63057,
+      "status": 200
+    },
+    "https://pokeable.app/builds/frostfall/thumb.webp?v=8cb017d46b": {
+      "path": "site/builds/frostfall/thumb.webp__q_v_8cb017d46b",
+      "content_type": "image/webp",
+      "size": 53658,
+      "status": 200
+    },
+    "https://pokeable.app/_next/static/chunks/3px_ka7pyfy4b.css": {
+      "path": "site/_next/static/chunks/3px_ka7pyfy4b.css",
+      "content_type": "text/css",
+      "size": 81973,
+      "status": 200
+    },
+    "https://pokeable.app/_next/static/chunks/310vm2bl3xxpt.js": {
+      "path": "site/_next/static/chunks/310vm2bl3xxpt.js",
+      "content_type": "text/javascript",
+      "size": 5364,
+      "status": 200
+    },
+    "https://pokeable.app/_next/static/chunks/2la4ei_bzinv6.js": {
+      "path": "site/_next/static/chunks/2la4ei_bzinv6.js",
+      "content_type": "text/javascript",
+      "size": 27957,
+      "status": 200
+    },
+    "https://pokeable.app/_next/static/chunks/1vpokt81bcoyo.js": {
+      "path": "site/_next/static/chunks/1vpokt81bcoyo.js",
+      "content_type": "text/javascript",
+      "size": 166929,
+      "status": 200
+    },
+    "https://pokeable.app/_next/static/chunks/turbopack-0oix0j_cp7gat.js": {
+      "path": "site/_next/static/chunks/turbopack-0oix0j_cp7gat.js",
+      "content_type": "text/javascript",
+      "size": 9721,
+      "status": 200
+    },
+    "https://pokeable.app/_next/static/media/bricolage-grotesque-latin-wght-normal.1iqnhac4m3hwo.woff2": {
+      "path": "site/_next/static/media/bricolage-grotesque-latin-wght-normal.1iqnhac4m3hwo.woff2",
+      "content_type": "font/woff2",
+      "size": 41344,
+      "status": 200
+    },
+    "https://pokeable.app/builds/bagman/thumb.webp?v=cde824f018": {
+      "path": "site/builds/bagman/thumb.webp__q_v_cde824f018",
+      "content_type": "image/webp",
+      "size": 58892,
+      "status": 200
+    },
+    "https://pokeable.app/_next/static/chunks/12l1rioz44c-8.js": {
+      "path": "site/_next/static/chunks/12l1rioz44c-8.js",
+      "content_type": "text/javascript",
+      "size": 229156,
+      "status": 200
+    },
+    "https://pokeable.app/_next/static/media/inter-latin-wght-normal.0gsaq8ukbf34m.woff2": {
+      "path": "site/_next/static/media/inter-latin-wght-normal.0gsaq8ukbf34m.woff2",
+      "content_type": "font/woff2",
+      "size": 48256,
+      "status": 200
+    },
+    "https://pokeable.app/builds/aeloria/thumb.webp?v=014339ae25": {
+      "path": "site/builds/aeloria/thumb.webp__q_v_014339ae25",
+      "content_type": "image/webp",
+      "size": 111852,
+      "status": 200
+    },
+    "https://pokeable.app/_next/static/chunks/2u6e52t2w9iws.js": {
+      "path": "site/_next/static/chunks/2u6e52t2w9iws.js",
+      "content_type": "text/javascript",
+      "size": 695,
+      "status": 200
+    },
+    "https://pokeable.app/_next/static/chunks/3lu8deshi-heu.js": {
+      "path": "site/_next/static/chunks/3lu8deshi-heu.js",
+      "content_type": "text/javascript",
+      "size": 17933,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

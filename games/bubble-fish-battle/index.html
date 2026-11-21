@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><script>
+(function(){try{
+  var fake={register:function(){return Promise.resolve({addEventListener:function(){},update:function(){return Promise.resolve()}})},
+    getRegistration:function(){return Promise.resolve()},getRegistrations:function(){return Promise.resolve([])},
+    addEventListener:function(){},controller:null};
+  Object.defineProperty(navigator,'serviceWorker',{configurable:true,value:fake});
+}catch(e){}})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Bubble Fish Battle</title>
+<link href="./_remote/fonts.googleapis.com/css2__q_family_Press_Start_2P_display_swap" rel="stylesheet">
+<style>
+/* 想用中文像素字:下载 zpix.ttf 放同目录,取消下面这行注释,并把 --font 里的 'Zpix' 放在最前面 */
+/* @font-face{font-family:'Zpix';src:url('zpix.ttf')} */
+:root{
+  /* ========== 配色 ========== */
+  --page-bg:#0b1630;
+  --ink:#1a2a50;
+  --panel:#eef6ff;          /* 状态框 / 选单底色 */
+  --panel-love:#ffe3f0;     /* 被亲晕时状态框底色 */
+  --panel-edge:#1c3f7c;     /* 状态框外框 */
+  --panel-inner:#7fb6ea;    /* 状态框内线 */
+  --bottom-bg:#1c3f7c;      /* 底部整条 */
+  --bottom-edge:#10285a;
+  --msg-bg:#3a84b8;         /* 对话框底色 */
+  --msg-text:#ffffff;
+  --msg-shadow:#1b3a6a;
+  --accent:#a8467f;         /* 对话框左侧色条 */
+  --sky:#c4e5ee; --sky-line:#9fd0de;   /* 场景底色 / 顶部横纹 */
+  --plat-top:#a7e0df; --plat:#6fc4c8;  /* 站台 */
+  --hp-ok:#3fd6c4; --hp-mid:#ffd84a; --hp-low:#ff6a8a;
+  --bar-bg:#5b6b8c;
+  --label:#d0508c;
+  --exp:#3fb0f0;
+  --bubble:#eaf8ff;
+
+  /* ========== 字体 ========== */
+  --font:'Press Start 2P',monospace;
+  --fs:6px;                /* 字号:字太宽就调小,太窄就调大 */
+  --lh:10px;                /* 对话行高(对话框刚好放两行,改了要一起考虑高度) */
+
+  /* ========== 精灵大小与位置(单位都是 240×160 画布里的 px) ========== */
+  --e-size:64px;            /* 敌方大小 */
+  --e-left:142px;           /* 敌方离左边 */
+  --e-top:8px;              /* 敌方离顶部:调大=往下 */
+  --p-size:80px;            /* 我方大小 */
+  --p-left:26px;            /* 我方离左边 */
+  --p-top:50px;             /* 我方离顶部:调大=往下(下缘会被底部栏遮住) */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--page-bg);display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:500;overflow:hidden;user-select:none;-webkit-user-select:none}
+#wrap{position:relative;width:240px;height:160px}
+#game{position:absolute;left:0;top:0;width:240px;height:160px;transform-origin:0 0;overflow:hidden;background:#000;
+  font-size:var(--fs);color:var(--ink);image-rendering:pixelated;-webkit-font-smoothing:none;text-rendering:optimizeSpeed}
+
+.px{clip-path:polygon(0 2px,2px 2px,2px 0,calc(100% - 2px) 0,calc(100% - 2px) 2px,100% 2px,100% calc(100% - 2px),calc(100% - 2px) calc(100% - 2px),calc(100% - 2px) 100%,2px 100%,2px calc(100% - 2px),0 calc(100% - 2px))}
+
+/* ===== 场景(高 112,底部 48 留给对话栏) ===== */
+#scene{position:absolute;left:0;top:0;width:240px;height:112px;overflow:hidden;
+  background:repeating-linear-gradient(to bottom,var(--sky-line) 0 1px,var(--sky) 1px 4px) 0 0/100% 26px no-repeat,var(--sky)}
+.plat{position:absolute;height:20px;z-index:1;
+  background:linear-gradient(var(--plat-top) 0 8px,var(--plat) 8px);
+  clip-path:polygon(12px 0,calc(100% - 12px) 0,calc(100% - 12px) 4px,calc(100% - 4px) 4px,calc(100% - 4px) 8px,100% 8px,100% 12px,calc(100% - 4px) 12px,calc(100% - 4px) 16px,calc(100% - 12px) 16px,calc(100% - 12px) 20px,12px 20px,12px 16px,4px 16px,4px 12px,0 12px,0 8px,4px 8px,4px 4px,12px 4px)}
+#ePlat{left:112px;top:52px;width:128px}
+#pPlat{left:-20px;top:100px;width:150px}
+
+.sprite{position:absolute;z-index:2}
+.sprite .inner{width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;animation:bob 1s steps(1) infinite}
+.sprite img{width:100%;height:100%;object-fit:contain;object-position:bottom;display:block;image-rendering:pixelated}
+.sprite .emoji{font-size:48px;line-height:1}
+#enemy{left:var(--e-left);top:var(--e-top);width:var(--e-size);height:var(--e-size)}
+#player{left:var(--p-left);top:var(--p-top);width:var(--p-size);height:var(--p-size)}
+@keyframes bob{0%{transform:translateY(0)}50%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+.shake{animation:shake .5s steps(1)}
+@keyframes shake{0%{transform:translateX(0);opacity:1}20%{transform:translateX(-3px);opacity:0}40%{transform:translateX(3px);opacity:1}60%{transform:translateX(-2px);opacity:0}80%{transform:translateX(2px);opacity:1}100%{transform:translateX(0);opacity:1}}
+.vanish{animation:vanish .9s steps(1) forwards}
+@keyframes vanish{0%{opacity:1}15%{opacity:0}30%{opacity:1}45%{opacity:0}60%{opacity:1}75%,100%{opacity:0}}
+
+.bub{position:absolute;bottom:-8px;border:1px solid var(--bubble);opacity:.8;z-index:0;animation:rise 7s steps(40) infinite}
+@keyframes rise{from{transform:translateY(0)}to{transform:translateY(-124px)}}
+.heart{position:absolute;width:10px;height:9px;z-index:5;pointer-events:none;image-rendering:pixelated;animation:floatUp 1.2s steps(8) both}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0)}10%{opacity:1}100%{opacity:0;transform:translateY(-22px)}}
+
+/* ===== 状态栏 ===== */
+.stat{position:absolute;z-index:3}
+#enemyStat{left:14px;top:16px;width:91px}
+#playerStat{right:13px;top:74px;width:90px}
+.box{background:var(--panel);border:2px solid var(--panel-edge);box-shadow:inset 0 0 0 1px var(--panel-inner);padding:2px 4px 3px}
+.box.inlove{background:var(--panel-love)}
+.row{display:flex;justify-content:space-between;align-items:center;height:9px;line-height:9px;margin-bottom:2px;white-space:nowrap}
+.hpwrap{display:flex;align-items:center;gap:2px;height:6px}
+.hpwrap b{font-size:6px;line-height:6px;font-weight:700;color:var(--label)}
+.bar{flex:1;height:6px;background:var(--bar-bg);border:1px solid var(--ink)}
+.fill{height:100%;width:100%;background:var(--hp-ok);box-shadow:inset 0 1px 0 rgba(255,255,255,.5);transition:width .6s steps(12)}
+.fill.mid{background:var(--hp-mid)}
+.fill.low{background:var(--hp-low)}
+.num{text-align:right;line-height:9px;margin-top:2px;white-space:pre}
+.exp{padding:0 4px;margin-top:1px}
+.bar2{height:3px;background:var(--bar-bg);border:1px solid var(--ink)}
+.bar2 div{height:100%;background:var(--exp)}
+.tags{position:absolute;right:4px;top:-8px;display:flex;gap:1px;z-index:4}
+.tags i{font-style:normal;font-size:8px;line-height:8px;padding:0 2px;color:#fff;font-weight:700}
+.t-love{background:#e0508f}.t-simp{background:#9a5ad8}.t-ench{background:#2f9ae0}.t-boost{background:#e8903a}
+
+/* ===== 底部对话 / 菜单 ===== */
+#bottom{position:absolute;left:0;right:0;bottom:0;height:48px;background:var(--bottom-bg);display:flex;gap:3px;padding:3px;z-index:4}
+#msg{flex:1;position:relative;background:var(--msg-bg);border:2px solid var(--bottom-edge);border-left:5px solid var(--accent);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.25);padding:3px 6px;color:var(--msg-text);text-shadow:1px 1px 0 var(--msg-shadow);cursor:pointer;overflow:hidden}
+#text{display:block;padding-right:8px;line-height:var(--lh);min-height:calc(var(--lh)*2)}
+#measure{position:absolute;left:6px;right:6px;top:0;padding-right:8px;visibility:hidden;line-height:var(--lh);pointer-events:none}
+#arrow{display:none;position:absolute;right:5px;bottom:4px;width:7px;height:4px;background:var(--msg-text);
+  clip-path:polygon(0 0,7px 0,7px 1px,6px 1px,6px 2px,5px 2px,5px 3px,4px 3px,4px 4px,3px 4px,3px 3px,2px 3px,2px 2px,1px 2px,1px 1px,0 1px);
+  animation:blink .8s steps(1) infinite}
+@keyframes blink{0%{opacity:1}50%{opacity:0}100%{opacity:1}}
+#menu{width:110px;display:none;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;background:var(--panel);border:2px solid var(--panel-edge);box-shadow:inset 0 0 0 1px var(--panel-inner);padding:1px 3px}
+#menu button{font-family:inherit;font-weight:inherit;font-size:var(--fs);line-height:1;background:none;border:0;color:var(--ink);text-align:left;padding:0 0 0 9px;position:relative;cursor:pointer;white-space:nowrap}
+#menu button.dis{opacity:.35;cursor:default}
+#menu button.sel::before{content:"";position:absolute;left:2px;top:50%;margin-top:-4px;width:5px;height:9px;background:var(--ink);
+  clip-path:polygon(0 0,1px 0,1px 1px,2px 1px,2px 2px,3px 2px,3px 3px,4px 3px,4px 4px,5px 4px,5px 5px,4px 5px,4px 6px,3px 6px,3px 7px,2px 7px,2px 8px,1px 8px,1px 9px,0 9px)}
+
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:9}
+#flash.on{animation:fl .4s steps(1)}
+@keyframes fl{0%{opacity:.8}33%{opacity:0}66%{opacity:.6}100%{opacity:0}}
+#sfxBtn{position:absolute;right:4px;top:4px;width:16px;height:14px;z-index:10;padding:2px 3px;cursor:pointer;
+  background:var(--panel);border:1px solid var(--panel-edge);box-shadow:inset 0 0 0 1px var(--panel-inner);color:var(--ink);line-height:0}
+#sfxBtn svg{width:100%;height:100%;display:block;image-rendering:pixelated}
+#sfxBtn.off{color:#8a97b5}
+#sfxBtn:hover{background:#fff}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="game">
+    <div id="scene">
+      <div class="plat" id="ePlat"></div>
+      <div class="plat" id="pPlat"></div>
+      <div id="enemy" class="sprite"></div>
+      <div id="player" class="sprite"></div>
+
+      <div class="stat" id="enemyStat">
+        <div class="tags" id="eTags"></div>
+        <div class="box px" id="enemyBox">
+          <div class="row"><span id="eName"></span><span id="eLv"></span></div>
+          <div class="hpwrap"><b>SAN</b><div class="bar"><div class="fill" id="eFill"></div></div></div>
+        </div>
+      </div>
+
+      <div class="stat" id="playerStat">
+        <div class="tags" id="pTags"></div>
+        <div class="box px" id="playerBox">
+          <div class="row"><span id="pName"></span><span id="pLv"></span></div>
+          <div class="hpwrap"><b>SAN</b><div class="bar"><div class="fill" id="pFill"></div></div></div>
+          <div class="num" id="pNum"></div>
+        </div>
+        <div class="exp"><div class="bar2"><div id="pExp"></div></div></div>
+      </div>
+    </div>
+
+    <div id="bottom">
+      <div id="msg" class="px"><div id="text"></div><div id="measure"></div><span id="arrow"></span></div>
+      <div id="menu" class="px"></div>
+    </div>
+    <div id="flash"></div>
+	<button id="sfxBtn" type="button" tabindex="-1" aria-label="Toggle sound"></button>
+  </div>
+</div>
+
+<script>
+/* ================== bubbles ================== */
+/* 占位符:{u}=行动者  {t}=对象  {n}=受影响者  {p}=我方名字  {e}=敌方名字 */
+const CFG = {
+  // sprite 填相对路径,例如 "bubble/gladiia.png";
+  player: { name:"ULPIANUS", lv:6, san:100, exp:60, sprite:"ulpianusbubble.png" },
+  enemy:  { name:"GLADIIA",  lv:6, san:100, sprite:"gladiiabubble.png" },
+
+  /* 状态:tag 是状态框上方的小标签,on 是施加时的提示,off 是结束时的提示 */
+  status: {
+    love:  { tag:"LOVE", on:"{n} was unable to move because of love!", off:"" },
+    simp:  { tag:"SIMP", on:"{n} is simping! Can't bring itself to hit hard...", off:"{n} regained its composure." },
+    ench:  { tag:"ENCH", on:"{n} is enchanted! Its guard is wide open!",   off:"{n} broke free of the enchantment." },
+    boost: { tag:"UP",   on:"", off:"" }
+  },
+  text: {
+    simpHit: "It's not very effective...",
+    enchHit: "It hits extra hard!"
+  },
+
+  /* LOVE 子菜单
+     dmg:SAN伤害范围  acc:命中率%  flash:命中闪屏颜色
+     status:{type, turns, to:"you"|"me", chance:%, msg}  */
+  loveMoves: [
+    { name:"KISS",    dmg:[18,26], flash:"#ff9ac8", eff:"It's super effective!",
+      status:{type:"love", turns:1} },
+    { name:"PROVOKE", dmg:[6,22],  eff:"Playing with fire...",
+      status:{type:"boost", turns:1, to:"you", msg:"{t} took the bait! {t}'s next move is powered up!"} },
+    { name:"BOOP",    dmg:[8,14],  eff:"{t} went cross-eyed!",
+      status:{type:"simp", turns:3, chance:60} },
+    { name:"NIBBLE",  dmg:[12,18], acc:90, eff:"It's very effective!", missMsg:"{t} sidestepped effortlessly!",
+      status:{type:"ench", turns:3, chance:40} }
+  ],
+
+  /* ITEMS 子菜单(qty 只限制我方,敌方道具不会用完) */
+  items: [
+    { name:"TEA",     qty:2, heal:[14,20], use:"{u} brewed a cup of warm tea.", eff:"So cozy..." },
+    { name:"SNACK",   qty:1, heal:[8,12],  use:"{u} munched on a fish snack!", eff:"Yum!",
+      status:{type:"boost", turns:1, to:"me", msg:"{u} feels full of energy!"} },
+    { name:"BLANKET", qty:1, heal:[10,16], healBoth:true, use:"{u} wrapped a blanket around both of them.", eff:"It's warm and fluffy..." },
+    { name:"ROSE",    qty:1, use:"{u} offered a rose to {t}.", eff:"{t} blushed deeply!",
+      status:{type:"ench", turns:3} }
+  ],
+
+catch: {
+    name:"CATCH",
+    catch:true,
+    use:"{u} reached out to take {t} home!",
+    fail: {
+      high:["{t} gave {u} a cold look and turned away.", "{t} wasn't impressed at all..."],
+      mid: ["{t} hesitated... but pulled away at the last second!", "{t} struggled and slipped out of {u}'s embrace!"],
+      low: ["{t} almost gave in... but wriggled free!", "So close! {t} slipped away at the last moment!"]
+    },
+    ok: {
+      high:[
+        "{t} sighed softly and let {u} scoop it up anyway.",
+        "{t} didn't even dodge... It seems {t} was waiting for this!",
+        "{t} tilted its hat down and silently accepted its fate."
+      ],
+      mid: [
+        "{t} struggled for a moment... then gave in!",
+        "{t} tried to look stern, but its tail betrayed it!",
+        "{t} muttered something under its breath and stopped resisting."
+      ],
+      low: [
+        "{t} nestled right up against {u}.",
+        "{t} didn't resist at all...",
+        "{t} is too dizzy with affection to think about escaping!"
+      ]
+    }
+  },
+  catchLines: [
+    "Gotcha! {e} was caught!",
+    "{e} stopped pretending to resist.",
+    "{p} took {e} home.",
+    "Happy ever after... ♡"
+  ],
+
+  observe: {
+    pool: [
+      "{u} observed {t} carefully... and noticed its tail is twitching secretly!",
+      "{u} watched {t} closely... Its cheeks turned a little pink!",
+      "{u} stared at {t}... {t} pretended not to notice, but its breath got faster!",
+      "{u} observed {t}... It shuffled a tiny step closer with its stubby feet.",
+      "{u} studied {t}... It puffed up like a tiny balloon to look tough!",
+      "{u} looked at {t} for a long time... {t} is slowly swimming closer!",
+      "{u} peeked at {t}... It's hiding a smile under its hat!"
+    ],
+    low: [   // 对方 SAN ≤30% 时更常出现
+      "{u} observed {t}... Its composure is wobbling. It might melt any second!",
+      "{u} looked at {t}... Its bubbles are coming out in tiny hearts. It's overwhelmed!",
+      "{u} noticed {t} turning away its face to hide a blush!"
+    ]
+  },
+
+  introText: "A wild {e} appeared!",
+  goText:    "Go! {p}!",
+
+  /* 敌方 SAN 先归零:带回家 */
+  winLines: [
+    "{e}'s SAN hit zero!",
+    "{e} decided to let {p} have its way... just this once.",
+    "{p} took {e} home.",
+    "Happy ever after... ♡"
+  ],
+  /* 我方 SAN 先归零 */
+  loseLines: [
+    "{p}'s SAN hit zero!",
+    "{p} is too happy to fight anymore!",
+    "...and {e} doesn't mind one bit. <3"
+  ]
+};
+/* =========================================================== */
+
+const STATUS = CFG.status;
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const rnd = ([a,b]) => Math.floor(Math.random()*(b-a+1))+a;
+const pick1 = arr => arr[Math.floor(Math.random()*arr.length)];
+const fmt = (s,o={}) => s
+  .replace(/\{p\}/g,CFG.player.name).replace(/\{e\}/g,CFG.enemy.name)
+  .replace(/\{u\}/g,o.u||"").replace(/\{t\}/g,o.t||"").replace(/\{n\}/g,o.n||"");
+
+const HEART_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 6" shape-rendering="crispEdges"><g fill="#ff6fb0"><rect x="1" y="0" width="2" height="1"/><rect x="4" y="0" width="2" height="1"/><rect x="0" y="1" width="7" height="2"/><rect x="1" y="3" width="5" height="1"/><rect x="2" y="4" width="3" height="1"/><rect x="3" y="5" width="1" height="1"/></g><rect x="1" y="1" width="1" height="1" fill="#fff"/></svg>`;
+const HEART = "data:image/svg+xml," + encodeURIComponent(HEART_SVG);
+
+/* ===== 音效 ===== */
+const SFX = (() => {
+  let ctx = null, muted = false, vol = 0.22;          // vol:总音量 0~1
+  const files = CFG.sfxFiles || {};
+
+  function ensure(){
+    if(!ctx){ const AC = window.AudioContext || window.webkitAudioContext; if(AC) ctx = new AC(); }
+    if(ctx && ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  // 单个音:起始时间, 频率, 时长, 波形, 滑向的频率, 音量
+  function tone(t, f, d, type="square", f2=null, g=1){
+    const o = ctx.createOscillator(), a = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t);
+    if(f2) o.frequency.exponentialRampToValueAtTime(f2, t + d);
+    a.gain.setValueAtTime(vol * g, t);
+    a.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(a); a.connect(ctx.destination);
+    o.start(t); o.stop(t + d + 0.02);
+  }
+  function noise(t, d, g=1){
+    const n = Math.floor(ctx.sampleRate * d), buf = ctx.createBuffer(1, n, ctx.sampleRate), data = buf.getChannelData(0);
+    for(let i = 0; i < n; i++) data[i] = Math.random() * 2 - 1;
+    const s = ctx.createBufferSource(), a = ctx.createGain();
+    s.buffer = buf;
+    a.gain.setValueAtTime(vol * g, t);
+    a.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    s.connect(a); a.connect(ctx.destination); s.start(t);
+  }
+
+  const lib = {
+    move:   t => tone(t, 880, 0.04, "square", null, .5),                       // 光标移动
+    select: t => { tone(t, 660, .05); tone(t + .05, 990, .08); },              // 确认
+    back:   t => tone(t, 440, .09, "square", 300),                             // 返回
+    blip:   t => tone(t, 520, .02, "square", null, .25),                       // 打字(可选)
+    hit:    t => { noise(t, .12); tone(t, 240, .13, "square", 70); },          // 扣 SAN
+    crit:   t => { noise(t, .18, 1.2); tone(t, 320, .1, "square", 90); tone(t + .1, 200, .18, "sawtooth", 60); }, // ENCH 加成
+    heal:   t => [523, 659, 784, 1047].forEach((f, i) => tone(t + i*.07, f, .12, "triangle")),  // 回复
+    buff:   t => [392, 523, 659].forEach((f, i) => tone(t + i*.07, f, .1, "square", null, .7)), // 增益
+    debuff: t => [659, 494, 392].forEach((f, i) => tone(t + i*.08, f, .1, "square", null, .7)), // 减益
+    love:   t => { tone(t, 784, .1, "triangle"); tone(t + .1, 988, .1, "triangle"); tone(t + .2, 1319, .3, "triangle"); }, // 亲晕
+    miss:   t => tone(t, 300, .22, "sawtooth", 110, .6),
+	wobble: t => tone(t, 300, .08, "square", 200, .6),
+caught: t => [659, 784, 988, 1319].forEach((f, i) => tone(t + i*.1, f, .14, "triangle")),
+    win:    t => [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => tone(t + i*.12, f, .16, "triangle")),
+    lose:   t => [523, 466, 392, 330].forEach((f, i) => tone(t + i*.18, f, .2, "triangle"))
+  };
+
+  function play(name, delay = 0){
+    if(muted) return;
+    if(files[name]){                                   // 优先用你自己的音频文件
+      setTimeout(() => { const a = new Audio(files[name]); a.volume = Math.min(1, vol * 3); a.play().catch(()=>{}); }, delay);
+      return;
+    }
+    if(!ensure() || !lib[name]) return;
+    lib[name](ctx.currentTime + delay / 1000);
+  }
+  function toggle(){ muted = !muted; return muted; }
+  return { play, toggle, ensure, isMuted: () => muted };
+})();
+// 浏览器要求用户操作后才能发声,第一次点击/按键时解锁
+["pointerdown","keydown"].forEach(ev => addEventListener(ev, () => SFX.ensure(), {once:false}));
+// 按 M 静音/取消静音
+/* ===== 音效开关按钮 ===== */
+const SPK = `<svg viewBox="0 0 10 8" shape-rendering="crispEdges" fill="currentColor"><rect x="0" y="2" width="2" height="4"/><rect x="2" y="1" width="1" height="6"/><rect x="3" y="0" width="1" height="8"/>`;
+const ICON_ON  = SPK + `<rect x="5" y="3" width="1" height="2"/><rect x="7" y="1" width="1" height="6"/></svg>`;
+const ICON_OFF = SPK + `<rect x="5" y="2" width="1" height="1"/><rect x="6" y="3" width="1" height="1"/><rect x="7" y="4" width="1" height="1"/><rect x="8" y="5" width="1" height="1"/><rect x="8" y="2" width="1" height="1"/><rect x="7" y="3" width="1" height="1"/><rect x="6" y="4" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/></svg>`;
+
+function renderSfxBtn(){
+  const off = SFX.isMuted();
+  $("sfxBtn").innerHTML = off ? ICON_OFF : ICON_ON;
+  $("sfxBtn").classList.toggle("off", off);
+  $("sfxBtn").title = off ? "Sound: OFF (M)" : "Sound: ON (M)";
+}
+function toggleSfx(){
+  const muted = SFX.toggle();
+  renderSfxBtn();
+  if(!muted) SFX.play("select");          // 打开时响一声作为反馈
+  localStorage.setItem("sfxMuted", muted ? "1" : "0");
+}
+$("sfxBtn").addEventListener("click", e => { e.stopPropagation(); toggleSfx(); e.currentTarget.blur(); });
+addEventListener("keydown", e => { if(e.key === "m" || e.key === "M") toggleSfx(); });
+
+// 记住上次的选择
+if(localStorage.getItem("sfxMuted") === "1") SFX.toggle();
+renderSfxBtn();
+/* 缩放到窗口(虚拟分辨率 240×160,够大时取整数倍保持锐利) */
+const W=240, H=160;
+function fit(){
+  const MAX_SCALE = 8;
+  let s = Math.min(innerWidth/W, innerHeight/H);
+  s = s >= 2 ? Math.floor(s) : s;
+  s = Math.min(s, MAX_SCALE);
+  $("wrap").style.width  = W*s + "px";
+  $("wrap").style.height = H*s + "px";
+  $("game").style.transform = `scale(${s})`;
+}
+addEventListener("resize",fit); fit();
+
+const newSt = () => ({love:0, simp:0, ench:0, boost:0});
+const S = {
+  p:{san:CFG.player.san, max:CFG.player.san, st:newSt()},
+  e:{san:CFG.enemy.san,  max:CFG.enemy.san,  st:newSt()}
+};
+const BAG = CFG.items.map(i => ({...i}));      // 我方背包(有数量)
+const OBSERVE = { name:"OBSERVE", observe:true };
+
+let sel=0, menuOpen=false, menuReadyAt=0, busy=true, level="main", entries=[];
+
+function initUI(){
+  $("eName").textContent=CFG.enemy.name;  $("eLv").textContent="Lv:"+CFG.enemy.lv;
+  $("pName").textContent=CFG.player.name; $("pLv").textContent="Lv:"+CFG.player.lv;
+  $("pExp").style.width=(CFG.player.exp||0)+"%";
+  setSprite("enemy",CFG.enemy); setSprite("player",CFG.player);
+  for(let i=0;i<8;i++){
+    const b=document.createElement("div"), sz=[2,3,4][i%3];
+    b.className="bub";
+    b.style.cssText=`left:${Math.random()*232}px;width:${sz}px;height:${sz}px;animation-duration:${5+Math.random()*5}s;animation-delay:-${Math.random()*8}s`;
+    $("scene").appendChild(b);
+  }
+  updateUI();
+}
+function setSprite(id,c){
+  $(id).innerHTML = `<div class="inner">${c.sprite?`<img src="${c.sprite}" alt="">`:`<span class="emoji">${c.emoji}</span>`}</div>`;
+}
+function updateUI(){
+  for(const [k,f] of [["e","eFill"],["p","pFill"]]){
+    const pct=Math.max(0,S[k].san)/S[k].max*100, el=$(f);
+    el.style.width=pct+"%";
+    el.className="fill"+(pct<=20?" low":pct<=50?" mid":"");
+    $(k+"Tags").innerHTML=Object.keys(STATUS).filter(s=>S[k].st[s]>0).map(s=>`<i class="t-${s}">${STATUS[s].tag}</i>`).join("");
+    $(k==="e"?"enemyBox":"playerBox").classList.toggle("inlove",S[k].st.love>0);
+  }
+  $("pNum").textContent=`${Math.max(0,S.p.san)}/ ${S.p.max}`;
+}
+
+/* ===== 对话:自动分页(每页最多两行) + 打字机 + 点击/空格继续 ===== */
+function paginate(text){
+  const m=$("measure"), maxH=parseFloat(getComputedStyle(m).lineHeight)*2+1;
+  const words=text.split(" "), out=[]; let cur="";
+  for(const w of words){
+    const test=cur?cur+" "+w:w;
+    m.textContent=test;
+    if(m.offsetHeight>maxH && cur){ out.push(cur); cur=w; } else cur=test;
+  }
+  if(cur) out.push(cur);
+  return out;
+}
+let skipTyping=false;
+function waitKey(){
+  return new Promise(res=>{
+    const go=()=>{ $("msg").removeEventListener("click",go); document.removeEventListener("keydown",key); res(); };
+    const key=e=>{ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); go(); } };
+    $("msg").addEventListener("click",go); document.addEventListener("keydown",key);
+  });
+}
+function hideMenu(){ $("menu").style.display="none"; menuOpen=false; }
+async function say(text, wait=true){
+  hideMenu();
+  const t=$("text"), arrow=$("arrow");
+  const pages=paginate(text);
+  for(let i=0;i<pages.length;i++){
+    const last = i===pages.length-1, p=pages[i];
+    t.textContent=""; arrow.style.display="none"; skipTyping=false;
+    for(const ch of p){
+      if(skipTyping){ t.textContent=p; break; }
+      t.textContent+=ch; await sleep(26);
+    }
+    if(wait || !last){ arrow.style.display="block"; await waitKey(); arrow.style.display="none"; }
+    else await sleep(500);
+  }
+}
+$("msg").addEventListener("click",()=>skipTyping=true);
+document.addEventListener("keydown",e=>{ if(!menuOpen && (e.key===" "||e.key==="Enter")) skipTyping=true; });
+
+/* ===== 菜单(主菜单 + LOVE / ITEMS 子菜单) ===== */
+function entriesFor(lv){
+  const back={label:"BACK", go:()=>openMenu("main")};
+  if(lv==="love")  return [...CFG.loveMoves.map(m=>({label:m.name, run:m})), back];
+  if(lv==="items") return [...BAG.map(it=>({label:it.name+(it.qty>1?" x"+it.qty:""), run:it, dis:it.qty<=0})), back];
+  return [
+    {label:"LOVE",    go:()=>openMenu("love")},
+    {label:"ITEMS",   go:()=>openMenu("items")},
+    {label:"OBSERVE", run:OBSERVE},
+    {label:"CATCH",   run:CFG.catch}
+  ];
+}
+function openMenu(lv){
+  level=lv; entries=entriesFor(lv);
+  const prompts={ main:`What will ${CFG.player.name} do?`, love:`Show some love to ${CFG.enemy.name}!`, items:"Choose an item." };
+  $("text").textContent=prompts[lv];
+  $("arrow").style.display="none";
+  const m=$("menu"); m.innerHTML="";
+  entries.forEach((e,i)=>{
+    const b=document.createElement("button");
+    b.textContent=e.label;
+    if(e.dis) b.classList.add("dis");
+    b.onclick=()=>pickEntry(i);
+    b.onmouseenter=()=>{ if(sel!==i) SFX.play("move"); sel=i; highlight(); };
+    m.appendChild(b);
+  });
+  m.style.display="grid";
+  sel=0; highlight(); menuOpen=true; menuReadyAt=performance.now()+200;
+}
+function highlight(){ [...$("menu").children].forEach((b,i)=>b.classList.toggle("sel",i===sel)); }
+function pickEntry(i){
+  const e=entries[i];
+  if(busy||!menuOpen||!e) return;
+  if(e.dis){ SFX.play("miss"); return; }          // 数量用完的道具
+  SFX.play(e.label==="BACK" ? "back" : "select");
+  if(e.go) return e.go();
+  chooseAction(e.run);
+}
+document.addEventListener("keydown",e=>{
+  if(!menuOpen || performance.now()<menuReadyAt) return;
+  const n=entries.length;
+  const before=sel;
+  if(e.key==="ArrowLeft"){ if(sel%2) sel--; }
+  else if(e.key==="ArrowRight"){ if(sel%2===0 && sel+1<n) sel++; }
+  else if(e.key==="ArrowUp"){ if(sel>=2) sel-=2; }
+  else if(e.key==="ArrowDown"){ if(sel+2<n) sel+=2; }
+  else if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pickEntry(sel); return; }
+  else if((e.key==="Escape"||e.key==="Backspace"||e.key==="x"||e.key==="X") && level!=="main"){ SFX.play("back"); openMenu("main"); return; }
+  else return;
+  e.preventDefault(); highlight(); if(sel!==before) SFX.play("move");
+});
+
+/* ===== 特效 ===== */
+function hearts(id){
+  const el=$(id);
+  for(let i=0;i<6;i++){
+    const h=new Image(); h.src=HEART; h.className="heart";
+    h.style.left=(el.offsetLeft+Math.random()*Math.max(1,el.offsetWidth-10))+"px";
+    h.style.top=(el.offsetTop+Math.random()*el.offsetHeight*0.5)+"px";
+    h.style.animationDelay=(i*0.12)+"s";
+    $("scene").appendChild(h); setTimeout(()=>h.remove(),1900);
+  }
+}
+function shake(id){ const el=$(id); el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); }
+function flash(color){ const f=$("flash"); f.style.background=color||"#fff"; f.classList.remove("on"); void f.offsetWidth; f.classList.add("on"); }
+
+/* ===== OBSERVE ===== */
+let lastObs="";
+async function observe(you, ctx){
+  const o=CFG.observe, low=S[you].san/S[you].max<=0.3;
+  const list=(low && Math.random()<0.6) ? o.low : o.pool;
+  let line;
+  do{ line=pick1(list); }while(line===lastObs && list.length>1);
+  lastObs=line;
+  await say(fmt(line,ctx));
+}
+/* ===== CATCH ===== */
+async function tryCatch(ctx){
+  const c=CFG.catch, e=S.e;
+  const pct=e.san/e.max;
+  const charmed = e.st.love>0 || e.st.ench>0;
+  const tier = (charmed || pct<=0.3) ? "low" : pct<=0.6 ? "mid" : "high";
+  const chance = { low:rnd([60,90]), mid:rnd([20,40]), high:rnd([0,5]) }[tier];   // ← 成功率在这里调
+  const ok = Math.random()*100 < chance;
+
+  await say(fmt(c.use,ctx), false); await sleep(300);
+  SFX.play("select");
+  const wobbles = ok ? 3 : (tier==="high" ? 0 : rnd([1,2]));    // 像球晃动:成功晃满3下,高SAN直接拒绝
+  for(let i=0;i<wobbles;i++){
+    shake("enemy"); SFX.play("wobble");
+    await say("...", false); await sleep(300);
+  }
+  if(ok){
+    SFX.play("caught"); e.caught=true;
+    await say(fmt(pick1(c.ok[tier]),ctx));
+  } else {
+    SFX.play("miss");
+    await say(fmt(pick1(c.fail[tier]),ctx));       // 失败后自然轮到 GLADIIA 行动
+  }
+}
+/* ===== 一次行动(我方/敌方通用) ===== */
+async function perform(me, act){
+  const you = me==="p" ? "e" : "p";
+  const nm = {p:CFG.player.name, e:CFG.enemy.name};
+  const id = {p:"player", e:"enemy"};
+  const ctx = {u:nm[me], t:nm[you]};
+  const st = S[me].st;
+
+  if(st.love>0){                        // 被亲晕:跳过这回合
+    st.love=0; updateUI();
+    return say(fmt("{u} is still lost in love...",ctx));
+  }
+  if(me==="p" && act.qty>0) act.qty--;  // 只有我方消耗道具
+  if(act.observe) return observe(you, ctx);
+  if(act.catch) return tryCatch(ctx);
+
+  await say(fmt(act.use || `{u} used ${act.name}!`, ctx), false);
+  await sleep(400);
+
+  if(act.acc && Math.random()*100 > act.acc){
+    SFX.play("miss");
+	await say("But it missed!");
+    if(act.missMsg) await say(fmt(act.missMsg,ctx));
+    return;
+  }
+
+  let dmg = act.dmg ? rnd(act.dmg) : 0;
+  const notes=[];
+  if(dmg>0){
+    if(st.simp>0){ dmg=Math.max(1,Math.round(dmg*0.5)); notes.push(CFG.text.simpHit); }
+    if(st.boost>0){ dmg=Math.round(dmg*1.5); st.boost=0; }
+    if(S[you].st.ench>0){ dmg=Math.round(dmg*1.5); notes.push(CFG.text.enchHit); }
+    shake(id[you]); flash(act.flash);
+	SFX.play(S[you].st.ench>0 ? "crit" : "hit"); 
+    S[you].san=Math.max(0,S[you].san-dmg);
+  }
+  if(act.heal){
+    const h=rnd(act.heal);
+    S[me].san=Math.min(S[me].max,S[me].san+h);
+    if(act.healBoth) S[you].san=Math.min(S[you].max,S[you].san+h);
+    hearts(id[me]); if(act.healBoth) hearts(id[you]);
+	SFX.play("heal", dmg>0 ? 300 : 0);               // 如果同时有伤害,错开一点
+  }
+
+  let applied=null;
+  const s=act.status;
+  if(s && Math.random()*100 < (s.chance ?? 100)){
+    const to = s.to==="me" ? me : you;
+    if(S[to].san>0){
+	const kind = {love:"love", simp:"debuff", ench:"debuff", boost: to===me ? "buff" : "debuff"}[s.type] || "buff";
+SFX.play(kind, (dmg>0 || act.heal) ? 350 : 0);   // 和伤害/回复错开,不会叠在一起
+      S[to].st[s.type]=Math.max(S[to].st[s.type], s.turns||1);
+      applied={to, text:s.msg || STATUS[s.type].on};
+      if(s.type==="love"||s.type==="ench") hearts(id[to]);
+    }
+  }
+  updateUI();
+  await sleep(700);
+
+ // 效果句只说一句:有增减伤状态时用状态的提示,否则用招式自带的
+// (SIMP 和 ENCH 同时存在时倍率大致抵消,回到招式自带的句子)
+const line = notes.length === 1 ? notes[0] : act.eff;
+if(line) await say(fmt(line,ctx));
+  if(applied && applied.text) await say(fmt(applied.text,{...ctx,n:nm[applied.to]}));
+}
+async function doAction(me, act){
+  await perform(me, act);
+  if(S.p.san<=0 || S.e.san<=0 || S.e.caught) return;
+  // 行动结束后,自己身上的 simp / ench 倒计时
+  const nm = me==="p"?CFG.player.name:CFG.enemy.name;
+  for(const k of ["simp","ench"]){
+    if(S[me].st[k]>0){
+      S[me].st[k]--;
+      if(S[me].st[k]===0){
+        updateUI();
+        if(STATUS[k].off) await say(fmt(STATUS[k].off,{n:nm}));
+      }
+    }
+  }
+  updateUI();
+}
+
+/* ===== 敌方行动:完全随机(包含道具,敌方道具不会用完) ===== */
+function enemyChoose(){
+  return pick1([...CFG.loveMoves, ...CFG.items, OBSERVE]);
+}
+
+/* ===== 战斗流程 ===== */
+async function chooseAction(act){
+  if(busy) return; busy=true; hideMenu();
+  await doAction("p", act);
+  if(S.e.caught) return endBattle(true, true);
+if(S.e.san<=0) return endBattle(true);
+  await doAction("e", enemyChoose());
+  if(S.p.san<=0) return endBattle(false);
+  busy=false; openMenu("main");
+}
+async function endBattle(win, caught=false){
+  hearts("enemy"); hearts("player"); flash("#ff9ac8");
+  SFX.play(win ? "win" : "lose");
+  const lines = caught ? CFG.catchLines : win ? CFG.winLines : CFG.loseLines;
+  for(let i=0;i<lines.length;i++){
+    if(win && i===lines.length-2) $("enemy").classList.add("vanish");   // 带回家:对方闪烁消失
+    await say(fmt(lines[i]));
+  }
+  await say("Press to play again");
+  location.reload();
+}
+
+/* ===== 开场 ===== */
+(async function start(){
+  initUI();
+  await say(fmt(CFG.introText));
+  await say(fmt(CFG.goText), false);
+  await sleep(300);
+  busy=false; openMenu("main");
+})();
+</script>
+</body>
+</html>

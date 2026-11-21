@@ -1,0 +1,41 @@
+{
+  "url": "https://aashishgtbit.github.io/PaletteRider",
+  "final_url": "https://aashishgtbit.github.io/PaletteRider/",
+  "slug": "palette-rider",
+  "title": "PaletteRider",
+  "description": "",
+  "captured_at": "2026-11-16T16:53:28.932105+00:00",
+  "assets": {
+    "https://aashishgtbit.github.io/PaletteRider/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 34289,
+      "status": 200
+    },
+    "https://aashishgtbit.github.io/PaletteRider/assets/index-oaeEkH7H.js": {
+      "path": "assets/index-oaeEkH7H.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 706541,
+      "status": 200
+    },
+    "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap": {
+      "path": "_remote/fonts.googleapis.com/css2__q_family_JetBrains_Mono_wght_500_600_700_family_Space_Grotesk_wght_500_600_700_display_swap",
+      "content_type": "text/css; charset=utf-8",
+      "size": 11322,
+      "status": 200
+    },
+    "https://aashishgtbit.github.io/PaletteRider/castle-and-sun.jpg": {
+      "path": "castle-and-sun.jpg",
+      "content_type": "image/jpeg",
+      "size": 1012614,
+      "status": 200
+    }
+  },
+  "failures": [
+    {
+      "url": "https://aashishgtbit.github.io/PaletteRider",
+      "error": "Response.body: Response body is unavailable for redirect responses"
+    }
+  ],
+  "attempt": 1
+}

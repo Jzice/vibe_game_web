@@ -1,0 +1,102 @@
+{
+  "url": "https://antiquesfraudshow.vercel.app",
+  "final_url": "https://antiquesfraudshow.vercel.app/",
+  "slug": "antiques-fraud-show",
+  "title": "Antiques Fraudshow",
+  "description": "Buy junk at a yard sale. Doctor it in the garage. Lie about it to the appraiser on television. A fun, stupid game, played completely straight.",
+  "captured_at": "2026-11-16T16:38:02.498803+00:00",
+  "assets": {
+    "https://antiquesfraudshow.vercel.app/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 4506,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/assets/index-CG784Efq.css": {
+      "path": "assets/index-CG784Efq.css",
+      "content_type": "text/css; charset=utf-8",
+      "size": 60062,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/assets/assets-Dbso2Oon.js": {
+      "path": "assets/assets-Dbso2Oon.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 472081,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/assets/index-hIcQxfxE.js": {
+      "path": "assets/index-hIcQxfxE.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 836853,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/assets/caveat-latin-700-normal-D8_1Nw6V.woff2": {
+      "path": "assets/caveat-latin-700-normal-D8_1Nw6V.woff2",
+      "content_type": "font/woff2",
+      "size": 51020,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/assets/caveat-latin-500-normal-B9SDL8cy.woff2": {
+      "path": "assets/caveat-latin-500-normal-B9SDL8cy.woff2",
+      "content_type": "font/woff2",
+      "size": 50904,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/title-still.webp": {
+      "path": "title-still.webp",
+      "content_type": "image/webp",
+      "size": 74766,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/assets/noto-serif-display-latin-wdth-normal-ByJKXP3D.woff2": {
+      "path": "assets/noto-serif-display-latin-wdth-normal-ByJKXP3D.woff2",
+      "content_type": "font/woff2",
+      "size": 76372,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/assets/libre-caslon-text-latin-700-normal-D1WVYPaO.woff2": {
+      "path": "assets/libre-caslon-text-latin-700-normal-D1WVYPaO.woff2",
+      "content_type": "font/woff2",
+      "size": 25260,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/assets/permanent-marker-latin-400-normal-BF23djCy.woff2": {
+      "path": "assets/permanent-marker-latin-400-normal-BF23djCy.woff2",
+      "content_type": "font/woff2",
+      "size": 29564,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/assets/vt323-latin-400-normal-wDgJuOC9.woff2": {
+      "path": "assets/vt323-latin-400-normal-wDgJuOC9.woff2",
+      "content_type": "font/woff2",
+      "size": 17936,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/assets/special-elite-latin-400-normal-YjDd9tmf.woff2": {
+      "path": "assets/special-elite-latin-400-normal-YjDd9tmf.woff2",
+      "content_type": "font/woff2",
+      "size": 53296,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/assets/libre-caslon-text-latin-400-normal-CfldDPV-.woff2": {
+      "path": "assets/libre-caslon-text-latin-400-normal-CfldDPV-.woff2",
+      "content_type": "font/woff2",
+      "size": 24972,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/assets/voice/manifest.json": {
+      "path": "assets/voice/manifest.json",
+      "content_type": "application/json; charset=utf-8",
+      "size": 199847,
+      "status": 200
+    },
+    "https://antiquesfraudshow.vercel.app/assets/libre-caslon-text-latin-400-italic-snTzlHlN.woff2": {
+      "path": "assets/libre-caslon-text-latin-400-italic-snTzlHlN.woff2",
+      "content_type": "font/woff2",
+      "size": 28020,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

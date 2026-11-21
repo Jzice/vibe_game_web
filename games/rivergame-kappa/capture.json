@@ -1,0 +1,14 @@
+{
+  "url": "https://rivergame-kappa.vercel.app/",
+  "slug": "rivergame-kappa",
+  "title": "",
+  "description": "",
+  "assets": {},
+  "failures": [
+    {
+      "url": "https://rivergame-kappa.vercel.app/",
+      "error": "net::ERR_CONNECTION_TIMED_OUT"
+    }
+  ],
+  "error": "Error: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://rivergame-kappa.vercel.app/\nCall log:\n  - navigating to \"https://rivergame-kappa.vercel.app/\", waiting until \"domcontentloaded\"\n"
+}

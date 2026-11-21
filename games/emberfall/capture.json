@@ -1,0 +1,18 @@
+{
+  "url": "https://emberfall-arena.netlify.app",
+  "final_url": "https://emberfall-arena.netlify.app/",
+  "slug": "emberfall",
+  "title": "EMBERFALL — ville destructible, solo et multijoueur",
+  "description": "",
+  "captured_at": "2026-11-16T16:45:17.506329+00:00",
+  "assets": {
+    "https://emberfall-arena.netlify.app/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=UTF-8",
+      "size": 487813,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

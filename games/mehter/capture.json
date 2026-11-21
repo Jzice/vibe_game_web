@@ -1,0 +1,59 @@
+{
+  "url": "https://furkiozknn.github.io/mehter",
+  "final_url": "https://furkiozknn.github.io/mehter/",
+  "slug": "mehter",
+  "title": "Mehter · Claude Game Arena",
+  "description": "A 3D rhythm game with an Ottoman mehter band marching down a square at dusk, redesigned in crimson, gold and deep green: hit davul, kös, zurna and zil notes on the beat across six marches. Plays in the browser.",
+  "captured_at": "2026-11-16T16:51:41.579026+00:00",
+  "assets": {
+    "https://furkiozknn.github.io/mehter/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 177546,
+      "status": 200
+    },
+    "https://gc.zgo.at/count.js": {
+      "path": "_remote/gc.zgo.at/count.js",
+      "content_type": "application/javascript",
+      "size": 9213,
+      "status": 200
+    },
+    "https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;0,6..12,800;1,6..12,400&display=swap": {
+      "path": "_remote/fonts.googleapis.com/css2__q_family_Amiri_ital_wght_0_400_0_700_1_400_1_700_family_Nunito_Sans_ital_opsz_wght_0_6..12_400_0_6..12_600_0_6..12_700_0_6..12_800_1_6..12_400_display_swap",
+      "content_type": "text/css; charset=utf-8",
+      "size": 17804,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/amiri/v30/J7acnpd8CGxBHp2VkaY_zp4.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/amiri/v30/J7acnpd8CGxBHp2VkaY_zp4.woff2",
+      "content_type": "font/woff2",
+      "size": 20300,
+      "status": 200
+    },
+    "https://furkiozknn.goatcounter.com/count?p=%2Fmehter%2F&t=Mehter%20%C2%B7%20Claude%20Game%20Arena&s=1280&b=153&rnd=zvtlc": {
+      "path": "_remote/furkiozknn.goatcounter.com/count__q_p_2Fmehter_2F_t_Mehter_20_C2_B7_20Claude_20Game_20Arena_s_1280_b_153_rnd_zvtlc",
+      "content_type": "image/gif",
+      "size": 43,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/nunitosans/v19/pe0AMImSLYBIv1o4X1M8ce2xCx3yop4tQpF_MeTm0lfUVwoNnq4CLz0_kJ3xzA.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/nunitosans/v19/pe0AMImSLYBIv1o4X1M8ce2xCx3yop4tQpF_MeTm0lfUVwoNnq4CLz0_kJ3xzA.woff2",
+      "content_type": "font/woff2",
+      "size": 49648,
+      "status": 200
+    },
+    "https://fonts.gstatic.com/s/nunitosans/v19/pe0AMImSLYBIv1o4X1M8ce2xCx3yop4tQpF_MeTm0lfUVwoNnq4CLz0_kJPxzGOF.woff2": {
+      "path": "_remote/fonts.gstatic.com/s/nunitosans/v19/pe0AMImSLYBIv1o4X1M8ce2xCx3yop4tQpF_MeTm0lfUVwoNnq4CLz0_kJPxzGOF.woff2",
+      "content_type": "font/woff2",
+      "size": 43656,
+      "status": 200
+    }
+  },
+  "failures": [
+    {
+      "url": "https://furkiozknn.github.io/mehter",
+      "error": "Response.body: Response body is unavailable for redirect responses"
+    }
+  ],
+  "attempt": 1
+}

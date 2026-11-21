@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head><script>
+(function(){try{
+  var fake={register:function(){return Promise.resolve({addEventListener:function(){},update:function(){return Promise.resolve()}})},
+    getRegistration:function(){return Promise.resolve()},getRegistrations:function(){return Promise.resolve([])},
+    addEventListener:function(){},controller:null};
+  Object.defineProperty(navigator,'serviceWorker',{configurable:true,value:fake});
+}catch(e){}})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Dead Headway: realistic subway raid shooter you play in your browser</title>
+<meta name="description" content="Dead Headway is a free realistic first-person shooter set in a flooded subway station at 2 AM. Explore the platform, service tunnels, train and mezzanine, restore power, take the recorder and get out alive. Plays in the browser on computer and phone, no download.">
+<link rel="canonical" href="./index.html">
+<meta name="theme-color" content="#0b0c0d">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Dead Headway: a realistic subway raid in your browser">
+<meta property="og:description" content="2:14 AM. A private army holds Halvern Square station. Go down, restore power, take the recorder off the 9 train and walk out. One life.">
+<meta property="og:url" content="./index.html">
+<meta property="og:image" content="./index.htmlog.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="./index.htmlog.jpg">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preload" href="assets/font/overpass-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/font/overpass-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="modulepreload" href="game.js">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"Dead Headway","url":"./index.html","image":"./index.htmlog.jpg","description":"A realistic first-person shooter set in a subway station at night. One raid with three objectives across a platform, service wing, tunnels, a train and a mezzanine. Simulated bullets, nine guns, a flashlight, weapon upgrades. Free in the browser.","genre":["First-person shooter","Action"],"gamePlatform":["Web browser","Desktop","Mobile"],"applicationCategory":"Game","operatingSystem":"Any","playMode":"SinglePlayer","author":{"@type":"Person","name":"Gus Castillo","url":"https://guscastillo.com"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<script>window.__errs=[];addEventListener("error",function(e){if(__errs.length<12)__errs.push(String(e.message)+" @ "+String(e.error&&e.error.stack||"").split("\n").slice(1,4).join(" | ").slice(0,360))});(function(c){var o=c.error;c.error=function(){if(__errs.length<12)__errs.push([].join.call(arguments," ").slice(0,300));o.apply(c,arguments)}})(console)</script>
+<style>
+@font-face{font-family:Overpass;src:url(assets/font/overpass-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:Overpass;src:url(assets/font/overpass-latin-600-normal.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:Overpass;src:url(assets/font/overpass-latin-800-normal.woff2) format("woff2");font-weight:800;font-display:swap}
+:root{--ink:#f2f0ea;--dim:#909396;--rule:rgba(242,240,234,.16);--mark:#f2c230;--bg:#0b0c0d;--hurt:#d8342a}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--ink);font:400 16px/1.35 Overpass,sans-serif;overflow:hidden;overscroll-behavior:none;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#c{position:fixed;inset:0;width:100vw;height:100dvh;display:block}
+#poster{position:fixed;inset:0;z-index:60;background:var(--bg);transition:opacity .5s;pointer-events:none}
+#poster.off{opacity:0}
+/* loading: the 9 line's strip map. The white line runs toward Halvern Square as the station loads. */
+#poster .pl{position:absolute;left:max(6vw,env(safe-area-inset-left));right:max(6vw,env(safe-area-inset-right));top:max(7vh,env(safe-area-inset-top));bottom:max(22px,env(safe-area-inset-bottom));display:flex;flex-direction:column}
+#poster .wm{width:min(360px,84vw)}
+#strip{margin-top:auto;display:grid;grid-template-columns:34px 1fr;column-gap:16px;align-items:center;max-width:860px}
+#strip .rt{width:34px;height:34px;border-radius:50%;background:var(--mark);color:#0b0c0d;font-weight:800;font-size:21px;line-height:36px;text-align:center}
+#strip .ln{position:relative;height:3px;background:#3b3d40;margin-right:7px}
+#lnF{position:absolute;inset:0;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform 1.1s cubic-bezier(.2,.6,.3,1)}
+#lnF::after{content:"";position:absolute;right:-3px;top:-4px;width:11px;height:11px;border-radius:50%;background:var(--ink);animation:hd 1.1s ease-in-out infinite}
+@keyframes hd{50%{opacity:.25}}
+#strip .ln b{position:absolute;top:50%;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;background:var(--bg);border:3px solid #6c6f72;transition:border-color .3s,background .3s}
+#strip .ln b.on{border-color:var(--ink);background:var(--ink)}
+#strip .ln b:last-child{border-radius:0;width:14px;height:14px;margin:-7px 0 0 -7px;border-color:var(--mark)}
+#strip .ln b:last-child.on{background:var(--mark)}
+#strip ol{grid-column:2;list-style:none;display:grid;grid-template-columns:repeat(5,1fr) 0;margin:13px 7px 0 0;font-size:14px;color:var(--dim);white-space:nowrap}
+#strip ol li{transform:translateX(-6px)}
+#strip ol li:last-child{color:var(--ink);font-weight:600;transform:translateX(-100%)}
+#next{margin-top:26px;font-weight:800;font-size:clamp(24px,3.6vh,34px);line-height:1.15}
+.keys{margin:30px 0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,210px));gap:7px 34px;font-size:15px;color:var(--dim)}
+.keys div{display:flex;gap:12px}.keys dt{color:var(--ink);font-weight:600;min-width:74px}
+.keys.tc{display:none}
+@media (pointer:coarse){.keys.kb{display:none}.keys.tc{display:grid}}
+@media (max-width:700px){#strip ol li:not(:first-child):not(:last-child){visibility:hidden}.keys{grid-template-columns:1fr;gap:5px}#next{margin-top:20px}}
+@media (max-height:520px){.keys{display:none!important}#poster .brief{display:none}}
+@media (prefers-reduced-motion:reduce){#lnF::after{animation:none}#lnF{transition:none}}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--mark);outline-offset:3px}
+.screen{position:fixed;inset:0;display:none}
+.screen.on{display:block}
+/* menu: a sign band and a plain list on the left, the weapon on the right */
+.col{position:absolute;left:max(6vw,env(safe-area-inset-left));top:max(7vh,env(safe-area-inset-top));bottom:max(22px,env(safe-area-inset-bottom));width:min(360px,84vw);display:flex;flex-direction:column}
+.wm{font-weight:800;font-size:25px;line-height:1.1;border-top:3px solid var(--ink);padding-top:11px}
+.brief{color:var(--dim);margin-top:7px;font-size:15px;max-width:31ch}
+.mm{margin-top:auto;margin-bottom:auto;padding:26px 0}
+.mm button{display:block;position:relative;font-weight:800;font-size:clamp(30px,4.6vh,42px);line-height:1.28;color:var(--dim);padding-left:0;transition:color .12s,padding-left .12s}
+.mm button::before{content:"";position:absolute;left:0;top:50%;width:11px;height:11px;margin-top:-7px;background:var(--mark);opacity:0;transition:opacity .12s}
+.mm button:hover,.mm button.on{color:var(--ink);padding-left:22px}
+.mm button:hover::before,.mm button.on::before{opacity:1}
+.mm button.wait{cursor:progress}
+.foot{color:var(--dim);font-size:14px}
+.foot button{text-decoration:underline;text-underline-offset:3px}
+.cash{position:absolute;right:max(26px,env(safe-area-inset-right));top:max(7vh,env(safe-area-inset-top));font-weight:600;font-size:19px;font-variant-numeric:tabular-nums}
+.panel{position:absolute;right:max(26px,env(safe-area-inset-right));top:calc(max(7vh,env(safe-area-inset-top)) + 46px);bottom:22px;width:min(470px,calc(100vw - 52px));overflow:auto;display:none;touch-action:pan-y}
+.panel.on{display:block}
+.row{display:flex;align-items:center;gap:14px;width:100%;padding:13px 0;border-bottom:1px solid var(--rule);color:var(--dim)}
+.row:first-child{border-top:1px solid var(--rule)}
+.row.on{color:var(--ink)}
+.row.on .n::before{content:"";display:inline-block;width:9px;height:9px;background:var(--mark);margin-right:9px}
+.row img{width:118px;height:42px;object-fit:contain;flex:none;filter:grayscale(1) brightness(1.35)}
+.row .n{font-size:19px;font-weight:600;color:var(--ink)}
+.row .s{font-size:14px}
+.row .r{margin-left:auto;font-size:15px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.note{color:var(--dim);font-size:14px;margin-top:12px}
+.sec{color:var(--dim);font-size:14px;margin:16px 0 6px}.sec:first-child{margin-top:0}.sec + .row{border-top:1px solid var(--rule)}
+.bars{margin-top:18px}
+.bar{display:grid;grid-template-columns:92px 1fr 74px;align-items:center;gap:12px;height:46px}
+.bar i{display:block;height:3px;background:var(--rule);position:relative}
+.bar i::after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--v);background:var(--ink)}
+.bar button{font-weight:600;color:var(--mark);height:44px;text-align:right;font-variant-numeric:tabular-nums}
+.bar button:disabled{color:#5a5c5f;cursor:default}
+.set{display:grid;grid-template-columns:150px 1fr 44px;align-items:center;gap:12px;padding:15px 0;border-bottom:1px solid var(--rule);font-size:17px}
+.set:first-child{border-top:1px solid var(--rule)}
+input[type=range]{width:100%;accent-color:var(--ink);height:28px}
+.seg{display:flex;gap:22px;grid-column:2/4}.seg button{height:44px;color:var(--dim);font-weight:600}.seg button.on{color:var(--ink);box-shadow:inset 0 -2px var(--mark)}
+#p-about p{color:#c9c8c3;font-size:16px;margin-bottom:12px;max-width:54ch}
+#p-about h2{font-size:22px;font-weight:800;margin-bottom:12px}
+/* HUD: plain type on the picture, nothing boxed */
+#hud{position:fixed;inset:0;pointer-events:none;display:none;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 8px rgba(0,0,0,.45);font-variant-numeric:tabular-nums}
+#hud.on{display:block}
+#map{position:absolute;left:max(18px,env(safe-area-inset-left));top:max(14px,env(safe-area-inset-top));width:104px;height:104px;border-radius:50%;background:rgba(8,9,10,.42)}
+#obj{position:absolute;left:max(20px,env(safe-area-inset-left));top:calc(max(14px,env(safe-area-inset-top)) + 114px);font-size:15px;max-width:min(300px,46vw);line-height:1.25}
+#obj b{display:block;font-weight:800;font-size:17px}
+#obj span{color:#d5d3cd;font-weight:400}
+#compass{position:absolute;left:50%;top:max(12px,env(safe-area-inset-top));transform:translateX(-50%);width:min(400px,44vw);height:30px}
+#money{position:absolute;right:max(20px,env(safe-area-inset-right));top:max(14px,env(safe-area-inset-top));font-size:18px}
+#hp{position:absolute;left:max(22px,env(safe-area-inset-left));bottom:max(20px,env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;font-size:21px;font-weight:800}
+#hp i{width:124px;height:4px;background:rgba(255,255,255,.22)}#hp i b{display:block;height:100%;background:var(--ink);width:100%;transition:width .15s}
+#hp.low{color:var(--hurt)}#hp.low i b{background:var(--hurt)}
+#hp.hit i b{background:var(--hurt)}
+#ammo{position:absolute;right:max(22px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));display:flex;align-items:baseline;gap:10px;font-size:17px;color:#cfcdc7}
+#ammo img{width:98px;height:35px;object-fit:contain;filter:brightness(1.7) grayscale(1);align-self:center}#ammo b{font-size:32px;font-weight:800;color:var(--ink)}#ammo.low b{color:var(--mark)}
+#dot{position:absolute;left:50%;top:50%;width:4px;height:4px;margin:-2px;background:rgba(255,255,255,.8);border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.35)}
+#hit{position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px;opacity:0;background:linear-gradient(45deg,transparent 45%,#fff 45% 55%,transparent 55%),linear-gradient(-45deg,transparent 45%,#fff 45% 55%,transparent 55%);-webkit-mask:radial-gradient(circle,transparent 3px,#000 4px);mask:radial-gradient(circle,transparent 3px,#000 4px)}
+#hit.k{background:linear-gradient(45deg,transparent 45%,var(--hurt) 45% 55%,transparent 55%),linear-gradient(-45deg,transparent 45%,var(--hurt) 45% 55%,transparent 55%)}
+/* where the shot came from: a red wedge on a ring around the crosshair */
+.dmg{position:absolute;left:50%;top:50%;width:58vmin;height:58vmin;margin:-29vmin;opacity:0;border-radius:50%;background:conic-gradient(from -24deg,rgba(226,40,28,0) 0deg,rgba(226,40,28,.95) 24deg,rgba(226,40,28,0) 48deg,transparent 48deg);-webkit-mask:radial-gradient(circle,transparent 62%,#000 63.5%,#000 69%,transparent 70.5%);mask:radial-gradient(circle,transparent 62%,#000 63.5%,#000 69%,transparent 70.5%)}
+/* being hit: blood at the edges of the view, clear in the middle */
+#blood{position:fixed;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 50% 50%,transparent 60%,rgba(120,8,6,.3) 86%,rgba(96,4,4,.7) 100%)}
+#blood canvas{position:absolute;inset:0;width:100%;height:100%}
+#hint{position:absolute;left:50%;bottom:17%;transform:translateX(-50%);font-weight:600;font-size:18px;white-space:nowrap;display:none}
+#use{position:absolute;left:50%;top:58%;transform:translateX(-50%);font-weight:600;font-size:18px;white-space:nowrap;display:none}
+#use b{color:var(--mark);font-weight:800}
+#sub2{position:absolute;left:50%;bottom:9%;transform:translateX(-50%);font-weight:400;font-size:18px;opacity:0;transition:opacity .3s;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+#mark{position:absolute;left:0;top:0;font-size:13px;font-weight:600;text-align:center;transform:translate(-50%,-50%);display:none}
+#mark::before{content:"";display:block;width:9px;height:9px;margin:0 auto 4px;background:var(--mark);transform:rotate(45deg);box-shadow:0 0 0 1px rgba(0,0,0,.5)}
+/* scoped rifles: the eyepiece, a fine cross and a lit centre dot that shows on a dark wall */
+#scope{position:fixed;inset:0;pointer-events:none;display:none;background:radial-gradient(circle at 50% 50%,transparent 0,transparent 40.5vmin,rgba(0,0,0,.94) 41.5vmin,#000 47vmin)}
+#scope::before{content:"";position:absolute;left:50%;top:50%;width:81vmin;height:81vmin;margin:-40.5vmin;background:linear-gradient(rgba(6,6,6,.9),rgba(6,6,6,.9)) 50% 50%/1.5px 100% no-repeat,linear-gradient(rgba(6,6,6,.9),rgba(6,6,6,.9)) 50% 50%/100% 1.5px no-repeat}
+#scope::after{content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;margin:-2.5px;border-radius:50%;background:#ff3b2e}
+#stamp{position:fixed;left:50%;top:24%;transform:translateX(-50%);font-size:clamp(24px,3.6vw,40px);font-weight:800;opacity:0;pointer-events:none;text-align:center;text-shadow:0 2px 10px #000;transition:opacity .35s;white-space:nowrap}
+#stamp small{display:block;font-size:.5em;font-weight:400;color:#d5d3cd}
+/* overlays: same plain list as the menu, over the dimmed game */
+.ov{background:rgba(6,7,8,.74)}
+.box{position:absolute;left:max(6vw,env(safe-area-inset-left));top:50%;transform:translateY(-50%);width:min(420px,86vw)}
+.box h2{font-size:24px;font-weight:800;line-height:1.1;border-top:3px solid var(--ink);padding-top:11px}
+.box p{color:var(--dim);margin:7px 0 22px;font-size:16px}
+.box button.b{display:block;position:relative;font-weight:800;font-size:clamp(26px,4vh,36px);line-height:1.3;color:var(--dim);transition:color .12s,padding-left .12s}
+.box button.b::before{content:"";position:absolute;left:0;top:50%;width:10px;height:10px;margin-top:-6px;background:var(--mark);opacity:0}
+.box button.b:hover,.box button.b.p{color:var(--ink);padding-left:21px}
+.box button.b:hover::before,.box button.b.p::before{opacity:1}
+/* touch */
+#touch{position:fixed;inset:0;display:none;pointer-events:none}
+#touch.on{display:block}
+#touch button{position:absolute;pointer-events:auto;width:72px;height:72px;border-radius:50%;background:rgba(10,10,11,.3);border:1.5px solid rgba(255,255,255,.42);font-size:13px;font-weight:600;color:#fff;touch-action:none;text-align:center}
+#touch button.pulse{animation:pu 1s infinite}@keyframes pu{50%{border-color:var(--mark);box-shadow:0 0 0 7px rgba(242,194,48,.3)}}
+#tFire{right:max(22px,env(safe-area-inset-right));bottom:96px;width:92px!important;height:92px!important;border-color:rgba(255,255,255,.75)!important}
+#tAim{right:calc(max(22px,env(safe-area-inset-right)) + 104px);bottom:70px}
+#tRel{right:calc(max(22px,env(safe-area-inset-right)) + 96px);bottom:156px}
+#tJump{right:max(22px,env(safe-area-inset-right));bottom:200px}
+#tCr{right:calc(max(22px,env(safe-area-inset-right)) + 100px);bottom:242px}
+#tUse{right:calc(max(22px,env(safe-area-inset-right)) + 190px);bottom:120px;display:none}
+#tSwap{right:calc(max(22px,env(safe-area-inset-right)) + 110px);top:max(12px,env(safe-area-inset-top));width:64px!important;height:48px!important;border-radius:6px!important}
+#tNade{left:max(40px,env(safe-area-inset-left));bottom:206px;width:60px!important;height:60px!important}
+#tLight{left:calc(max(40px,env(safe-area-inset-left)) + 74px);bottom:200px}
+#tPause{right:max(22px,env(safe-area-inset-right));top:calc(max(12px,env(safe-area-inset-top)) + 34px);width:64px!important;height:48px!important;border-radius:6px!important}
+#stick{position:absolute;width:120px;height:120px;border-radius:50%;border:1.5px solid rgba(255,255,255,.35);left:max(34px,env(safe-area-inset-left));bottom:54px;background:rgba(10,10,11,.24)}
+#stick i{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px;border-radius:50%;background:rgba(255,255,255,.4)}
+#stick span{position:absolute;left:0;right:0;top:-24px;text-align:center;font-size:13px;font-weight:600;color:rgba(255,255,255,.8)}
+@media (max-width:760px){.col{width:min(300px,84vw)}.mm button{font-size:30px}.panel{left:max(6vw,env(safe-area-inset-left));right:max(6vw,env(safe-area-inset-right));width:auto;top:auto;bottom:16px;max-height:52vh;background:rgba(11,12,13,.9)}.menu.sub .mm{display:none}.menu.sub .brief{display:none}#ammo img{display:none}#obj{font-size:13px}#obj b{font-size:15px}}
+@media (max-height:480px){.col{top:14px}.mm{padding:8px 0}.mm button{font-size:25px;line-height:1.22}.brief{display:none}#map{width:80px;height:80px}#obj{top:calc(max(14px,env(safe-area-inset-top)) + 88px)}.panel{top:14px;bottom:10px}.cash{top:14px}.box button.b{font-size:24px}}
+@media (pointer:coarse){#sub2{bottom:auto;top:calc(max(12px,env(safe-area-inset-top)) + 150px);white-space:normal;width:min(74vw,520px);text-align:center;font-size:15px}}
+@media (pointer:coarse) and (max-height:480px){#sub2{top:44px;width:44vw}}
+@media (prefers-reduced-motion:reduce){#touch button.pulse{animation:none;border-color:var(--mark)}.mm button,.box button.b{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="c" aria-label="Dead Headway game view"></canvas>
+<div id="poster"><div class="pl">
+  <p class="wm">Dead Headway</p>
+  <p class="brief">Halvern Square, 02:14. Restore power, take the recorder off the 9 train, walk out. One life.</p>
+  <div id="strip" aria-hidden="true"><span class="rt">9</span><div class="ln"><i id="lnF"></i><b class="on" style="left:0"></b><b style="left:20%"></b><b style="left:40%"></b><b style="left:60%"></b><b style="left:80%"></b><b style="left:100%"></b></div>
+    <ol><li>Harborfront</li><li>Dock St</li><li>Calder Yard</li><li>Market St</li><li>Tallow Works</li><li>Halvern Square</li></ol></div>
+  <p id="next" role="status">Next stop: Dock St</p>
+  <dl class="keys kb"><div><dt>WASD</dt><dd>Move</dd></div><div><dt>Mouse</dt><dd>Look</dd></div><div><dt>Click</dt><dd>Shoot</dd></div><div><dt>Q</dt><dd>Zoom in</dd></div><div><dt>F</dt><dd>Flashlight</dd></div><div><dt>R</dt><dd>Reload</dd></div><div><dt>Shift</dt><dd>Sprint</dd></div><div><dt>E</dt><dd>Use</dd></div></dl>
+  <dl class="keys tc"><div><dt>Left stick</dt><dd>Move</dd></div><div><dt>Drag</dt><dd>Look around</dd></div><div><dt>Light</dt><dd>Flashlight</dd></div><div><dt>Zoom</dt><dd>Aim down the sights</dd></div></dl>
+</div></div>
+<script>window.__loadK=function(k){var f=document.getElementById("lnF");if(!f)return;k=Math.max(window.__lk||0,Math.min(1,k));window.__lk=k;f.style.transform="scaleX("+k+")";var s=document.querySelectorAll("#strip .ln b"),n=["Harborfront","Dock St","Calder Yard","Market St","Tallow Works","Halvern Square"],i=Math.min(5,Math.floor(k*5+1e-6));for(var j=0;j<s.length;j++)s[j].className=j<=i?"on":"";document.getElementById("next").textContent=k>=1?"This is Halvern Square.":"Next stop: "+n[Math.min(5,i+1)]};__loadK(.04)</script>
+
+<main>
+<section id="title" class="screen menu on">
+  <div class="col">
+    <h1 class="wm">Dead Headway</h1>
+    <p class="brief">Halvern Square, 02:14. Restore power, take the recorder off the 9 train, walk out. One life.</p>
+    <nav class="mm" aria-label="Main menu">
+      <button data-go="play">Start the raid</button>
+      <button data-go="loadout">Loadout</button>
+      <button data-go="upgrades">Upgrades</button>
+      <button data-go="settings">Settings</button>
+      <button data-go="about">About</button>
+    </nav>
+    <p class="foot">Free browser game by Gus Castillo</p>
+  </div>
+  <span class="cash" id="cash"></span>
+  <div class="panel" id="p-loadout"><div id="loadout"></div></div>
+  <div class="panel" id="p-upgrades"><div id="upg"></div></div>
+  <div class="panel" id="p-settings">
+    <label class="set">Look sensitivity<input id="sSens" type="range" min="0.2" max="3" step="0.1"><span id="sSensV"></span></label>
+    <label class="set">Volume<input id="sVol" type="range" min="0" max="1" step="0.05"><span id="sVolV"></span></label>
+    <div class="set">Blood<div class="seg" id="sBlood"><button data-v="2">Full</button><button data-v="1">Low</button><button data-v="0">Off</button></div></div>
+    <div class="set">Difficulty<div class="seg" id="sHard"><button data-h="0">Standard</button><button data-h="1">Realism</button></div></div>
+    <p class="note">Realism: no radar, enemy fire is lethal, your hits count for more.</p>
+  </div>
+  <div class="panel" id="p-about">
+    <h2>About Dead Headway</h2>
+    <p>Dead Headway is a realistic first-person shooter that runs in your browser. It is 2:14 AM in Port Calder and a private army called Tallow Group holds Halvern Square station.</p>
+    <p>There are no waves. You go down once and move through the station at your own pace: the island platform, the north service wing with its crew, relay and pump rooms, both track tunnels, the stalled 9 train and the mezzanine with the fare gates. Throw the traction breaker, take the event recorder from the train cab and leave by the street stairs. If you go down, the raid is over.</p>
+    <p>Guards patrol until they see or hear you. Every bullet is a real projectile with drop and drag: it goes through wooden crates and sheet metal, skips off concrete at shallow angles, and concrete always stops it.</p>
+    <p>Computer: WASD or arrow keys to move, mouse to aim, click to shoot, Q or right click to zoom in, R to reload, E to use, F for the flashlight, Shift to sprint, C to crouch, Space to jump and climb, G for a grenade, 1 and 2 or the wheel to switch between your long gun and your sidearm. Phone: left stick to move, drag the right side to look, and labeled buttons for the rest.</p>
+    <p>Nine guns: six long guns (assault rifle, submachine gun, pump shotgun, sawn-off, suppressed bolt-action rifle, .50 rifle) and three sidearms (pistol, revolver, heavy pistol). Health comes back on its own when nothing has hit you for a few seconds.</p>
+    <p>First-person arms, guns and their animations: CC BY models by Cransh, bumstrum, doomsentinel, raimeiyonke and tris09. Props are CC0 scans from Poly Haven, surfaces from ambientCG. Walls, posters and graffiti were generated for the game. The guards are the S.W.A.T. Operator model by jeandiz (CC BY), moved by clips from the Universal Animation Library by Quaternius (CC0). Font: Overpass (OFL).</p>
+  </div>
+</section>
+
+<div id="hud">
+  <canvas id="map" width="208" height="208"></canvas>
+  <div id="obj"></div>
+  <canvas id="compass" width="800" height="60"></canvas>
+  <div id="money"></div>
+  <div id="hp"><span id="hpN">100</span><i><b id="hpB"></b></i></div>
+  <div id="ammo"><span id="gunIcon"></span><b id="magN">30</b><span id="resN">90</span><span id="nadeN"></span></div>
+  <div id="dot"></div><div id="hit"></div><div class="dmg"></div><div class="dmg"></div><div class="dmg"></div>
+  <div id="mark"></div>
+  <div id="use"></div><div id="hint"></div><div id="sub2"></div>
+</div>
+<div id="scope"></div>
+<div id="blood"><canvas id="bloodC" width="640" height="360"></canvas></div>
+<div id="stamp"></div>
+
+<section id="pause" class="screen ov"><div class="box"><h2>Paused</h2><p id="pauseInfo"></p><button class="b p" data-act="resume">Resume</button><button class="b" data-act="settings">Settings</button><button class="b" data-act="restart">Restart the raid</button><button class="b" data-act="quit">Quit to menu</button></div></section>
+<section id="clear" class="screen ov"><div class="box"><h2 id="clearT">You are out</h2><p id="clearP"></p><button class="b p" data-act="retry">Run it again</button><button class="b" data-act="upgrades">Upgrades</button><button class="b" data-act="quit">Menu</button></div></section>
+<section id="dead" class="screen ov"><div class="box"><h2 id="deadT">You went down</h2><p id="deadP"></p><button class="b p" data-act="retry">Try again</button><button class="b" data-act="upgrades">Upgrades</button><button class="b" data-act="quit">Menu</button></div></section>
+<section id="lost" class="screen ov"><div class="box"><h2>The graphics driver reset</h2><p>The browser took the 3D view away, usually because the computer ran low on graphics memory.</p><button class="b p" data-act="reload">Reload the game</button></div></section>
+</main>
+
+<div id="touch"><div id="stick"><span>Move</span><i></i></div><button id="tFire">Fire</button><button id="tAim">Zoom</button><button id="tRel">Reload</button><button id="tJump">Jump</button><button id="tCr">Crouch</button><button id="tUse">Use</button><button id="tSwap">Swap</button><button id="tNade">Nade</button><button id="tLight">Light</button><button id="tPause">Pause</button></div>
+<noscript><p style="position:fixed;inset:0;display:grid;place-items:center;padding:24px;text-align:center">Dead Headway needs JavaScript and WebGL 2 to run.</p></noscript>
+<script>document.addEventListener("click",function(e){if(window.__dh)return;var b=e.target.closest&&e.target.closest("[data-go]");if(b){window.__pendingGo=b.dataset.go;b.classList.add("wait")}},true)</script>
+<script type="module" src="game.js"></script>
+</body>
+</html>

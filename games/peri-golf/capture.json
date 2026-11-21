@@ -1,0 +1,179 @@
+{
+  "url": "https://furkiozknn.github.io/peri-golf",
+  "final_url": "https://furkiozknn.github.io/peri-golf/",
+  "slug": "peri-golf",
+  "title": "Peri Golf",
+  "description": "Physics mini-golf among the fairy chimneys of Cappadocia, redesigned as a fantasy miniature diorama with a wooden signpost UI: 12 hand-designed holes. Plays in the browser.",
+  "captured_at": "2026-11-16T16:53:57.618706+00:00",
+  "assets": {
+    "https://furkiozknn.github.io/peri-golf/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 233743,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/fonts/fredoka-latin.woff2": {
+      "path": "assets/fonts/fredoka-latin.woff2",
+      "content_type": "font/woff2",
+      "size": 4576,
+      "status": 200
+    },
+    "https://gc.zgo.at/count.js": {
+      "path": "_remote/gc.zgo.at/count.js",
+      "content_type": "application/javascript",
+      "size": 9213,
+      "status": 200
+    },
+    "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/utils/BufferGeometryUtils.js": {
+      "path": "_remote/cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/utils/BufferGeometryUtils.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 31768,
+      "status": 200
+    },
+    "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js": {
+      "path": "_remote/cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 1314681,
+      "status": 200
+    },
+    "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/RGBELoader.js": {
+      "path": "_remote/cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/RGBELoader.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 11377,
+      "status": 200
+    },
+    "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js": {
+      "path": "_remote/cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 110273,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/textures/grass_detail.jpg": {
+      "path": "assets/textures/grass_detail.jpg",
+      "content_type": "image/jpeg",
+      "size": 36359,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/textures/tuff_normal.jpg": {
+      "path": "assets/textures/tuff_normal.jpg",
+      "content_type": "image/jpeg",
+      "size": 58241,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/sfx/back.mp3": {
+      "path": "assets/sfx/back.mp3",
+      "content_type": "audio/mp3",
+      "size": 1296,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/textures/sand_detail.jpg": {
+      "path": "assets/textures/sand_detail.jpg",
+      "content_type": "image/jpeg",
+      "size": 32205,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/sfx/wall.mp3": {
+      "path": "assets/sfx/wall.mp3",
+      "content_type": "audio/mp3",
+      "size": 3386,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/textures/tuff_detail.jpg": {
+      "path": "assets/textures/tuff_detail.jpg",
+      "content_type": "image/jpeg",
+      "size": 45168,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/sfx/obstacle.mp3": {
+      "path": "assets/sfx/obstacle.mp3",
+      "content_type": "audio/mp3",
+      "size": 5058,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/sfx/cup.mp3": {
+      "path": "assets/sfx/cup.mp3",
+      "content_type": "audio/mp3",
+      "size": 1923,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/sfx/putt.mp3": {
+      "path": "assets/sfx/putt.mp3",
+      "content_type": "audio/mp3",
+      "size": 2968,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/sfx/click.mp3": {
+      "path": "assets/sfx/click.mp3",
+      "content_type": "audio/mp3",
+      "size": 1505,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/models/cave_house.glb": {
+      "path": "assets/models/cave_house.glb",
+      "content_type": "model/gltf-binary",
+      "size": 32784,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/models/chimney_b.glb": {
+      "path": "assets/models/chimney_b.glb",
+      "content_type": "model/gltf-binary",
+      "size": 21488,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/sky/qwantani_dawn_puresky_512.hdr": {
+      "path": "assets/sky/qwantani_dawn_puresky_512.hdr",
+      "content_type": "application/octet-stream",
+      "size": 195490,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/models/chimney_a.glb": {
+      "path": "assets/models/chimney_a.glb",
+      "content_type": "model/gltf-binary",
+      "size": 20168,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/models/balloon.glb": {
+      "path": "assets/models/balloon.glb",
+      "content_type": "model/gltf-binary",
+      "size": 38224,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/models/lantern.glb": {
+      "path": "assets/models/lantern.glb",
+      "content_type": "model/gltf-binary",
+      "size": 26568,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/models/pottery_wheel.glb": {
+      "path": "assets/models/pottery_wheel.glb",
+      "content_type": "model/gltf-binary",
+      "size": 53616,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/models/chimney_c.glb": {
+      "path": "assets/models/chimney_c.glb",
+      "content_type": "model/gltf-binary",
+      "size": 22476,
+      "status": 200
+    },
+    "https://furkiozknn.github.io/peri-golf/assets/models/donkey.glb": {
+      "path": "assets/models/donkey.glb",
+      "content_type": "model/gltf-binary",
+      "size": 75856,
+      "status": 200
+    },
+    "https://furkiozknn.goatcounter.com/count?p=%2Fperi-golf%2F&t=Peri%20Golf&s=1280&b=153&rnd=0evl1": {
+      "path": "_remote/furkiozknn.goatcounter.com/count__q_p_2Fperi-golf_2F_t_Peri_20Golf_s_1280_b_153_rnd_0evl1",
+      "content_type": "image/gif",
+      "size": 43,
+      "status": 200
+    }
+  },
+  "failures": [
+    {
+      "url": "https://furkiozknn.github.io/peri-golf",
+      "error": "Response.body: Response body is unavailable for redirect responses"
+    }
+  ],
+  "attempt": 1
+}

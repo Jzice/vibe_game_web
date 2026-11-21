@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+  <head><script>
+(function(){try{
+  var fake={register:function(){return Promise.resolve({addEventListener:function(){},update:function(){return Promise.resolve()}})},
+    getRegistration:function(){return Promise.resolve()},getRegistrations:function(){return Promise.resolve([])},
+    addEventListener:function(){},controller:null};
+  Object.defineProperty(navigator,'serviceWorker',{configurable:true,value:fake});
+}catch(e){}})();
+</script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>ER-6 Terrain Explorer — a rover that drives itself across Mars</title>
+    <meta
+      name="description"
+      content="An interactive engineering sheet: a six-wheel rocker-bogie rover with working suspension, a route planner, a scout rotorcraft, solar wings and a fission reactor, driving itself over Mars in your browser."
+    />
+    <meta name="theme-color" content="#ebe5d4" />
+    <meta name="color-scheme" content="light" />
+    <!-- the site's own address is filled in at build time (see vite.config.js): link previews need absolute addresses -->
+    <link rel="canonical" href="./index.html" />
+    <link rel="icon" href="./_offline-stub.png" type="image/svg+xml" />
+    <link rel="icon" href="./_offline-stub.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="./_offline-stub.png" />
+    <link rel="manifest" href="./_offline-stub.json" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ER-6 Terrain Explorer" />
+    <meta property="og:title" content="ER-6 Terrain Explorer — a rover that drives itself across Mars" />
+    <meta
+      property="og:description"
+      content="An interactive engineering sheet: working rocker-bogie suspension, a route planner, a scout rotorcraft, solar wings and a fission reactor. Watch it find its way over dunes, boulders and ice, or drive it yourself."
+    />
+    <meta property="og:url" content="./index.html" />
+    <meta property="og:image" content="./index.htmlog.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A six-wheel exploration rover drawn as an engineering sheet, crossing contoured Mars terrain towards a waypoint flag." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ER-6 Terrain Explorer — a rover that drives itself across Mars" />
+    <meta
+      name="twitter:description"
+      content="An interactive engineering sheet: working rocker-bogie suspension, a route planner, a scout rotorcraft, solar wings and a fission reactor."
+    />
+    <meta name="twitter:image" content="./index.htmlog.jpg" />
+    <meta name="twitter:image:alt" content="A six-wheel exploration rover drawn as an engineering sheet, crossing contoured Mars terrain towards a waypoint flag." />
+
+    <link rel="preload" href="./assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./assets/ibm-plex-mono-latin-500-normal-DSY6xOcd.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./assets/ibm-plex-mono-latin-600-normal-BgSNZQsw.woff2" as="font" type="font/woff2" crossorigin />
+    <style>#loader{--ink:#2a2b29;--ink-2:#4b4a43;--ink-3:#8a8574;--orange:#e36b24;--olive:#6a7044;z-index:4;color:var(--ink);-webkit-user-select:none;user-select:none;background:radial-gradient(70% 60% at 50% 46%,#fffdf58c,#0000 70%),linear-gradient(#2a2b290b 1px,#0000 1px) 0 0/100px 100px,linear-gradient(90deg,#2a2b290b 1px,#0000 1px) 0 0/100px 100px,linear-gradient(#2a2b2906 1px,#0000 1px) 0 0/20px 20px,linear-gradient(90deg,#2a2b2906 1px,#0000 1px) 0 0/20px 20px,radial-gradient(120% 100%,#ebe5d4 55%,#dcd4bd 100%);place-items:center;font-family:IBM Plex Mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;transition:opacity .75s .1s,visibility 0s linear .9s;display:grid;position:fixed;inset:0}#loader.done{opacity:0;visibility:hidden;pointer-events:none}#loader .ld-frame{border:1.5px solid var(--ink);position:absolute;inset:8px}#loader .ld-frame:after{content:"";border:1px solid var(--ink);position:absolute;inset:12.5px}#loader .ld-sheet{background:#ede8dadb;border:1px solid #2a2b2999;width:min(600px,100vw - 96px);transition:transform .85s cubic-bezier(.2,.7,.2,1);position:relative}#loader.done .ld-sheet{transform:translateY(-12px)scale(.985)}#loader .ld-sheet:before,#loader .ld-sheet:after{content:"";border:0 solid var(--orange);width:9px;height:9px;position:absolute}#loader .ld-sheet:before{border-top-width:1.5px;border-left-width:1.5px;top:-4px;left:-4px}#loader .ld-sheet:after{border-bottom-width:1.5px;border-right-width:1.5px;bottom:-4px;right:-4px}#loader .ld-head{border-bottom:1px solid #2a2b2933;justify-content:space-between;align-items:center;padding:12px 16px 10px;display:flex}#loader .ld-id small{letter-spacing:.14em;color:var(--ink-3);font-size:9px;display:block}#loader .ld-id b{letter-spacing:.05em;font-size:28px;font-weight:600;line-height:1.05;display:block}#loader .ld-id span{letter-spacing:.16em;font-size:10px}#loader .ld-org{color:#56544c;letter-spacing:.16em;text-align:center;flex-direction:column;align-items:center;gap:4px;font-size:8.5px;line-height:1.3;display:flex}#loader .ld-org svg{width:46px;height:31px}#loader .ld-sub{letter-spacing:.12em;color:var(--ink-2);border-bottom:1px solid #2a2b2933;justify-content:space-between;padding:6px 16px;font-size:9.5px;display:flex}#loader .ld-clock{font-variant-numeric:tabular-nums;color:var(--ink-3)}#loader .ld-draw{padding:14px 18px 8px;position:relative;overflow:hidden}#loader .ld-draw svg{fill:none;stroke-linecap:round;stroke-linejoin:round;width:100%;height:auto;max-height:34vh;margin:0 auto;display:block;overflow:visible}#loader [data-from],#loader .pre{stroke-dasharray:1;stroke-dashoffset:1px}#loader [data-from]{opacity:0}#loader .pre{stroke:var(--ink);animation:1.4s cubic-bezier(.4,0,.2,1) forwards ld-draw}#loader .pre.g{stroke-width:.8px}#loader .pre.h{stroke-width:.4px;stroke:#2a2b2973;animation-delay:.3s}#loader .k{stroke:var(--ink);stroke-width:.7px}#loader .t{stroke-width:.45px}#loader .o{stroke:var(--orange);stroke-width:.9px}#loader .o.s{stroke-width:1.6px}#loader .v{stroke:var(--olive);stroke-width:1.9px}#loader .j{stroke:var(--orange);stroke-width:.9px}#loader .d{stroke:var(--ink-2);stroke-width:.4px}#loader .dt{fill:var(--ink);stroke:none;letter-spacing:.06em;opacity:0;font-size:6.4px;transition:opacity .4s}#loader .dt.on{opacity:1}#loader .ld-scan{pointer-events:none;width:100%;animation:2.6s cubic-bezier(.45,0,.55,1) infinite ld-scan;position:absolute;inset:8px 0 4px;transform:translate(-100%)}#loader .ld-scan:after{content:"";background:linear-gradient(#0000,#e36b24d9 30% 70%,#0000);width:1px;position:absolute;top:0;bottom:0;right:0}#loader .ld-steps{border-top:1px solid #2a2b2933;border-bottom:1px solid #2a2b2933;grid-template-rows:repeat(6,auto);grid-template-columns:1fr 1fr;grid-auto-flow:column;gap:3px 24px;margin:0;padding:9px 16px 8px;list-style:none;display:grid}#loader .ld-steps li{letter-spacing:.05em;color:#a19c8a;white-space:nowrap;grid-template-columns:9px 1fr auto;align-items:center;gap:8px;font-size:9.4px;display:grid}#loader .ld-steps .bx{box-sizing:border-box;border:1.2px solid;width:9px;height:9px}#loader .ld-steps .lb{text-overflow:ellipsis;overflow:hidden}#loader .ld-steps .ms{font-variant-numeric:tabular-nums;color:var(--ink-3)}#loader .ld-steps li.run{color:var(--ink)}#loader .ld-steps li.run .bx{border-color:var(--orange);animation:.7s steps(2,jump-none) infinite ld-blink}#loader .ld-steps li.ok{color:var(--ink)}#loader .ld-steps li.ok .bx{background:var(--ink);border-color:var(--ink)}#loader .ld-steps li.err{color:var(--orange)}#loader .ld-steps li.err .bx{background:var(--orange);border-color:var(--orange)}#loader .ld-foot{align-items:center;gap:10px;padding:10px 16px 7px;display:flex}#loader .ld-ret{width:16px;height:16px;stroke:var(--orange);stroke-width:1.3px;fill:none;flex:none;animation:1.8s linear infinite ld-rot}#loader .ld-now{text-overflow:ellipsis;white-space:nowrap;letter-spacing:.1em;min-width:0;color:var(--ink-2);flex:1;font-size:9.6px;overflow:hidden}#loader .ld-pct{letter-spacing:.04em;font-variant-numeric:tabular-nums;font-size:20px;font-weight:600}#loader .ld-bar{border:1px solid var(--ink);background:repeating-linear-gradient(90deg,#2a2b291f 0 10%,#0000 10% 20%);height:7px;margin:0 16px;position:relative}#loader .ld-fill{background:var(--ink);transform-origin:0;position:absolute;inset:0;transform:scaleX(0)}#loader .ld-ticks{color:var(--ink-3);justify-content:space-between;padding:4px 13px 12px;font-size:8.5px;display:flex}#loader .ld-hint{text-align:center;letter-spacing:.16em;color:var(--ink-3);margin:0;font-size:9px;position:absolute;bottom:34px;left:0;right:0}#loader.fail .ld-ret{animation:none}#loader.fail .ld-now,#loader.fail .ld-pct{color:var(--orange)}#loader.fail .ld-now{white-space:normal;line-height:1.5}#loader.fail .ld-scan{display:none}@keyframes ld-draw{to{stroke-dashoffset:0}}@keyframes ld-scan{to{transform:translate(0)}}@keyframes ld-rot{to{transform:rotate(360deg)}}@keyframes ld-blink{50%{background:var(--orange)}}@media (prefers-reduced-motion:reduce){#loader .ld-scan,#loader .ld-ret,#loader .ld-steps li.run .bx{animation:none}}</style>
+    <script type="module" crossorigin src="./assets/index-IUeVgBPd.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-7r2T8rcX.css">
+  </head>
+  <body>
+    <div id="loader" aria-busy="true" aria-label="Loading the ER-6 drawing">
+      <div class="ld-frame"></div>
+      <div class="ld-sheet">
+        <header class="ld-head">
+          <div class="ld-id"><small>VEHICLE ID</small><b>ER-6</b><span>TERRAIN EXPLORER</span></div>
+          <div class="ld-org">
+            <svg viewBox="0 0 64 44" aria-hidden="true">
+              <path d="M4 40 L26 6 L38 24 L44 15 L60 40Z" fill="currentColor" />
+              <path d="M26 6 L31.5 14.5 L20.6 14.5Z" fill="#e36b24" />
+            </svg>
+            <span>EXPEDITION<br />DIVISION</span>
+          </div>
+        </header>
+        <div class="ld-sub"><span>GENERAL ARRANGEMENT — PLOTTING SHEET 1 OF 2</span><span class="ld-clock">T+0.00 S</span></div>
+        <div class="ld-draw">
+    <svg viewBox="0 0 300 160" aria-hidden="true">
+      <path pathLength="1" class="pre g" d="M6 132 H294"/>
+      <path pathLength="1" class="pre h" d="M14 132 l-5 6 M22 132 l-5 6 M30 132 l-5 6 M38 132 l-5 6 M46 132 l-5 6 M54 132 l-5 6 M62 132 l-5 6 M70 132 l-5 6 M78 132 l-5 6 M86 132 l-5 6 M94 132 l-5 6 M102 132 l-5 6 M110 132 l-5 6 M118 132 l-5 6 M126 132 l-5 6 M134 132 l-5 6 M142 132 l-5 6 M150 132 l-5 6 M158 132 l-5 6 M166 132 l-5 6 M174 132 l-5 6 M182 132 l-5 6 M190 132 l-5 6 M198 132 l-5 6 M206 132 l-5 6 M214 132 l-5 6 M222 132 l-5 6 M230 132 l-5 6 M238 132 l-5 6 M246 132 l-5 6 M254 132 l-5 6 M262 132 l-5 6 M270 132 l-5 6 M278 132 l-5 6 M286 132 l-5 6"/>
+      <circle class="k" pathLength="1" data-from="0.04" cx="66.0" cy="106.8" r="25.2"/>
+      <circle class="o" pathLength="1" data-from="0.1" cx="66.0" cy="106.8" r="19.5"/>
+      <circle class="k" pathLength="1" data-from="0.14" cx="66.0" cy="106.8" r="7"/>
+      <circle class="k" pathLength="1" data-from="0.09" cx="153.6" cy="106.8" r="25.2"/>
+      <circle class="o" pathLength="1" data-from="0.15" cx="153.6" cy="106.8" r="19.5"/>
+      <circle class="k" pathLength="1" data-from="0.19" cx="153.6" cy="106.8" r="7"/>
+      <circle class="k" pathLength="1" data-from="0.14" cx="234.0" cy="106.8" r="25.2"/>
+      <circle class="o" pathLength="1" data-from="0.2" cx="234.0" cy="106.8" r="19.5"/>
+      <circle class="k" pathLength="1" data-from="0.24" cx="234.0" cy="106.8" r="7"/>
+      <path class="k" pathLength="1" data-from="0.18" d="M62.4 106.2 L38.4 96.0 L36.0 93.0 L36.0 85.8 L262.8 85.8 L262.8 93.0 L259.2 97.2 L240.0 106.2 Z"/>
+      <path class="k" pathLength="1" data-from="0.26" d="M36.0 87.3 L36.0 73.8 L50.4 64.8 L98.4 36.0 L144.0 34.8 L144.0 87.3"/>
+      <path class="k t" pathLength="1" data-from="0.34" d="M50.4 69.0 L144.0 66.0 M98.4 66.0 L98.4 36.0 M120.0 66.0 L120.0 35.4"/>
+      <path class="o s" pathLength="1" data-from="0.38" d="M36.0 81.0 L50.4 77.4 L98.4 76.5"/>
+      <path class="k" pathLength="1" data-from="0.32" d="M144.0 43.2 L207.0 43.2 L207.0 86.4"/>
+      <path class="k t" pathLength="1" data-from="0.42" d="M177.6 80.4 V51.6 H204.0 V80.4 Z M147.0 80.4 V51.6 H173.4 V80.4 Z"/>
+      <path class="k" pathLength="1" data-from="0.36" d="M207.0 38.1 H262.8 V86.1"/>
+      <path class="o" pathLength="1" data-from="0.46" d="M208.8 38.4 V35.4 H260.4 V38.4"/>
+      <path class="k t" pathLength="1" data-from="0.5" d="M208.2 40.8 H261.0 V77.4 H208.2 Z M210.0 44.4 H259.2 M210.0 48.8 H259.2 M210.0 53.2 H259.2 M210.0 57.6 H259.2 M210.0 62.0 H259.2 M210.0 66.4 H259.2 M210.0 70.8 H259.2 M210.0 75.2 H259.2"/>
+      <path class="v" pathLength="1" data-from="0.54" d="M66.0 64.5 L106.8 62.4 L150 73.2 L193.2 85.2 M66.0 64.5 V106.8"/>
+      <path class="v" pathLength="1" data-from="0.6" d="M153.6 106.8 L193.2 85.2 L234.0 64.5 M234.0 64.5 V106.8"/>
+      <circle class="j" pathLength="1" data-from="0.62" cx="150" cy="73.2" r="5.5"/>
+      <circle class="j" pathLength="1" data-from="0.64" cx="193.2" cy="85.2" r="4.5"/>
+      <circle class="j" pathLength="1" data-from="0.64" cx="106.8" cy="62.4" r="3"/>
+      <path class="k t" pathLength="1" data-from="0.66" d="M165.6 67.2 V34.8"/>
+      <circle class="k" pathLength="1" data-from="0.68" cx="165.6" cy="34.8" r="2.5"/>
+      <path class="k" pathLength="1" data-from="0.7" d="M126.0 35.1 V27.3 M120.6 27.3 H131.4 V21.9 H120.6 Z M122.4 21.9 V18.0 H129.6 V21.9"/>
+      <path class="k t" pathLength="1" data-from="0.72" d="M139.2 34.8 V8.4 M100.8 34.2 H105.6"/>
+      <circle class="o" pathLength="1" data-from="0.74" cx="33.9" cy="89.4" r="2.8"/>
+      <circle class="k" pathLength="1" data-from="0.74" cx="36.3" cy="101.1" r="2.9"/>
+      <path class="k" pathLength="1" data-from="0.74" d="M262.8 92.4 H267.0"/>
+      <path class="d" pathLength="1" data-from="0.8" d="M31.1 146 H267.0 M28.1 149 l6 -6 M264.0 149 l6 -6 M31.1 137 V150 M267.0 137 V150"/>
+      <path class="d" pathLength="1" data-from="0.84" d="M283 132 V17.9 M280 135 l6 -6 M280 20.9 l6 -6 M276 17.9 H290"/>
+      <text class="dt" data-show="0.86" x="149.05" y="157" text-anchor="middle"><tspan id="ld-len">3 932</tspan></text>
+      <text class="dt" data-show="0.9" transform="translate(294 74.95) rotate(-90)" text-anchor="middle"><tspan id="ld-hgt">1 902</tspan></text>
+    </svg>
+          <div class="ld-scan"></div>
+        </div>
+        <ol class="ld-steps">
+          <li class="run"><i class="bx"></i><span class="lb">SCRIPT MODULES</span><span class="ms">···</span></li>
+        </ol>
+        <div class="ld-foot">
+          <svg class="ld-ret" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="5.5" /><path d="M10 1v5M10 14v5M1 10h5M14 10h5" /></svg>
+          <span class="ld-now" role="status">LOADING SCRIPT MODULES …</span>
+          <span class="ld-pct">00%</span>
+        </div>
+        <div class="ld-bar"><i class="ld-fill"></i></div>
+        <div class="ld-ticks"><span>0</span><span>25</span><span>50</span><span>75</span><span>100 %</span></div>
+      </div>
+      <p class="ld-hint">DWG VX-226 · REV C · DESKTOP + WEBGL2</p>
+      <noscript><p class="ld-hint" style="bottom: 56px; color: #e36b24">JAVASCRIPT IS REQUIRED TO PLOT THIS DRAWING</p></noscript>
+    </div>
+
+    <canvas id="gl"></canvas>
+    <div id="night" aria-hidden="true"></div>
+
+    <div id="sheet">
+      <div id="frame" aria-hidden="true"></div>
+
+      <header id="titlebar">
+        <div class="cell grow">EXPLORATION VEHICLE <b>//</b> ROVER-6</div>
+        <div class="cell">DWG&nbsp;VX-226</div>
+        <div class="cell" id="view-name">ISOMETRIC VIEW</div>
+        <div class="cell">REV&nbsp;C</div>
+        <div class="cell">SHEET 1 OF 2</div>
+        <button class="cell" id="help-btn" aria-haspopup="dialog" title="What this is, and every control (?)">? HELP</button>
+      </header>
+
+      <aside id="left" class="col">
+        <section id="callouts" aria-label="Component callouts"></section>
+
+        <section class="card" id="sys-card">
+          <header><span>SYSTEMS // CONTROL</span><i>S-01</i></header>
+          <div class="toggles" id="toggles"></div>
+          <div class="seg-row">
+            <span class="seg-label">SHOW</span>
+            <div class="seg multi" id="show-row"></div>
+          </div>
+          <div class="seg-row">
+            <span class="seg-label">RENDER</span>
+            <div class="seg" id="render-mode">
+              <button data-mode="shaded" class="on">SHADED</button>
+              <button data-mode="line">LINE</button>
+              <button data-mode="xray">X-RAY</button>
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="btn wide" id="point-turn" title="Corner wheels steer to the turn-in-place angle, then the rover rotates about the middle axle">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8a5 5 0 1 1-1.5-3.6" /><path d="M12 1.8v3h-3" /></svg>
+              POINT TURN 360°
+            </button>
+          </div>
+        </section>
+
+        <section class="card" id="ortho-card">
+          <header><span>ORTHOGRAPHIC // LIVE</span><i>O-02</i></header>
+          <div class="ortho" id="ortho">
+            <canvas id="mini"></canvas>
+            <div class="ov" data-view="front"><b>FRONT</b><span class="dim-h" id="dim-front-w"></span><span class="dim-v" id="dim-front-h"></span></div>
+            <div class="ov" data-view="side"><b>SIDE</b><span class="dim-h" id="dim-side-l"></span></div>
+            <div class="ov" data-view="top"><b>TOP</b><span class="dim-h" id="dim-top-w"></span></div>
+          </div>
+        </section>
+      </aside>
+
+      <section id="stage" aria-label="3D view">
+        <div id="stage-meta"><span id="cam-meta">AZ 000° · EL 00°</span><span id="mode-meta">MODE: SHADED</span><span id="sun-meta"></span></div>
+        <div id="warn" class="hidden" role="status"></div>
+        <div id="hint">DRAG · ORBIT &nbsp; WHEEL · ZOOM &nbsp; DBL-CLICK GROUND · SEND IT THERE &nbsp; W/S/A/D · DRIVE &nbsp; ? · EVERY CONTROL</div>
+      </section>
+
+      <aside id="right" class="col">
+        <section class="card title-block">
+          <div class="tb-head">
+            <div class="tb-id">
+              <span class="lbl">VEHICLE ID</span>
+              <span class="big">ER-6</span>
+              <span class="sub">TERRAIN EXPLORER</span>
+            </div>
+            <div class="logo">
+              <svg viewBox="0 0 64 44" aria-hidden="true">
+                <path d="M4 40 L26 6 L38 24 L44 15 L60 40Z" fill="currentColor" />
+                <path d="M26 6 L31.5 14.5 L20.6 14.5Z" fill="var(--orange)" />
+              </svg>
+              <span>EXPEDITION<br />DIVISION</span>
+            </div>
+          </div>
+          <dl class="specs" id="specs"></dl>
+        </section>
+
+        <section class="card" id="terrain-card">
+          <header><span>TERRAIN PROFILE</span><i>T-02</i></header>
+          <div class="radios" id="terrain-radios" role="radiogroup" aria-label="Terrain profile"></div>
+          <div class="auto-row">
+            <button class="check" id="auto-toggle" aria-pressed="true" title="Drive to waypoints unaided (G)"><span class="box"></span>AUTONOMOUS MODE</button>
+            <button class="mini" id="next-wp" title="Skip to a new waypoint (N)">NEXT WAYPOINT ›</button>
+            <span class="kv" id="terrain-kv"></span>
+          </div>
+        </section>
+
+        <!-- PANEL OFF FOR NOW: hazard map. Uncomment this block to bring it back;
+             nothing else needs changing (the app draws whichever panels are in the page).
+        <section class="card" id="nav-card">
+          <header><span>NAV // HAZARD MAP + ROUTE</span><i>N-03</i></header>
+          <div class="fill"><canvas id="nav"></canvas></div>
+          <div class="legend">
+            <span><i class="sw caution"></i>ROUGH</span><span><i class="sw hazard"></i>NO-GO</span><span><i class="sw unknown"></i>UNSEEN</span>
+            <span class="grow"></span><span id="nav-meta"></span>
+          </div>
+        </section>
+        -->
+
+        <section class="card" id="susp-card">
+          <header><span>SUSPENSION // KINEMATICS</span><i>K-04</i></header>
+          <div class="fill"><canvas id="susp"></canvas></div>
+          <div class="readouts" id="susp-readouts"></div>
+          <canvas id="loads"></canvas>
+        </section>
+
+        <!-- PANEL OFF FOR NOW: reactor, solar, battery and coolant gauges. Uncomment to bring it back.
+        <section class="card" id="power-card">
+          <header><span>POWER // REACTOR + BATTERY</span><i>P-05</i></header>
+          <canvas id="power"></canvas>
+        </section>
+        -->
+      </aside>
+
+      <footer id="footbar">
+        <div class="foot-title">
+          <b>PLAN — GENERAL ARRANGEMENT</b>
+          <span id="scale-text">SCALE 1:20</span>
+        </div>
+        <svg id="scalebar" aria-hidden="true"></svg>
+        <!-- narrow screens only: the two side columns become drawers these open -->
+        <div class="foot-group drawers">
+          <button id="drawer-sys" aria-expanded="false" aria-controls="left">SYSTEMS</button>
+          <button id="drawer-data" aria-expanded="false" aria-controls="right">VEHICLE</button>
+        </div>
+        <div class="foot-group" id="view-buttons">
+          <span class="fl">VIEW</span>
+          <button data-view="iso" class="on">ISO</button>
+          <button data-view="front">FRONT</button>
+          <button data-view="side">SIDE</button>
+          <button data-view="top">TOP</button>
+          <button data-view="rear">REAR</button>
+        </div>
+        <div class="foot-group sol" title="Local solar time. [ and ] step it an hour.">
+          <span class="fl" id="sol-label">SOL</span>
+          <button id="sol-back" aria-label="One hour earlier">−1H</button>
+          <span class="clock"><b id="sol-clock">09:00</b></span>
+          <button id="sol-fwd" aria-label="One hour later">+1H</button>
+        </div>
+        <div class="foot-group drive">
+          <span class="fl">DRIVE</span>
+          <button id="drive-stop" title="Stop (space)">■</button>
+          <input type="range" id="throttle" min="-100" max="100" value="0" step="1" aria-label="Throttle" />
+          <span class="speed"><b id="speed">0.0</b> KM/H</span>
+        </div>
+        <div class="foot-id">
+          <b>ER-6 // TERRAIN EXPLORER</b>
+          <span>EXPEDITION DIVISION · SHEET 1 OF 2</span>
+        </div>
+      </footer>
+    </div>
+
+    <svg id="overlay" aria-hidden="true"></svg>
+    <div id="tooltip" role="tooltip"></div>
+
+    <div id="help" hidden>
+      <section class="card help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+        <header><span id="help-title">ER-6 // WHAT YOU ARE LOOKING AT</span><button id="help-close" aria-label="Close">CLOSE ✕</button></header>
+        <div class="help-body">
+          <p class="lede">
+            A six-wheel exploration rover, drawn as a live engineering sheet. It is driving itself between survey targets over
+            procedural terrain: scanning the ground, rating it against what the vehicle can climb, and steering round what it
+            cannot. Every number on the sheet is either a constant the simulation runs on or a measurement of the model.
+          </p>
+          <div class="help-grid for-touch">
+            <div>
+              <h4>LOOK AND DRIVE</h4>
+              <dl>
+                <dt>ONE FINGER</dt><dd>Orbit</dd>
+                <dt>TWO FINGERS</dt><dd>Zoom and pan</dd>
+                <dt>TAP A PART</dt><dd>Detail view (tap away to leave)</dd>
+                <dt>DOUBLE-TAP GROUND</dt><dd>Send the vehicle there</dd>
+                <dt>SYSTEMS · VEHICLE</dt><dd>The switches and the numbers</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="help-grid for-keys">
+            <div>
+              <h4>LOOK</h4>
+              <dl>
+                <dt>DRAG</dt><dd>Orbit</dd>
+                <dt>WHEEL</dt><dd>Zoom</dd>
+                <dt>RIGHT-DRAG</dt><dd>Pan</dd>
+                <dt>CLICK A PART</dt><dd>Its detail view</dd>
+                <dt><kbd>Esc</kbd></dt><dd>Back out of it</dd>
+                <dt><kbd>1</kbd>–<kbd>5</kbd></dt><dd>Iso, front, side, plan, rear</dd>
+                <dt><kbd>V</kbd></dt><dd>Shaded, line, X-ray</dd>
+              </dl>
+            </div>
+            <div>
+              <h4>DRIVE</h4>
+              <dl>
+                <dt><kbd>G</kbd></dt><dd>Autonomy on/off</dd>
+                <dt><kbd>N</kbd></dt><dd>Next target</dd>
+                <dt>DBL-CLICK GROUND</dt><dd>Send it there</dd>
+                <dt><kbd>W</kbd><kbd>S</kbd><kbd>A</kbd><kbd>D</kbd></dt><dd>Drive it yourself</dd>
+                <dt><kbd>Space</kbd></dt><dd>Stop</dd>
+                <dt><kbd>T</kbd></dt><dd>Turn on the spot</dd>
+              </dl>
+            </div>
+            <div>
+              <h4>SYSTEMS</h4>
+              <dl>
+                <dt><kbd>X</kbd> <kbd>R</kbd></dt><dd>Reactor, radiator wings</dd>
+                <dt><kbd>P</kbd></dt><dd>Solar wings (out when parked)</dd>
+                <dt><kbd>L</kbd> <kbd>I</kbd></dt><dd>LiDAR, soil imager</dd>
+                <dt><kbd>U</kbd></dt><dd>Scout rotorcraft</dd>
+                <dt><kbd>F</kbd></dt><dd>Floodlights</dd>
+                <dt><kbd>[</kbd> <kbd>]</kbd></dt><dd>Local time, an hour back / on</dd>
+              </dl>
+            </div>
+            <div>
+              <h4>DRAWING</h4>
+              <dl>
+                <dt><kbd>K</kbd></dt><dd>Part labels</dd>
+                <dt><kbd>H</kbd></dt><dd>What the vehicle sees and rules out</dd>
+                <dt><kbd>M</kbd></dt><dd>Dimensions</dd>
+                <dt><kbd>E</kbd></dt><dd>Exploded view</dd>
+                <dt><kbd>O</kbd></dt><dd>Highlight and spec on hover</dd>
+                <dt><kbd>?</kbd></dt><dd>This card</dd>
+              </dl>
+            </div>
+          </div>
+          <h4>THINGS TO TRY</h4>
+          <ul>
+            <li>Change the ground: the channel makes it find a ramp down and another up, the yardangs make it run with the grain, the lava flow never lets a wheel rest.</li>
+            <li>Launch the scout on the dunes and watch it map the way ahead.</li>
+            <li>Switch the LiDAR off, then step the clock on to night and find out what the floodlights are for.</li>
+            <li>Arm the solar wings and shut the reactor down: the vehicle parks across the sun and the sols go by.</li>
+            <li>Fold the radiator wings and see how much the reactor can still give.</li>
+          </ul>
+          <p class="note">The address bar keeps up with the terrain, switches and view you choose: copy it to share exactly this sheet.</p>
+        </div>
+      </section>
+    </div>
+
+    <div id="lost" hidden>
+      <section class="card help-card">
+        <header><span>GRAPHICS CONTEXT LOST</span></header>
+        <div class="help-body">
+          <p class="lede">The browser took the drawing surface away (a driver reset, or too many tabs drawing at once).</p>
+          <button class="btn" onclick="location.reload()">RELOAD THE SHEET</button>
+        </div>
+      </section>
+    </div>
+    <div id="crease" aria-hidden="true"></div>
+    <div id="grain" aria-hidden="true"></div>
+
+  </body>
+</html>

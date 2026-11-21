@@ -1,0 +1,47 @@
+{
+  "url": "https://furkiozknn.github.io/hamsi",
+  "final_url": "https://furkiozknn.github.io/hamsi/",
+  "slug": "hamsi",
+  "title": "Hamsi",
+  "description": "A 3D fishing and boat-management game on the Black Sea, redesigned with a dark-steel instrument UI: find the schools on the sonar, set the net and pay off the boat in 30 days. Plays in the browser.",
+  "captured_at": "2026-11-16T16:50:00.135690+00:00",
+  "assets": {
+    "https://furkiozknn.github.io/hamsi/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 260779,
+      "status": 200
+    },
+    "https://gc.zgo.at/count.js": {
+      "path": "_remote/gc.zgo.at/count.js",
+      "content_type": "application/javascript",
+      "size": 9213,
+      "status": 200
+    },
+    "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/utils/BufferGeometryUtils.js": {
+      "path": "_remote/cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/utils/BufferGeometryUtils.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 31768,
+      "status": 200
+    },
+    "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js": {
+      "path": "_remote/cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 1314681,
+      "status": 200
+    },
+    "https://furkiozknn.goatcounter.com/count?p=%2Fhamsi%2F&t=Hamsi&s=1280&b=153&rnd=de6ef": {
+      "path": "_remote/furkiozknn.goatcounter.com/count__q_p_2Fhamsi_2F_t_Hamsi_s_1280_b_153_rnd_de6ef",
+      "content_type": "image/gif",
+      "size": 43,
+      "status": 200
+    }
+  },
+  "failures": [
+    {
+      "url": "https://furkiozknn.github.io/hamsi",
+      "error": "Response.body: Response body is unavailable for redirect responses"
+    }
+  ],
+  "attempt": 1
+}

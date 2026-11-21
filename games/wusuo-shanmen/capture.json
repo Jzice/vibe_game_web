@@ -1,0 +1,264 @@
+{
+  "url": "https://op7418.github.io/guizang-game-skill/",
+  "final_url": "https://op7418.github.io/guizang-game-skill/",
+  "slug": "wusuo-shanmen",
+  "title": "雾锁山门",
+  "description": "",
+  "captured_at": "2026-11-16T17:02:06.363534+00:00",
+  "assets": {
+    "https://op7418.github.io/guizang-game-skill/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 23515,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/ui/i_guard.jpg": {
+      "path": "assets/ui/i_guard.jpg",
+      "content_type": "image/jpeg",
+      "size": 12370,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/ui/i_bag.jpg": {
+      "path": "assets/ui/i_bag.jpg",
+      "content_type": "image/jpeg",
+      "size": 13569,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/ui/icon5.jpg": {
+      "path": "assets/ui/icon5.jpg",
+      "content_type": "image/jpeg",
+      "size": 12813,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/ui/title.png": {
+      "path": "assets/ui/title.png",
+      "content_type": "image/png",
+      "size": 143122,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/ui/icon0.jpg": {
+      "path": "assets/ui/icon0.jpg",
+      "content_type": "image/jpeg",
+      "size": 13015,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/ui/icon1.jpg": {
+      "path": "assets/ui/icon1.jpg",
+      "content_type": "image/jpeg",
+      "size": 13529,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/ui/icon4.jpg": {
+      "path": "assets/ui/icon4.jpg",
+      "content_type": "image/jpeg",
+      "size": 13603,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/ui/icon2.jpg": {
+      "path": "assets/ui/icon2.jpg",
+      "content_type": "image/jpeg",
+      "size": 13645,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/ui/icon3.jpg": {
+      "path": "assets/ui/icon3.jpg",
+      "content_type": "image/jpeg",
+      "size": 13862,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/game.cdb73b9b.js": {
+      "path": "game.cdb73b9b.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 795368,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tex/floor_nor.jpg": {
+      "path": "assets/tex/floor_nor.jpg",
+      "content_type": "image/jpeg",
+      "size": 254401,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tex/trail_diff.jpg": {
+      "path": "assets/tex/trail_diff.jpg",
+      "content_type": "image/jpeg",
+      "size": 292181,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tex/floor_diff.jpg": {
+      "path": "assets/tex/floor_diff.jpg",
+      "content_type": "image/jpeg",
+      "size": 171518,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tex/floor_rough.jpg": {
+      "path": "assets/tex/floor_rough.jpg",
+      "content_type": "image/jpeg",
+      "size": 105089,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tex/trail_rough.jpg": {
+      "path": "assets/tex/trail_rough.jpg",
+      "content_type": "image/jpeg",
+      "size": 221280,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/fx/ink.jpg": {
+      "path": "assets/fx/ink.jpg",
+      "content_type": "image/jpeg",
+      "size": 351546,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tex/trail_nor.jpg": {
+      "path": "assets/tex/trail_nor.jpg",
+      "content_type": "image/jpeg",
+      "size": 397885,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tex/rock_diff.jpg": {
+      "path": "assets/tex/rock_diff.jpg",
+      "content_type": "image/jpeg",
+      "size": 309367,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tex/rock_nor.jpg": {
+      "path": "assets/tex/rock_nor.jpg",
+      "content_type": "image/jpeg",
+      "size": 212350,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/props.json": {
+      "path": "assets/props.json",
+      "content_type": "application/json; charset=utf-8",
+      "size": 780,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/loot.json": {
+      "path": "assets/loot.json",
+      "content_type": "application/json; charset=utf-8",
+      "size": 331,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/chars.json": {
+      "path": "assets/chars.json",
+      "content_type": "application/json; charset=utf-8",
+      "size": 1156,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/l_jade/tripo-out/l-jade-a34637f6/model.glb": {
+      "path": "assets/tripo2/l_jade/tripo-out/l-jade-a34637f6/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 69872,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/l_gourd/tripo-out/l-gourd-1020a3fc/model.glb": {
+      "path": "assets/tripo2/l_gourd/tripo-out/l-gourd-1020a3fc/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 78768,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo/hall/tripo-out/hall-ef4c9f14/model.glb": {
+      "path": "assets/tripo/hall/tripo-out/hall-ef4c9f14/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 442456,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/p_gate/tripo-out/p-gate-61868987/model.glb": {
+      "path": "assets/tripo2/p_gate/tripo-out/p-gate-61868987/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 400516,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/p_lantern/tripo-out/p-lantern-fb0f5f21/model.glb": {
+      "path": "assets/tripo2/p_lantern/tripo-out/p-lantern-fb0f5f21/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 272160,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/p_statue/tripo-out/p-statue-95d5b69c/model.glb": {
+      "path": "assets/tripo2/p_statue/tripo-out/p-statue-95d5b69c/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 263500,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/p_tree/tripo-out/p-tree-f55ea30c/model.glb": {
+      "path": "assets/tripo2/p_tree/tripo-out/p-tree-f55ea30c/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 504392,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/p_rock/tripo-out/p-rock-d04412d4/model.glb": {
+      "path": "assets/tripo2/p_rock/tripo-out/p-rock-d04412d4/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 232956,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/p_censer/tripo-out/p-censer-dc07f429/model.glb": {
+      "path": "assets/tripo2/p_censer/tripo-out/p-censer-dc07f429/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 224276,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/p_shrine/tripo-out/p-shrine-61cca51c/model.glb": {
+      "path": "assets/tripo2/p_shrine/tripo-out/p-shrine-61cca51c/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 511672,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/p_stele/tripo-out/p-stele-bf769c9d/model.glb": {
+      "path": "assets/tripo2/p_stele/tripo-out/p-stele-bf769c9d/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 252696,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/p_pillar/tripo-out/p-pillar-050a31db/model.glb": {
+      "path": "assets/tripo2/p_pillar/tripo-out/p-pillar-050a31db/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 271012,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/p_post/tripo-out/p-post-cd184371/model.glb": {
+      "path": "assets/tripo2/p_post/tripo-out/p-post-cd184371/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 291004,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/l_coin/tripo-out/l-coin-9d0e7186/model.glb": {
+      "path": "assets/tripo2/l_coin/tripo-out/l-coin-9d0e7186/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 98672,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/p_beast/tripo-out/p-beast-70a65380/model.glb": {
+      "path": "assets/tripo2/p_beast/tripo-out/p-beast-70a65380/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 254940,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/l_pill/tripo-out/l-pill-44ace56c/model.glb": {
+      "path": "assets/tripo2/l_pill/tripo-out/l-pill-44ace56c/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 90044,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/l_scroll/tripo-out/l-scroll-67e2de46/model.glb": {
+      "path": "assets/tripo2/l_scroll/tripo-out/l-scroll-67e2de46/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 106920,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/w_sword/tripo-out/w-sword-f3667b28/model.glb": {
+      "path": "assets/tripo2/w_sword/tripo-out/w-sword-f3667b28/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 197928,
+      "status": 200
+    },
+    "https://op7418.github.io/guizang-game-skill/assets/tripo2/w_glaive/tripo-out/w-glaive-c63c85db/model.glb": {
+      "path": "assets/tripo2/w_glaive/tripo-out/w-glaive-c63c85db/model.glb",
+      "content_type": "model/gltf-binary",
+      "size": 157936,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}

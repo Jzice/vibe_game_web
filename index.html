@@ -1,0 +1,1230 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VIBE GAMES - 网页游戏资源站</title>
+<meta name="description" content="50 款可直接在浏览器游玩的 Vibe Web Game 资源站，含类型、风格、状态筛选与原站入口。">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg:#070B14; --bg2:#0D1424; --panel:#111A2E; --panel2:#18253D;
+    --text:#F2F6FF; --muted:#9AA8C7; --dim:#6C7A99;
+    --mint:#6EE7B7; --blue:#5B8CFF; --violet:#B37CFF; --gold:#F5C86A;
+    --danger:#FF6B81; --line:rgba(154,168,199,.18); --glass:rgba(17,26,46,.72);
+    --radius:18px; --shadow:0 18px 48px rgba(2,6,18,.55);
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    margin:0; min-height:100vh; color:var(--text);
+    font:400 15px/1.6 "PingFang SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+    background:
+      radial-gradient(900px 520px at 12% -8%,rgba(110,231,183,.16),transparent 65%),
+      radial-gradient(760px 480px at 88% 4%,rgba(179,124,255,.18),transparent 62%),
+      radial-gradient(900px 600px at 50% 115%,rgba(91,140,255,.12),transparent 60%),
+      var(--bg);
+    overflow-x:hidden;
+  }
+  body::before {
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:linear-gradient(rgba(154,168,199,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(154,168,199,.045) 1px,transparent 1px);
+    background-size:56px 56px; mask-image:linear-gradient(to bottom,#000 0%,transparent 78%);
+    animation:aurora 24s linear infinite;
+  }
+  @keyframes aurora { to { background-position:56px 56px; } }
+  a { color:inherit; }
+  .shell { position:relative; z-index:1; max-width:1240px; margin:0 auto; padding:0 24px 80px; }
+  .topbar {
+    position:sticky; top:0; z-index:20; display:flex; align-items:center; justify-content:space-between; gap:20px;
+    padding:16px 24px; margin:0 -24px 38px;
+    background:linear-gradient(180deg,rgba(7,11,20,.92),rgba(7,11,20,.62)); backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand { display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.16em; font-size:14px; }
+  .brand-mark { width:32px; height:32px; border-radius:10px; background:linear-gradient(135deg,var(--mint),var(--blue),var(--violet)); box-shadow:0 0 24px rgba(110,231,183,.35); }
+  .version { font-size:11px; letter-spacing:.08em; color:var(--bg); background:var(--mint); padding:3px 8px; border-radius:99px; font-weight:800; }
+  .nav { display:flex; gap:18px; flex-wrap:wrap; font-size:13px; color:var(--muted); }
+  .nav a { text-decoration:none; transition:color .18s ease; }
+  .nav a:hover { color:var(--mint); }
+  .hero { position:relative; padding:34px 0 42px; }
+  .eyebrow { display:inline-flex; align-items:center; gap:8px; color:var(--mint); font-size:12px; letter-spacing:.18em; text-transform:uppercase; }
+  .eyebrow::before { content:""; width:26px; height:1px; background:var(--mint); }
+  h1 { margin:12px 0 14px; font-size:clamp(34px,5.2vw,60px); line-height:1.08; letter-spacing:-.03em; font-weight:800; }
+  h1 .grad { background:linear-gradient(100deg,var(--mint),var(--blue) 45%,var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .lede { max-width:720px; margin:0; color:var(--muted); font-size:17px; }
+  .stats { display:flex; flex-wrap:wrap; gap:12px; margin-top:26px; }
+  .stat { min-width:124px; padding:14px 18px; border:1px solid var(--line); border-radius:14px; background:var(--glass); backdrop-filter:blur(12px); }
+  .stat strong { display:block; font-size:26px; line-height:1; }
+  .stat span { color:var(--muted); font-size:12px; }
+  .stat.mint strong { color:var(--mint); } .stat.gold strong { color:var(--gold); } .stat.danger strong { color:var(--danger); }
+  .section { margin-top:44px; }
+  .section-head { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:18px; }
+  .section-head h2 { margin:0; font-size:22px; letter-spacing:-.01em; }
+  .section-head p { margin:4px 0 0; color:var(--dim); font-size:13px; }
+  .console {
+    display:grid; grid-template-columns:minmax(260px,1fr) 200px; gap:10px;
+    padding:16px; border:1px solid var(--line); border-radius:var(--radius); background:var(--glass); backdrop-filter:blur(16px); box-shadow:var(--shadow);
+  }
+  .console input, .console select {
+    width:100%; background:rgba(7,11,20,.72); border:1px solid var(--line); color:var(--text);
+    border-radius:11px; padding:11px 13px; font:inherit; outline:none; transition:border-color .18s ease,box-shadow .18s ease;
+  }
+  .console input:focus, .console select:focus { border-color:var(--mint); box-shadow:0 0 0 3px rgba(110,231,183,.12); }
+  .tag-cloud { display:flex; flex-direction:column; gap:12px; margin-top:14px; padding-top:14px; border-top:1px solid var(--line); }
+  .tag-group { display:grid; grid-template-columns:64px minmax(0,1fr); gap:12px; align-items:start; }
+  .group-label { padding-top:7px; color:var(--muted); font-size:12px; letter-spacing:.08em; }
+  .chip-row { display:flex; flex-wrap:wrap; gap:8px; }
+  .cloud-chip {
+    display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:99px;
+    background:rgba(7,11,20,.58); color:var(--muted); padding:6px 12px; font:500 12px/1.4 inherit;
+    cursor:pointer; transition:transform .16s ease,border-color .16s ease,color .16s ease,background .16s ease;
+  }
+  .cloud-chip:hover { color:var(--text); border-color:rgba(110,231,183,.42); transform:translateY(-1px); }
+  .cloud-chip.active { color:#06131D; background:linear-gradient(100deg,var(--mint),var(--blue)); border-color:transparent; font-weight:700; }
+  .chip-count { font-size:10px; opacity:.78; background:rgba(255,255,255,.16); padding:1px 6px; border-radius:99px; }
+  .cloud-chip.active .chip-count { background:rgba(6,19,29,.18); }
+  .console-meta { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; color:var(--muted); font-size:13px; }
+  .link-btn { background:none; border:0; color:var(--mint); cursor:pointer; font:inherit; padding:0; }
+  .feature-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
+  .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+  .card, .feature-card {
+    position:relative; display:flex; flex-direction:column; min-width:0; overflow:hidden;
+    border:1px solid var(--line); border-radius:var(--radius); background:linear-gradient(160deg,rgba(24,37,61,.92),rgba(13,20,36,.94));
+    box-shadow:0 12px 30px rgba(2,6,18,.28); transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
+  }
+  .card:hover, .feature-card:hover { transform:translateY(-5px); border-color:rgba(110,231,183,.48); box-shadow:0 22px 48px rgba(2,6,18,.55),0 0 0 1px rgba(110,231,183,.1); }
+  .feature-card { border-color:rgba(179,124,255,.32); }
+  .thumb { position:relative; aspect-ratio:16/9; overflow:hidden; background:#0A1020; }
+  .thumb a { display:block; height:100%; }
+  .thumb img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .35s ease; }
+  .card:hover .thumb img, .feature-card:hover .thumb img { transform:scale(1.045); }
+  .badge, .source-pill { position:absolute; top:10px; font-size:11px; padding:4px 9px; border-radius:99px; backdrop-filter:blur(8px); }
+  .badge { left:10px; font-weight:600; }
+  .badge.ok { background:rgba(13,59,46,.86); color:#7FF0C0; }
+  .badge.warn { background:rgba(74,53,16,.88); color:#FFD58A; }
+  .badge.bad { background:rgba(74,31,36,.9); color:#FFA8AE; }
+  .source-pill { right:10px; background:rgba(8,14,26,.72); color:var(--muted); border:1px solid var(--line); }
+  .body { display:flex; flex-direction:column; flex:1; gap:8px; padding:15px 17px 17px; }
+  .card-title { margin:0; font-size:17px; line-height:1.35; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .feature-card .card-title { font-size:16px; }
+  .tags { display:flex; gap:6px; flex-wrap:wrap; }
+  .tag { font-size:11px; padding:3px 8px; border-radius:99px; border:1px solid var(--line); color:var(--muted); }
+  .tag.genre { color:#B7F5DC; border-color:rgba(110,231,183,.34); background:rgba(18,40,32,.7); }
+  .tag.style { color:#C7D8FF; border-color:rgba(91,140,255,.34); background:rgba(20,29,49,.7); }
+  .card-meta { margin:0; color:var(--mint); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .card-desc { margin:0; color:var(--muted); font-size:13px; min-height:40px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .actions { display:flex; gap:8px; margin-top:auto; padding-top:4px; }
+  .btn { flex:1; text-align:center; text-decoration:none; font-size:12px; font-weight:700; padding:9px 10px; border-radius:10px; transition:transform .16s ease,filter .16s ease; }
+  .btn:hover { transform:translateY(-1px); filter:brightness(1.08); }
+  .btn.primary { background:linear-gradient(100deg,var(--mint),var(--blue)); color:#06131D; }
+  .btn.ghost { border:1px solid var(--line); color:var(--muted); background:rgba(7,11,20,.5); }
+  .empty-note { color:var(--muted); }
+  .hidden { display:none !important; }
+  .info-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+  .info-card { padding:18px; border:1px solid var(--line); border-radius:var(--radius); background:var(--glass); }
+  .info-card h3 { margin:0 0 8px; font-size:15px; }
+  .info-card p { margin:0 0 10px; color:var(--muted); font-size:13px; }
+  .info-card a { color:var(--mint); text-decoration:none; }
+  footer { margin-top:44px; padding-top:20px; border-top:1px solid var(--line); color:var(--dim); font-size:12px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer a { color:var(--mint); text-decoration:none; }
+  @media (max-width:1000px) {
+    .console { grid-template-columns:minmax(220px,1fr) 170px; }
+    .grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .feature-strip { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .info-grid { grid-template-columns:1fr; }
+  }
+  @media (max-width:640px) {
+    .shell { padding:0 14px 60px; }
+    .topbar { flex-direction:column; align-items:flex-start; margin:0 -14px 26px; }
+    .nav { gap:12px; }
+    .console { grid-template-columns:1fr; }
+    .tag-group { grid-template-columns:1fr; gap:6px; }
+    .group-label { padding-top:0; }
+    .grid, .feature-strip { grid-template-columns:1fr; }
+    h1 { font-size:36px; }
+  }
+  @media (prefers-reduced-motion:reduce) {
+    *,*::before,*::after { animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"></span>VIBE GAMES<span class="version">v0.0.4</span></div>
+    <div class="nav">
+      <a href="#library">资源库</a>
+      <a href="game_list.md">完整清单</a>
+      <a href="docs/asset-gap-analysis.md">资源诊断</a>
+      <a href="docs/expansion-roadmap.md">扩展路线图</a>
+      <a href="https://github.com/Jzice/vibe_game" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <span class="eyebrow">Static browser game archive</span>
+    <h1>把灵感做成<br><span class="grad">能直接玩的资源站</span></h1>
+    <p class="lede">收录 50 款浏览器小游戏，覆盖 ai8games 新增作品与历史站点镜像。按类型、风格、来源与运行状态探索，点击进入本地镜像，也可直达原站。</p>
+    <div class="stats">
+      <div class="stat"><strong>50</strong><span>收录游戏</span></div>
+      <div class="stat mint"><strong>12</strong><span>运行正常</span></div>
+      <div class="stat gold"><strong>30</strong><span>部分资源缺失</span></div>
+      <div class="stat danger"><strong>8</strong><span>功能受限</span></div>
+      <div class="stat"><strong>35 + 15</strong><span>新增 / 历史来源</span></div>
+    </div>
+  </header>
+
+  <section class="section" aria-labelledby="explore-title">
+    <div class="section-head"><div><h2 id="explore-title">探索控制台</h2><p>组合筛选即时生效，结果数实时更新</p></div></div>
+    <div class="console">
+      <input id="q" type="search" placeholder="搜索游戏、标签或来源…" aria-label="搜索游戏">
+      <select id="sort" aria-label="排序"><option value="curated">默认排序</option><option value="name">按名称</option><option value="status">按状态</option><option value="type">按类型</option><option value="source">按来源</option></select>
+    </div>
+    <div class="tag-cloud" id="tag-cloud" aria-label="标签组筛选">
+      <div class="tag-group" data-group="genre">
+        <span class="group-label">类型</span>
+        <div class="chip-row">
+        <button type="button" class="cloud-chip active" data-group="genre" data-value="">全部 <span class="chip-count">50</span></button>
+        <button type="button" class="cloud-chip" data-group="genre" data-value="休闲街机">休闲街机 <span class="chip-count">8</span></button>
+        <button type="button" class="cloud-chip" data-group="genre" data-value="体育">体育 <span class="chip-count">5</span></button>
+        <button type="button" class="cloud-chip" data-group="genre" data-value="动作冒险">动作冒险 <span class="chip-count">9</span></button>
+        <button type="button" class="cloud-chip" data-group="genre" data-value="射击">射击 <span class="chip-count">6</span></button>
+        <button type="button" class="cloud-chip" data-group="genre" data-value="模拟经营">模拟经营 <span class="chip-count">6</span></button>
+        <button type="button" class="cloud-chip" data-group="genre" data-value="竞速">竞速 <span class="chip-count">6</span></button>
+        <button type="button" class="cloud-chip" data-group="genre" data-value="策略解谜">策略解谜 <span class="chip-count">4</span></button>
+        <button type="button" class="cloud-chip" data-group="genre" data-value="角色扮演">角色扮演 <span class="chip-count">4</span></button>
+        <button type="button" class="cloud-chip" data-group="genre" data-value="问答">问答 <span class="chip-count">1</span></button>
+        <button type="button" class="cloud-chip" data-group="genre" data-value="音乐节奏">音乐节奏 <span class="chip-count">1</span></button>
+        </div>
+      </div>
+      <div class="tag-group" data-group="style">
+        <span class="group-label">风格</span>
+        <div class="chip-row">
+        <button type="button" class="cloud-chip active" data-group="style" data-value="">全部 <span class="chip-count">50</span></button>
+        <button type="button" class="cloud-chip" data-group="style" data-value="3D">3D <span class="chip-count">12</span></button>
+        <button type="button" class="cloud-chip" data-group="style" data-value="写实">写实 <span class="chip-count">11</span></button>
+        <button type="button" class="cloud-chip" data-group="style" data-value="军事战争">军事战争 <span class="chip-count">3</span></button>
+        <button type="button" class="cloud-chip" data-group="style" data-value="卡通">卡通 <span class="chip-count">9</span></button>
+        <button type="button" class="cloud-chip" data-group="style" data-value="复古像素">复古像素 <span class="chip-count">4</span></button>
+        <button type="button" class="cloud-chip" data-group="style" data-value="奇幻魔法">奇幻魔法 <span class="chip-count">7</span></button>
+        <button type="button" class="cloud-chip" data-group="style" data-value="末日生存">末日生存 <span class="chip-count">1</span></button>
+        <button type="button" class="cloud-chip" data-group="style" data-value="艺术创意">艺术创意 <span class="chip-count">3</span></button>
+        </div>
+      </div>
+      <div class="tag-group" data-group="source">
+        <span class="group-label">来源</span>
+        <div class="chip-row">
+        <button type="button" class="cloud-chip active" data-group="source" data-value="">全部 <span class="chip-count">50</span></button>
+        <button type="button" class="cloud-chip" data-group="source" data-value="ai8games">ai8games <span class="chip-count">35</span></button>
+        <button type="button" class="cloud-chip" data-group="source" data-value="历史来源">历史来源 <span class="chip-count">15</span></button>
+        </div>
+      </div>
+      <div class="tag-group" data-group="status">
+        <span class="group-label">状态</span>
+        <div class="chip-row">
+        <button type="button" class="cloud-chip active" data-group="status" data-value="">全部 <span class="chip-count">50</span></button>
+        <button type="button" class="cloud-chip" data-group="status" data-value="ok">运行正常 <span class="chip-count">12</span></button>
+        <button type="button" class="cloud-chip" data-group="status" data-value="warn">部分资源缺失 <span class="chip-count">30</span></button>
+        <button type="button" class="cloud-chip" data-group="status" data-value="bad">部分功能受限 <span class="chip-count">8</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="console-meta"><span id="result-count">显示 50 / 50 款</span><button class="link-btn" id="reset" type="button">清空筛选</button></div>
+  </section>
+
+  <section class="section" aria-labelledby="featured-title">
+    <div class="section-head"><div><h2 id="featured-title">精选货架</h2><p>从当前运行正常的游戏中挑选，作为快速入口</p></div></div>
+    <div class="feature-strip">
+      <article class="feature-card" data-name="bubble fish battle 角色扮演 复古 ai8games" data-genre="角色扮演" data-style="复古像素" data-status="ok" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/bubble-fish-battle/index.html" aria-label="进入 Bubble Fish Battle"><img src="games/bubble-fish-battle/preview.webp" data-fallback="games/bubble-fish-battle/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Bubble Fish Battle 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h4 class="card-title">Bubble Fish Battle</h4>
+          <div class="tags"><span class="tag genre">角色扮演</span><span class="tag style">复古像素</span></div>
+          <p class="card-meta">J@gwancinzi · ai8games · 2026-11-12</p>
+          <p class="card-desc">像素风的怪物对战，画面是老掌机 RPG 的味道：野生的 GLADIIA 出现了，派 ULPIANUS 上去对打。像素画和文字都是作者 Jqzi 自己做的，网页代码请 Claude 帮忙写。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/bubble-fish-battle/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://ulpidiia-bubble.pages.dev" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="feature-card" data-name="运输船 · transport ship 3d 射击 3d ai8games" data-genre="射击" data-style="军事战争" data-status="ok" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/cf-transport-ship/index.html" aria-label="进入 运输船 · Transport Ship 3D"><img src="games/cf-transport-ship/preview.png" data-fallback="games/cf-transport-ship/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="运输船 · Transport Ship 3D 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h4 class="card-title">运输船 · Transport Ship 3D</h4>
+          <div class="tags"><span class="tag genre">射击</span><span class="tag style">军事战争</span></div>
+          <p class="card-meta">R@riba2534 · ai8games · 2026-09-23</p>
+          <p class="card-desc">穿越火线经典地图「运输船」的网页同人复刻：团队对战，潜伏者对保卫者，和机器人打。riba2534 用 Claude Opus 5.5 一句话提示词生成，模型先查了官方地图布局再动手。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/cf-transport-ship/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://claude-opus-5-5-cf-transport-ship.pages.dev/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="feature-card" data-name="emberfall 动作 多人 3d ai8games" data-genre="动作冒险" data-style="3D" data-status="ok" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/emberfall/index.html" aria-label="进入 Emberfall"><img src="games/emberfall/preview.webp" data-fallback="games/emberfall/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Emberfall 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h4 class="card-title">Emberfall</h4>
+          <div class="tags"><span class="tag genre">动作冒险</span><span class="tag style">3D</span></div>
+          <p class="card-meta">M@AveAmoreKeyy · ai8games · 2026-11-13</p>
+          <p class="card-desc">一座能被打塌的大城市，可以单人也可以多人：选一种能力，火、水、雷电、霓虹、重力、风、冰、等离子都有，把楼一栋栋拆掉。界面是法语。Meru 用 Fable 5.2 做的。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/emberfall/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://emberfall-arena.netlify.app" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="feature-card" data-name="飞车 3d 赛车 3d ai8games" data-genre="竞速" data-style="3D" data-status="ok" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/feiche-3d/index.html" aria-label="进入 飞车 3D"><img src="games/feiche-3d/preview.png" data-fallback="games/feiche-3d/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="飞车 3D 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h4 class="card-title">飞车 3D</h4>
+          <div class="tags"><span class="tag genre">竞速</span><span class="tag style">3D</span></div>
+          <p class="card-meta">R@riba2534 · ai8games · 2026-09-23</p>
+          <p class="card-desc">致敬 QQ 飞车的网页 3D 赛车同人作品：四条按官方地图风格做的赛道，能漂移集气、小喷双喷、氮气和道具赛。riba2534 用 Claude Opus 5.5 一句话提示词生成。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/feiche-3d/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://claude-opus-5-5-qqfeiche3d.pages.dev/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="library" aria-labelledby="library-title">
+    <div class="section-head"><div><h2 id="library-title">游戏库</h2><p>每张卡片同时提供本地镜像入口与原站链接</p></div></div>
+    <main class="grid" id="grid">
+      <article class="card" data-name="antiques fraudshow 休闲 模拟 ai8games" data-genre="模拟经营" data-style="写实" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/antiques-fraud-show/index.html" aria-label="进入 Antiques Fraudshow"><img src="games/antiques-fraud-show/preview.webp" data-fallback="games/antiques-fraud-show/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Antiques Fraudshow 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Antiques Fraudshow</h3>
+          <div class="tags"><span class="tag genre">模拟经营</span><span class="tag style">写实</span></div>
+          <p class="card-meta">E@Eric_M_Stevens · ai8games · 2026-11-12</p>
+          <p class="card-desc">在旧货摊淘来破烂，动手做旧，再上电视鉴宝节目把鉴定师糊弄过去。你在镜头前说的每句话都会记下来，前后对不上就露馅。Eric Stevens 用 Claude Fable 5.2 做的。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/antiques-fraud-show/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://antiquesfraudshow.vercel.app" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="ardennes dusk 动作 3d 战争 ai8games" data-genre="射击" data-style="军事战争" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/ardennes-dusk/index.html" aria-label="进入 Ardennes Dusk"><img src="games/ardennes-dusk/preview.webp" data-fallback="games/ardennes-dusk/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Ardennes Dusk 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Ardennes Dusk</h3>
+          <div class="tags"><span class="tag genre">射击</span><span class="tag style">军事战争</span></div>
+          <p class="card-meta">D@dennisivy11 · ai8games · 2026-11-11</p>
+          <p class="card-desc">二战坦克游戏，还带一支预告片，约 4 小时、按 API 价 142 美元做完。画面全部用代码画出来，只有音效和无线电对话来自 ElevenLabs。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/ardennes-dusk/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://ardennes-dusk.vercel.app/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="bubble fish battle 角色扮演 复古 ai8games" data-genre="角色扮演" data-style="复古像素" data-status="ok" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/bubble-fish-battle/index.html" aria-label="进入 Bubble Fish Battle"><img src="games/bubble-fish-battle/preview.webp" data-fallback="games/bubble-fish-battle/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Bubble Fish Battle 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Bubble Fish Battle</h3>
+          <div class="tags"><span class="tag genre">角色扮演</span><span class="tag style">复古像素</span></div>
+          <p class="card-meta">J@gwancinzi · ai8games · 2026-11-12</p>
+          <p class="card-desc">像素风的怪物对战，画面是老掌机 RPG 的味道：野生的 GLADIIA 出现了，派 ULPIANUS 上去对打。像素画和文字都是作者 Jqzi 自己做的，网页代码请 Claude 帮忙写。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/bubble-fish-battle/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://ulpidiia-bubble.pages.dev" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="çay ocağı 模拟 休闲 3d ai8games" data-genre="模拟经营" data-style="3D" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/cay-ocagi/index.html" aria-label="进入 Çay Ocağı"><img src="games/cay-ocagi/preview.png" data-fallback="games/cay-ocagi/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Çay Ocağı 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Çay Ocağı</h3>
+          <div class="tags"><span class="tag genre">模拟经营</span><span class="tag style">3D</span></div>
+          <p class="card-meta">F@Furkiozkann · ai8games · 2026-11-12</p>
+          <p class="card-desc">在伊斯坦布尔博斯普鲁斯海峡边开一家小茶馆：煮茶、热芝麻圈面包、做咖啡，赶在客人等不及之前送到每一桌。收脏杯子、拿小费，3D 画面，忙得停不下来。界面可以在英文和土耳其语之间切换。FurkiOzkan 用 Claude Sonnet 5.5 做的。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/cay-ocagi/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://furkiozknn.github.io/cay-ocagi" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="运输船 · transport ship 3d 射击 3d ai8games" data-genre="射击" data-style="军事战争" data-status="ok" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/cf-transport-ship/index.html" aria-label="进入 运输船 · Transport Ship 3D"><img src="games/cf-transport-ship/preview.png" data-fallback="games/cf-transport-ship/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="运输船 · Transport Ship 3D 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">运输船 · Transport Ship 3D</h3>
+          <div class="tags"><span class="tag genre">射击</span><span class="tag style">军事战争</span></div>
+          <p class="card-meta">R@riba2534 · ai8games · 2026-09-23</p>
+          <p class="card-desc">穿越火线经典地图「运输船」的网页同人复刻：团队对战，潜伏者对保卫者，和机器人打。riba2534 用 Claude Opus 5.5 一句话提示词生成，模型先查了官方地图布局再动手。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/cf-transport-ship/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://claude-opus-5-5-cf-transport-ship.pages.dev/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="雪迹 cold smoke 体育 休闲 3d ai8games" data-genre="体育" data-style="3D" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/cold-smoke/index.html" aria-label="进入 雪迹 Cold Smoke"><img src="games/cold-smoke/preview.webp" data-fallback="games/cold-smoke/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="雪迹 Cold Smoke 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">雪迹 Cold Smoke</h3>
+          <div class="tags"><span class="tag genre">体育</span><span class="tag style">3D</span></div>
+          <p class="card-meta">H@huiskylabs · ai8games · 2026-11-13</p>
+          <p class="card-desc">一个人，一座山，一直往下滑，山永远滑不完。方向键或 A、D 转弯，空格跳。地形、树、天气、音乐、音效全是代码实时生成的，没有一张图片、一段录音，整个游戏就是一个 1.6 MB 的 HTML 文件。Huisky 用 Claude Fable 5.2 做了大约 3 天，改了 30 多版才成形。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/cold-smoke/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://huisky.xyz/cold-smoke/play/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="dead headway 射击 3d ai8games" data-genre="射击" data-style="写实" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/dead-headway/index.html" aria-label="进入 Dead Headway"><img src="games/dead-headway/preview.webp" data-fallback="games/dead-headway/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Dead Headway 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Dead Headway</h3>
+          <div class="tags"><span class="tag genre">射击</span><span class="tag style">写实</span></div>
+          <p class="card-meta">A@AugustCastilIo · ai8games · 2026-11-11</p>
+          <p class="card-desc">在浏览器里跑的写实地铁突袭游戏。作者 August 一直在刷速通，想看看大家能跑多快。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/dead-headway/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://dead-headway.vercel.app/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="尸潮 · 撤离防线 射击 3d 动作 ai8games" data-genre="射击" data-style="末日生存" data-status="bad" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/deadwater-port-survival/index.html" aria-label="进入 尸潮 · 撤离防线"><img src="games/deadwater-port-survival/preview.webp" data-fallback="games/deadwater-port-survival/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="尸潮 · 撤离防线 预览" loading="lazy"></a>
+          <span class="badge bad">部分功能受限</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">尸潮 · 撤离防线</h3>
+          <div class="tags"><span class="tag genre">射击</span><span class="tag style">末日生存</span></div>
+          <p class="card-meta">喵@MarkMFFF · ai8games · 2026-11-11</p>
+          <p class="card-desc">下雨的集装箱港口里打丧尸：握紧步枪守住最后的撤离通道，丧尸从仓库里一波波逼近。防守模式一局三分钟，无尽模式越打越难，进度自动保存。电脑用 WASD 加鼠标，手机左边移动、右边转向。作者让 GPT Codex 根据 Saltline（Felix Rieseberg 用 Fable 5.2 做的射击游戏）的源码改出了这个丧尸版。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/deadwater-port-survival/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://deadwater-port-survival.ma1902056219.chatgpt.site" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="emberfall 动作 多人 3d ai8games" data-genre="动作冒险" data-style="3D" data-status="ok" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/emberfall/index.html" aria-label="进入 Emberfall"><img src="games/emberfall/preview.webp" data-fallback="games/emberfall/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Emberfall 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Emberfall</h3>
+          <div class="tags"><span class="tag genre">动作冒险</span><span class="tag style">3D</span></div>
+          <p class="card-meta">M@AveAmoreKeyy · ai8games · 2026-11-13</p>
+          <p class="card-desc">一座能被打塌的大城市，可以单人也可以多人：选一种能力，火、水、雷电、霓虹、重力、风、冰、等离子都有，把楼一栋栋拆掉。界面是法语。Meru 用 Fable 5.2 做的。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/emberfall/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://emberfall-arena.netlify.app" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="er-6 terrain explorer 模拟 3d ai8games" data-genre="模拟经营" data-style="写实" data-status="bad" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/er-6-terrain-explorer/index.html" aria-label="进入 ER-6 Terrain Explorer"><img src="games/er-6-terrain-explorer/preview.webp" data-fallback="games/er-6-terrain-explorer/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="ER-6 Terrain Explorer 预览" loading="lazy"></a>
+          <span class="badge bad">部分功能受限</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">ER-6 Terrain Explorer</h3>
+          <div class="tags"><span class="tag genre">模拟经营</span><span class="tag style">写实</span></div>
+          <p class="card-meta">D@DilumSanjaya · ai8games · 2026-11-11</p>
+          <p class="card-desc">一辆会自己开的探测车，用的是 NASA 火星车那种摇臂悬挂，在外星地形上爬坡过坎。Dilum Sanjaya 拿它测试 Fable 5.2 对机械结构的推理能力。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/er-6-terrain-explorer/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://fable-rover.vercel.app/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="evensong 动作 角色扮演 3d ai8games" data-genre="动作冒险" data-style="奇幻魔法" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/evensong/index.html" aria-label="进入 Evensong"><img src="games/evensong/preview.webp" data-fallback="games/evensong/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Evensong 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Evensong</h3>
+          <div class="tags"><span class="tag genre">动作冒险</span><span class="tag style">奇幻魔法</span></div>
+          <p class="card-meta">K@kevin_t_ngo · ai8games · 2026-11-10</p>
+          <p class="card-desc">浏览器里就能打的暗黑奇幻魂类 Boss 战，场景在一座大教堂里：翻滚闪避、格挡、锁定、喝药瓶回血，抓空档出手。Kevin Ngo 让 Claude Fable 5.2 做的演示版。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/evensong/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://evensong-phi.vercel.app/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="eyewall: marazul bay 大逃杀 射击 3d ai8games" data-genre="射击" data-style="3D" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/eyewall-marazul-bay/fable/index.html" aria-label="进入 EYEWALL: Marazul Bay"><img src="games/eyewall-marazul-bay/preview.webp" data-fallback="games/eyewall-marazul-bay/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="EYEWALL: Marazul Bay 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">EYEWALL: Marazul Bay</h3>
+          <div class="tags"><span class="tag genre">射击</span><span class="tag style">3D</span></div>
+          <p class="card-meta">A@aabyzov · ai8games · 2026-11-12</p>
+          <p class="card-desc">网页版大逃杀：跳伞落地、捡装备、开车、骑摩托艇，在缩圈风暴里活过 23 个机器人。Anton Abyzov 说一共 3 万行代码、没用游戏引擎，当天晚上就上线了。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/eyewall-marazul-bay/fable/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://anton-abyzov.github.io/fortnite-3js/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="飞车 3d 赛车 3d ai8games" data-genre="竞速" data-style="3D" data-status="ok" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/feiche-3d/index.html" aria-label="进入 飞车 3D"><img src="games/feiche-3d/preview.png" data-fallback="games/feiche-3d/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="飞车 3D 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">飞车 3D</h3>
+          <div class="tags"><span class="tag genre">竞速</span><span class="tag style">3D</span></div>
+          <p class="card-meta">R@riba2534 · ai8games · 2026-09-23</p>
+          <p class="card-desc">致敬 QQ 飞车的网页 3D 赛车同人作品：四条按官方地图风格做的赛道，能漂移集气、小喷双喷、氮气和道具赛。riba2534 用 Claude Opus 5.5 一句话提示词生成。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/feiche-3d/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://claude-opus-5-5-qqfeiche3d.pages.dev/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="frostfall 角色扮演 3d 冒险 ai8games" data-genre="角色扮演" data-style="奇幻魔法" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/frostfall/index.html" aria-label="进入 Frostfall"><img src="games/frostfall/preview.webp" data-fallback="games/frostfall/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Frostfall 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Frostfall</h3>
+          <div class="tags"><span class="tag genre">角色扮演</span><span class="tag style">奇幻魔法</span></div>
+          <p class="card-meta">R@0xRhinoX · ai8games · 2026-11-11</p>
+          <p class="card-desc">向《上古卷轴》致敬的角色扮演游戏，一个晚上、约 350 美元做完。开局在马车上醒来，山谷里有村庄、森林、地穴、冰湖和土匪塔，一手剑一手火。3D 模型用 Tripo 做。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/frostfall/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://pokeable.app/games/frostfall" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="goblin hunter 2 动作 3d ai8games" data-genre="动作冒险" data-style="3D" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/goblin-hunter-2/index.html" aria-label="进入 Goblin Hunter 2"><img src="games/goblin-hunter-2/preview.webp" data-fallback="games/goblin-hunter-2/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Goblin Hunter 2 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Goblin Hunter 2</h3>
+          <div class="tags"><span class="tag genre">动作冒险</span><span class="tag style">3D</span></div>
+          <p class="card-meta">M@muratbaseren · ai8games · 2026-11-11</p>
+          <p class="card-desc">Murat Başeren 的 Goblin Hunter 的 Fable 5.2 版本。他用同一个提示词分别让 Opus 5.5 和 Fable 5.2 做，拿来对比两个模型。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/goblin-hunter-2/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://goblin-hunter-game-2.netlify.app/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="goblin survivors 动作 街机 ai8games" data-genre="动作冒险" data-style="卡通" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/goblin-survivors/index.html" aria-label="进入 Goblin Survivors"><img src="games/goblin-survivors/preview.webp" data-fallback="games/goblin-survivors/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Goblin Survivors 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Goblin Survivors</h3>
+          <div class="tags"><span class="tag genre">动作冒险</span><span class="tag style">卡通</span></div>
+          <p class="card-meta">D@creativedash · ai8games · 2026-11-13</p>
+          <p class="card-desc">对抗哥布林大军的幸存者类动作游戏，作者说内容够玩 30 多个小时。Dash 用 Forge 加 Fable 5.2 大约 4 小时做出来，美术素材用 GPT 生成。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/goblin-survivors/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://goblinsurvivors.com" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="gokart mania 赛车 3d ai8games" data-genre="竞速" data-style="3D" data-status="bad" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/gokart-mania/index.html" aria-label="进入 GoKart Mania"><img src="games/gokart-mania/preview.webp" data-fallback="games/gokart-mania/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="GoKart Mania 预览" loading="lazy"></a>
+          <span class="badge bad">部分功能受限</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">GoKart Mania</h3>
+          <div class="tags"><span class="tag genre">竞速</span><span class="tag style">3D</span></div>
+          <p class="card-meta">R@rahul___mehta · ai8games · 2026-11-10</p>
+          <p class="card-desc">完整的卡丁车游戏，模型、赛道和代码都由 Fable 5.2 和 Mixar 做。浏览器里直接玩，Mixar 用户还能拿去改。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/gokart-mania/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://gokart-mania.vercel.app/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="hamsi 模拟 3d ai8games" data-genre="模拟经营" data-style="3D" data-status="ok" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/hamsi/index.html" aria-label="进入 Hamsi"><img src="games/hamsi/preview.webp" data-fallback="games/hamsi/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Hamsi 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Hamsi</h3>
+          <div class="tags"><span class="tag genre">模拟经营</span><span class="tag style">3D</span></div>
+          <p class="card-meta">F@Furkiozkann · ai8games · 2026-11-11</p>
+          <p class="card-desc">黑海鳀鱼捕捞加渔船经营，3D 画面：用声呐找鱼群，下围网，趁新鲜卖掉，从小划艇一路换到拖网船和围网船。一个渔季 30 天，要还清买船的贷款。界面有英文和土耳其语。FurkiOzkan 用 Claude Sonnet 5.5 做的。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/hamsi/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://furkiozknn.github.io/hamsi" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="hardwood draft 体育 策略 ai8games" data-genre="体育" data-style="写实" data-status="ok" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/hardwood-draft/index.html" aria-label="进入 Hardwood Draft"><img src="games/hardwood-draft/preview.webp" data-fallback="games/hardwood-draft/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Hardwood Draft 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Hardwood Draft</h3>
+          <div class="tags"><span class="tag genre">体育</span><span class="tag style">写实</span></div>
+          <p class="card-meta">D@PeakeDaniel7090 · ai8games · 2026-11-13</p>
+          <p class="card-desc">大学篮球选秀游戏：五个选秀名额，一个赛季，一次冲冠机会。先排好阵容，再先选后卫、后选前锋，每次从两个联盟赛季里挑一个，再从里面选人。Daniel Peake 用 Claude 做的。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/hardwood-draft/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://hardwooddraft.netlify.app" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="maad maxxing 赛车 动作 3d ai8games" data-genre="竞速" data-style="写实" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/maad-maxxing/index.html" aria-label="进入 MAAD MAXXING"><img src="games/maad-maxxing/preview.webp" data-fallback="games/maad-maxxing/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="MAAD MAXXING 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">MAAD MAXXING</h3>
+          <div class="tags"><span class="tag genre">竞速</span><span class="tag style">写实</span></div>
+          <p class="card-meta">A@Andrew_Blumson · ai8games · 2026-11-11</p>
+          <p class="card-desc">沙漠里开越野车追逐，玩起来像在看电影预告片：你只管开，镜头自己切。Andrew Blumson 用 Fable 5.2 做的，three.js 加 WebGPU，全靠代码画出来，没用 3D 模型和贴图，声音用的 ElevenLabs。现在能玩 3 关，作者计划再加 7 关。要用电脑玩。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/maad-maxxing/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://maad-maxxing.vercel.app/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="mehter 音乐 街机 ai8games" data-genre="音乐节奏" data-style="写实" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/mehter/index.html" aria-label="进入 Mehter"><img src="games/mehter/preview.webp" data-fallback="games/mehter/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Mehter 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Mehter</h3>
+          <div class="tags"><span class="tag genre">音乐节奏</span><span class="tag style">写实</span></div>
+          <p class="card-meta">F@Furkiozkann · ai8games · 2026-11-12</p>
+          <p class="card-desc">奥斯曼军乐节奏游戏：大鼓、铜鼓、祖尔纳管和镲沿着大街随你的节拍行进。按 D F J K 或点轨道打音符，长音按住，挑战 176 BPM 的《胜利进行曲》拿 S 评级。FurkiOzkan 用 Claude Haiku 5.5 做的。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/mehter/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://furkiozknn.github.io/mehter" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="on my way babe 休闲 街机 ai8games" data-genre="休闲街机" data-style="卡通" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/on-my-way-babe/__challenge/probes.js__q_v_c3301fdb5ac5" aria-label="进入 On My Way Babe"><img src="games/on-my-way-babe/preview.png" data-fallback="games/on-my-way-babe/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="On My Way Babe 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">On My Way Babe</h3>
+          <div class="tags"><span class="tag genre">休闲街机</span><span class="tag style">卡通</span></div>
+          <p class="card-meta">E@egmndev · ai8games · 2026-11-12</p>
+          <p class="card-desc">从图兹拉出发横穿整个伊斯坦布尔，赶到贝利克迪兹去见心上人，她一路追问你到哪了。作者说目前还没人能走到终点，包括他自己。egemen 用 Claude 做的。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/on-my-way-babe/__challenge/probes.js__q_v_c3301fdb5ac5">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://yoldayimaskim.space.fast" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="paletterider 艺术 休闲 3d ai8games" data-genre="休闲街机" data-style="艺术创意" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/palette-rider/index.html" aria-label="进入 PaletteRider"><img src="games/palette-rider/preview.webp" data-fallback="games/palette-rider/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="PaletteRider 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">PaletteRider</h3>
+          <div class="tags"><span class="tag genre">休闲街机</span><span class="tag style">艺术创意</span></div>
+          <p class="card-meta">A@Aashish_Tiwari_ · ai8games · 2026-11-12</p>
+          <p class="card-desc">骑着自行车钻进名画里：在保罗·克利的《城堡与太阳》里收集散落在街道和屋顶上的小太阳，天亮前送回城堡，再骑进梵高的《夜间露天咖啡座》。Aashish Tiwari 用 Claude Fable 5.2 做的，从 3D 城市到音乐都是。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/palette-rider/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://aashishgtbit.github.io/PaletteRider" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="peri golf 体育 物理 3d ai8games" data-genre="体育" data-style="3D" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/peri-golf/index.html" aria-label="进入 Peri Golf"><img src="games/peri-golf/preview.webp" data-fallback="games/peri-golf/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Peri Golf 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Peri Golf</h3>
+          <div class="tags"><span class="tag genre">体育</span><span class="tag style">3D</span></div>
+          <p class="card-meta">F@Furkiozkann · ai8games · 2026-11-12</p>
+          <p class="card-desc">卡帕多奇亚“仙女烟囱”石林里的 3D 物理迷你高尔夫，共 12 洞，陶轮还会把球推走。按住球往后拖瞄准，松手击球，每天还有挑战关。界面有英文和土耳其语。FurkiOzkan 用 Claude Fable 5.1 做的。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/peri-golf/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://furkiozknn.github.io/peri-golf" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="price the deal 问答 策略 ai8games" data-genre="问答" data-style="写实" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/price-the-deal/index.html" aria-label="进入 Price the Deal"><img src="games/price-the-deal/preview.webp" data-fallback="games/price-the-deal/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Price the Deal 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Price the Deal</h3>
+          <div class="tags"><span class="tag genre">问答</span><span class="tag style">写实</span></div>
+          <p class="card-meta">S@StructuralVac · ai8games · 2026-11-10</p>
+          <p class="card-desc">商业地产猜价游戏：看 27 个市场里 30 笔工业地产交易的数据，出一个每平方英尺的价格，再揭晓真实成交价。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/price-the-deal/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://structuralvacancy.com/play" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="rematch 体育 街机 ai8games" data-genre="体育" data-style="写实" data-status="bad" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/rematch/index.html" aria-label="进入 REMATCH"><img src="games/rematch/preview.webp" data-fallback="games/rematch/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="REMATCH 预览" loading="lazy"></a>
+          <span class="badge bad">部分功能受限</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">REMATCH</h3>
+          <div class="tags"><span class="tag genre">体育</span><span class="tag style">写实</span></div>
+          <p class="card-meta">R@rallao_ · ai8games · 2026-11-12</p>
+          <p class="card-desc">重打一场 HYROX 比赛最后的药球投掷，和时间赛跑。能读取你上一场比赛的官方成绩，在最后 100 个球上跟自己比；也可以挑战“破 60 分钟”，只打最后 20 个。rallao 用 Claude Fable 5.2 在 24 小时内做出来。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/rematch/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://rematch.roxstar.app" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="tennis 体育 街机 复古 ai8games" data-genre="体育" data-style="复古像素" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/tennis/index.html" aria-label="进入 Tennis"><img src="games/tennis/preview.webp" data-fallback="games/tennis/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Tennis 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Tennis</h3>
+          <div class="tags"><span class="tag genre">体育</span><span class="tag style">复古像素</span></div>
+          <p class="card-meta">R@photonstorm · ai8games · 2026-11-11</p>
+          <p class="card-desc">Phaser 引擎作者 Richard Davey 让 Fable 5.2「放开了做」一个游戏，拿到手像是个乒乓球小游戏。多玩一会儿才知道它到底是什么。Fable 能用他平时那套工具：音乐、图片、视频生成，还有通过 MCP 接的 Blender。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/tennis/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://tennis.sixfingerpunch.com/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="thoon run 动作 冒险 3d ai8games" data-genre="角色扮演" data-style="3D" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/thoon-run/site/.well-known/sgcaptcha/__q_r_2Fplay_2Fthoon-run_y_ipr_80.174.118.99_1794849995.467" aria-label="进入 Thoon Run"><img src="games/thoon-run/preview.png" data-fallback="games/thoon-run/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Thoon Run 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Thoon Run</h3>
+          <div class="tags"><span class="tag genre">角色扮演</span><span class="tag style">3D</span></div>
+          <p class="card-meta">J@jgrebski · ai8games · 2026-11-12</p>
+          <p class="card-desc">落在沙漠小镇 Thoon 外：进城和人说话、花钱补给，再出侧门去找那个发着光的洞穴，沙子里会不断冒出怪物来拦你。进度会自动保存。Jacuńa 用 Fable 5.2 做的，还在陆续更新。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/thoon-run/site/.well-known/sgcaptcha/__q_r_2Fplay_2Fthoon-run_y_ipr_80.174.118.99_1794849995.467">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://idnn.tv/play/thoon-run" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="tick tock bonk 解谜 策略 3d ai8games" data-genre="策略解谜" data-style="卡通" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/tick-tock-bonk/index.html" aria-label="进入 Tick Tock Bonk"><img src="games/tick-tock-bonk/preview.webp" data-fallback="games/tick-tock-bonk/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Tick Tock Bonk 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Tick Tock Bonk</h3>
+          <div class="tags"><span class="tag genre">策略解谜</span><span class="tag style">卡通</span></div>
+          <p class="card-meta">K@KyleBlanchard_ · ai8games · 2026-11-12</p>
+          <p class="card-desc">为手机设计的战术解谜游戏：先摆好棋子，再看卡通风 3D 场景自动演一遍，成败一目了然。关卡越来越难，还有连战、每日一题和玩具箱模式。Kyle Blanchard 用 Fable 5.2 Ultra 做规划，Sonnet 和 Opus 负责调研和实现。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/tick-tock-bonk/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://tick-tock-bonk.blanchardk.workers.dev" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="turbo tails 赛车 3d 多人 ai8games" data-genre="竞速" data-style="3D" data-status="ok" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/turbo-tails/music/title.5c9d3d01.mp3" aria-label="进入 Turbo Tails"><img src="games/turbo-tails/preview.webp" data-fallback="games/turbo-tails/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Turbo Tails 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Turbo Tails</h3>
+          <div class="tags"><span class="tag genre">竞速</span><span class="tag style">3D</span></div>
+          <p class="card-meta">P@petergyang · ai8games · 2026-11-09</p>
+          <p class="card-desc">3D 卡丁车，6 名车手，有漂移、跳台和道具，能单人也能多人。Peter Yang 只用了 3 个提示词，音乐用 Suno 生成。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/turbo-tails/music/title.5c9d3d01.mp3">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://turbo-tails.vercel.app/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="万法仙途 · myriad dao 动作 角色扮演 魔法 ai8games" data-genre="角色扮演" data-style="奇幻魔法" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/wanfa-xiantu/index.html" aria-label="进入 万法仙途 · Myriad Dao"><img src="games/wanfa-xiantu/preview.webp" data-fallback="games/wanfa-xiantu/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="万法仙途 · Myriad Dao 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">万法仙途 · Myriad Dao</h3>
+          <div class="tags"><span class="tag genre">角色扮演</span><span class="tag style">奇幻魔法</span></div>
+          <p class="card-meta">AI8Games · ai8games · 2026-11-11</p>
+          <p class="card-desc">我们自己做的修仙肉鸽。功法排进周天经脉，相邻五行相生就连成金线变强；打妖用相克的五行，打出克制爆发；修为到瓶颈，自己挑时机渡劫。一局 12 分钟，从炼气修到化神，打死秘境之主通关。6 个职业、30 门功法、30 件法宝、24 种妖怪、8 个 Boss、6 个秘境，还有无尽模式和每日秘境。电脑用 WASD，手机直接触屏，支持中英日韩四种语言。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/wanfa-xiantu/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://wanfa-xiantu.pages.dev/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="雾锁山门 动作 3d ai8games" data-genre="动作冒险" data-style="3D" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/wusuo-shanmen/index.html" aria-label="进入 雾锁山门"><img src="games/wusuo-shanmen/preview.webp" data-fallback="games/wusuo-shanmen/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="雾锁山门 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">雾锁山门</h3>
+          <div class="tags"><span class="tag genre">动作冒险</span><span class="tag style">3D</span></div>
+          <p class="card-meta">歸@op7418 · ai8games · 2026-11-12</p>
+          <p class="card-desc">Fable 5.2 一个下午、约 45 亿 token 做出的 3D 动作游戏。歸藏说模型、场景、动作设计和优化都是它做的，最后全部塞进一个 30MB 的 HTML 文件。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/wusuo-shanmen/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://op7418.github.io/guizang-game-skill/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="zuzu · 庭院日和 休闲 3d ai8games" data-genre="休闲街机" data-style="卡通" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/zuzu/index__q_character_dawn.html" aria-label="进入 ZUZU · 庭院日和"><img src="games/zuzu/preview.png" data-fallback="games/zuzu/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="ZUZU · 庭院日和 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">ZUZU · 庭院日和</h3>
+          <div class="tags"><span class="tag genre">休闲街机</span><span class="tag style">卡通</span></div>
+          <p class="card-meta">D@yygqdkqk · ai8games · 2026-11-12</p>
+          <p class="card-desc">一个可爱的 3D 小庭院，可以操控 ZUZU 或新英雄 Dawn。点草地走路、拖动转视角，拿练习靶试技能：Dawn 有铁山靠、篮球、跳、RAP，ZUZU 会跳舞、掷泥、撞击、水枪。作者 dk021 用 GPT 和 Codex 做出了 Dawn 的模型。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/zuzu/index__q_character_dawn.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://zuzu.usdts.de/?character=dawn" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="どっち撃つねん 射击 休闲 街机 ai8games" data-genre="射击" data-style="卡通" data-status="ok" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/docchi-utsunen/index.html" aria-label="进入 どっち撃つねん"><img src="games/docchi-utsunen/preview.webp" data-fallback="games/docchi-utsunen/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="どっち撃つねん 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">どっち撃つねん</h3>
+          <div class="tags"><span class="tag genre">射击</span><span class="tag style">卡通</span></div>
+          <p class="card-meta">T@mscle11 · ai8games · 2026-11-12</p>
+          <p class="card-desc">把社交平台上那种看着就上火的射击小游戏广告做成了真游戏，竖屏，适合手机玩。作者 tama 让 Fable 5.2 照着那种让人烦躁的广告游戏做一个，自嘲这是在浪费 AI。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/docchi-utsunen/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://ttk1.github.io/docchi-utsunen" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="pelican on a bike 休闲 3d ai8games" data-genre="休闲街机" data-style="卡通" data-status="warn" data-source="ai8games">
+        <div class="thumb">
+          <a href="games/pelican-on-a-bike/index.html" aria-label="进入 Pelican on a Bike"><img src="games/pelican-on-a-bike/preview.webp" data-fallback="games/pelican-on-a-bike/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Pelican on a Bike 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">ai8games</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Pelican on a Bike</h3>
+          <div class="tags"><span class="tag genre">休闲街机</span><span class="tag style">卡通</span></div>
+          <p class="card-meta">R@riba2534 · ai8games · 2026-09-23</p>
+          <p class="card-desc">戴头盔和围巾的鹈鹕骑着复古自行车，沿海岸公路追鱼。全部用代码做出来：程序化建模、会飘的布料围巾、海浪和从黄昏到星空的昼夜变化。riba2534 用 Claude Opus 5.5 一句话提示词生成，代码没有人工改过。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/pelican-on-a-bike/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://lf3-static.bytednsdoc.com/obj/eden-cn/nulojnulwlo/pelican-bike/index.html" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="saltfire 竞速 军事战争 历史来源" data-genre="竞速" data-style="军事战争" data-status="ok" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/saltfire/index.html" aria-label="进入 Saltfire"><img src="games/saltfire/preview.png" data-fallback="games/saltfire/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Saltfire 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Saltfire</h3>
+          <div class="tags"><span class="tag genre">竞速</span><span class="tag style">军事战争</span></div>
+          <p class="card-meta">saltfire.higgsfield.app · 历史来源</p>
+          <p class="card-desc">Armed offshore powerboat racing in the browser: four tracks, three hulls, machine guns and rockets, heavy water physics.</p>
+          <div class="actions">
+            <a class="btn primary" href="games/saltfire/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://saltfire.higgsfield.app/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="what the water keeps 策略解谜 写实 历史来源" data-genre="策略解谜" data-style="写实" data-status="warn" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/what-the-water-keeps/index.html" aria-label="进入 What the Water Keeps"><img src="games/what-the-water-keeps/preview.png" data-fallback="games/what-the-water-keeps/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="What the Water Keeps 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">What the Water Keeps</h3>
+          <div class="tags"><span class="tag genre">策略解谜</span><span class="tag style">写实</span></div>
+          <p class="card-meta">what-the-water-keeps.vercel.app · 历史来源</p>
+          <p class="card-desc">网页小游戏，即点即玩</p>
+          <div class="actions">
+            <a class="btn primary" href="games/what-the-water-keeps/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://what-the-water-keeps.vercel.app/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="river game 动作冒险 奇幻魔法 历史来源" data-genre="动作冒险" data-style="奇幻魔法" data-status="bad" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/rivergame-kappa/index.html" aria-label="进入 River Game"><img src="games/rivergame-kappa/preview.png" data-fallback="games/rivergame-kappa/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="River Game 预览" loading="lazy"></a>
+          <span class="badge bad">部分功能受限</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">River Game</h3>
+          <div class="tags"><span class="tag genre">动作冒险</span><span class="tag style">奇幻魔法</span></div>
+          <p class="card-meta">rivergame-kappa.vercel.app · 历史来源</p>
+          <p class="card-desc">网页小游戏，即点即玩</p>
+          <div class="actions">
+            <a class="btn primary" href="games/rivergame-kappa/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://rivergame-kappa.vercel.app/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="bayhaven 模拟经营 卡通 历史来源" data-genre="模拟经营" data-style="卡通" data-status="warn" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/bayhaven/play/bayhaven/index.html" aria-label="进入 Bayhaven"><img src="games/bayhaven/preview.png" data-fallback="games/bayhaven/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Bayhaven 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Bayhaven</h3>
+          <div class="tags"><span class="tag genre">模拟经营</span><span class="tag style">卡通</span></div>
+          <p class="card-meta">fable52.games · 历史来源</p>
+          <p class="card-desc">An original open-world crime game written live by Fable 5.2, one autonomous session at a time.</p>
+          <div class="actions">
+            <a class="btn primary" href="games/bayhaven/play/bayhaven/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://fable52.games/play/bayhaven" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="evensong 动作冒险 奇幻魔法 历史来源" data-genre="动作冒险" data-style="奇幻魔法" data-status="warn" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/evensong-legacy/index.html" aria-label="进入 Evensong"><img src="games/evensong-legacy/preview.png" data-fallback="games/evensong-legacy/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Evensong 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Evensong</h3>
+          <div class="tags"><span class="tag genre">动作冒险</span><span class="tag style">奇幻魔法</span></div>
+          <p class="card-meta">wangkunhao.fun · 历史来源</p>
+          <p class="card-desc">One duel in a drowned cathedral. A souls-like demo that plays in the browser.</p>
+          <div class="actions">
+            <a class="btn primary" href="games/evensong-legacy/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://wangkunhao.fun/evensong/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="lanternfall 动作冒险 奇幻魔法 历史来源" data-genre="动作冒险" data-style="奇幻魔法" data-status="ok" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/lanternfall/index.html" aria-label="进入 Lanternfall"><img src="games/lanternfall/preview.png" data-fallback="games/lanternfall/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Lanternfall 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Lanternfall</h3>
+          <div class="tags"><span class="tag genre">动作冒险</span><span class="tag style">奇幻魔法</span></div>
+          <p class="card-meta">wangkunhao.fun · 历史来源</p>
+          <p class="card-desc">网页小游戏，即点即玩</p>
+          <div class="actions">
+            <a class="btn primary" href="games/lanternfall/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://wangkunhao.fun/lanternfall/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="maad 竞速 写实 历史来源" data-genre="竞速" data-style="写实" data-status="ok" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/maad/maad/index.html" aria-label="进入 MAAD"><img src="games/maad/preview.png" data-fallback="games/maad/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="MAAD 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">MAAD</h3>
+          <div class="tags"><span class="tag genre">竞速</span><span class="tag style">写实</span></div>
+          <p class="card-meta">wangkunhao.fun · 历史来源</p>
+          <p class="card-desc">A buggy chase that plays like a movie trailer. You drive, the camera cuts. Drawn live in the browser: no models, no textures. Desktop and laptop only.</p>
+          <div class="actions">
+            <a class="btn primary" href="games/maad/maad/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://wangkunhao.fun/maad/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="wok 模拟经营 卡通 历史来源" data-genre="模拟经营" data-style="卡通" data-status="bad" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/wok/wok/index.html" aria-label="进入 Wok"><img src="games/wok/preview.png" data-fallback="games/wok/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Wok 预览" loading="lazy"></a>
+          <span class="badge bad">部分功能受限</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Wok</h3>
+          <div class="tags"><span class="tag genre">模拟经营</span><span class="tag style">卡通</span></div>
+          <p class="card-meta">wangkunhao.fun · 历史来源</p>
+          <p class="card-desc">唐人街，炸锅了。死人占了唐人街，接你的卡车要等三份外卖齐了才来。杀敌攒镬气、一路加菜，子弹要自己捡，红包要自己抢。点起三口灶，把三道菜炒好打包，招牌菜就会上桌。放倒它，从东边的检疫关卡杀出去。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/wok/wok/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://wangkunhao.fun/wok/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="sanguo 策略解谜 复古像素 历史来源" data-genre="策略解谜" data-style="复古像素" data-status="warn" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/sanguo/sanguo/index.html" aria-label="进入 Sanguo"><img src="games/sanguo/preview.png" data-fallback="games/sanguo/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Sanguo 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Sanguo</h3>
+          <div class="tags"><span class="tag genre">策略解谜</span><span class="tag style">复古像素</span></div>
+          <p class="card-meta">wangkunhao.fun · 历史来源</p>
+          <p class="card-desc">黄巾搜村，乡民失散。常山赵子龙孤枪入夜，免下载网页即玩的俯视角暗黑三国动作肉鸽。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/sanguo/sanguo/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://wangkunhao.fun/sanguo/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="worm 休闲街机 复古像素 历史来源" data-genre="休闲街机" data-style="复古像素" data-status="warn" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/worm/worm/index.html" aria-label="进入 Worm"><img src="games/worm/preview.png" data-fallback="games/worm/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Worm 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Worm</h3>
+          <div class="tags"><span class="tag genre">休闲街机</span><span class="tag style">复古像素</span></div>
+          <p class="card-meta">wangkunhao.fun · 历史来源</p>
+          <p class="card-desc">网页小游戏，即点即玩</p>
+          <div class="actions">
+            <a class="btn primary" href="games/worm/worm/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://wangkunhao.fun/worm/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="starry 休闲街机 艺术创意 历史来源" data-genre="休闲街机" data-style="艺术创意" data-status="bad" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/starry/starry/index.html" aria-label="进入 Starry"><img src="games/starry/preview.png" data-fallback="games/starry/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Starry 预览" loading="lazy"></a>
+          <span class="badge bad">部分功能受限</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Starry</h3>
+          <div class="tags"><span class="tag genre">休闲街机</span><span class="tag style">艺术创意</span></div>
+          <p class="card-meta">wangkunhao.fun · 历史来源</p>
+          <p class="card-desc">Ride a bicycle through Van Gogh’s The Starry Night: collect the orbs, carry them to the steeple, and post your score.</p>
+          <div class="actions">
+            <a class="btn primary" href="games/starry/starry/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://wangkunhao.fun/starry/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="marmottes ninja 休闲街机 卡通 历史来源" data-genre="休闲街机" data-style="卡通" data-status="ok" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/marmottes/marmottes/index.html" aria-label="进入 Marmottes Ninja"><img src="games/marmottes/preview.png" data-fallback="games/marmottes/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Marmottes Ninja 预览" loading="lazy"></a>
+          <span class="badge ok">运行正常</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Marmottes Ninja</h3>
+          <div class="tags"><span class="tag genre">休闲街机</span><span class="tag style">卡通</span></div>
+          <p class="card-meta">wangkunhao.fun · 历史来源</p>
+          <p class="card-desc">Vincent contre les marmottes ninja : un jeu de tir à la première personne bon enfant. Défendez le temple contre des marmottes ninja adorables avec 15 armes-jouets, sur téléphone ou</p>
+          <div class="actions">
+            <a class="btn primary" href="games/marmottes/marmottes/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://wangkunhao.fun/marmottes/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="watercolour 休闲街机 艺术创意 历史来源" data-genre="休闲街机" data-style="艺术创意" data-status="bad" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/watercolour/blendi/watercolour/index.html" aria-label="进入 Watercolour"><img src="games/watercolour/preview.png" data-fallback="games/watercolour/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Watercolour 预览" loading="lazy"></a>
+          <span class="badge bad">部分功能受限</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Watercolour</h3>
+          <div class="tags"><span class="tag genre">休闲街机</span><span class="tag style">艺术创意</span></div>
+          <p class="card-meta">patch.gg · 历史来源</p>
+          <p class="card-desc">A three.js world that starts as a pencil drawing and is painted in watercolour as you walk through it: a wet wash that spreads from your feet, climbs the trees and stays. The demo </p>
+          <div class="actions">
+            <a class="btn primary" href="games/watercolour/blendi/watercolour/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://patch.gg/blendi/watercolour" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="umbra 动作冒险 写实 历史来源" data-genre="动作冒险" data-style="写实" data-status="warn" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/umbra/umbra/index.html" aria-label="进入 Umbra"><img src="games/umbra/preview.png" data-fallback="games/umbra/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Umbra 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Umbra</h3>
+          <div class="tags"><span class="tag genre">动作冒险</span><span class="tag style">写实</span></div>
+          <p class="card-meta">wangkunhao.fun · 历史来源</p>
+          <p class="card-desc">UMBRA GT：浏览器里的 3D 街头赛车游戏。两条赛道，八款车，会漂移。</p>
+          <div class="actions">
+            <a class="btn primary" href="games/umbra/umbra/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://wangkunhao.fun/umbra/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-name="portals: endless worlds 策略解谜 奇幻魔法 历史来源" data-genre="策略解谜" data-style="奇幻魔法" data-status="warn" data-source="历史来源">
+        <div class="thumb">
+          <a href="games/portals-endless-worlds/index.html" aria-label="进入 Portals: Endless Worlds"><img src="games/portals-endless-worlds/preview.png" data-fallback="games/portals-endless-worlds/preview.png" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Portals: Endless Worlds 预览" loading="lazy"></a>
+          <span class="badge warn">部分资源缺失</span>
+          <span class="source-pill">历史来源</span>
+        </div>
+        <div class="body">
+          <h3 class="card-title">Portals: Endless Worlds</h3>
+          <div class="tags"><span class="tag genre">策略解谜</span><span class="tag style">奇幻魔法</span></div>
+          <p class="card-meta">portals-endless-worlds.netlify.app · 历史来源</p>
+          <p class="card-desc">An endless flight through procedurally generated worlds, each one reached through a portal in the last.</p>
+          <div class="actions">
+            <a class="btn primary" href="games/portals-endless-worlds/index.html">进入游戏 <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="https://portals-endless-worlds.netlify.app/" target="_blank" rel="noopener noreferrer">原站 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+    </main>
+  </section>
+
+  <section class="section" aria-labelledby="about-title">
+    <div class="section-head"><div><h2 id="about-title">关于这座资源站</h2><p>可追溯、可复验、可持续增量</p></div></div>
+    <div class="info-grid">
+      <div class="info-card"><h3>完整链接清单</h3><p>50 条原始链接，含 ai8games 与历史版本来源，任何来源都不会被静默删除。</p><a href="game_list.md">查看 game_list.md →</a></div>
+      <div class="info-card"><h3>资源缺失诊断</h3><p>按原因、证据路径、修复步骤与优先级记录每款游戏的资源状态。</p><a href="docs/asset-gap-analysis.md">查看诊断报告 →</a></div>
+      <div class="info-card"><h3>后续扩展</h3><p>已知来源扩展与全网发现分阶段推进，先诊断，再增量，再发布。</p><a href="docs/expansion-roadmap.md">查看路线图 →</a></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>资源归原作者所有；本站仅做静态镜像与入口聚合。原站链接均在新标签页打开。</span>
+    <span>由 <a href="https://github.com/Jzice/vibe_game" target="_blank" rel="noopener noreferrer">Vibe Games</a> 构建 · GitHub Pages</span>
+  </footer>
+</div>
+<script>
+  const q=document.getElementById('q'), sort=document.getElementById('sort');
+  const grid=document.getElementById('grid'), cards=[...grid.querySelectorAll('.card')], count=document.getElementById('result-count');
+  const cloud=document.getElementById('tag-cloud'), chips=[...cloud.querySelectorAll('.cloud-chip')];
+  const state={source:'',genre:'',style:'',status:''};
+  function apply(){
+    let visible=0;
+    cards.forEach(c=>{
+      const ok=(!q.value||c.dataset.name.includes(q.value.toLowerCase()))
+        &&(!state.source||c.dataset.source===state.source)
+        &&(!state.genre||c.dataset.genre===state.genre)
+        &&(!state.style||c.dataset.style===state.style)
+        &&(!state.status||c.dataset.status===state.status);
+      c.classList.toggle('hidden',!ok);
+      if(ok) visible++;
+    });
+    count.textContent=`显示 ${visible} / ${cards.length} 款`;
+  }
+  function reorder(){
+    const rank={ok:0,warn:1,bad:2};
+    const mode=sort.value;
+    cards.sort((a,b)=>{
+      if(mode==='name') return a.dataset.name.localeCompare(b.dataset.name);
+      if(mode==='status') return rank[a.dataset.status]-rank[b.dataset.status] || a.dataset.name.localeCompare(b.dataset.name);
+      if(mode==='type') return a.dataset.genre.localeCompare(b.dataset.genre) || a.dataset.name.localeCompare(b.dataset.name);
+      if(mode==='source') return a.dataset.source.localeCompare(b.dataset.source) || a.dataset.name.localeCompare(b.dataset.name);
+      return 0;
+    });
+    cards.forEach(c=>grid.appendChild(c));
+  }
+  function syncChips(){
+    chips.forEach(chip=>chip.classList.toggle('active',state[chip.dataset.group]===chip.dataset.value));
+  }
+  function reset(){
+    q.value='';
+    Object.keys(state).forEach(k=>state[k]='');
+    sort.value='curated'; syncChips(); reorder(); apply();
+  }
+  cloud.addEventListener('click',e=>{
+    const chip=e.target.closest('.cloud-chip');
+    if(!chip) return;
+    const group=chip.dataset.group, value=chip.dataset.value;
+    state[group]=state[group]===value?'':value;
+    syncChips(); apply();
+  });
+  q.addEventListener('input',apply);
+  sort.addEventListener('change',()=>{reorder();apply();});
+  document.getElementById('reset').addEventListener('click',reset);
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{
+  "url": "https://maad-maxxing.vercel.app/",
+  "final_url": "https://maad-maxxing.vercel.app/",
+  "slug": "maad-maxxing",
+  "title": "MAAD MAXXING",
+  "description": "A buggy chase that plays like a movie trailer. You drive, the camera cuts. Drawn live in the browser: no models, no textures. Desktop and laptop only.",
+  "captured_at": "2026-11-16T16:51:18.047704+00:00",
+  "assets": {
+    "https://maad-maxxing.vercel.app/": {
+      "path": "index.html",
+      "content_type": "text/html; charset=utf-8",
+      "size": 3341,
+      "status": 200
+    },
+    "https://maad-maxxing.vercel.app/assets/index-BxE7969Q.js": {
+      "path": "assets/index-BxE7969Q.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 876284,
+      "status": 200
+    },
+    "https://maad-maxxing.vercel.app/assets/three.core-BpIcZScr.js": {
+      "path": "assets/three.core-BpIcZScr.js",
+      "content_type": "application/javascript; charset=utf-8",
+      "size": 383081,
+      "status": 200
+    },
+    "https://maad-maxxing.vercel.app/share.jpg": {
+      "path": "share.jpg",
+      "content_type": "image/jpeg",
+      "size": 115687,
+      "status": 200
+    }
+  },
+  "failures": [],
+  "attempt": 1
+}
